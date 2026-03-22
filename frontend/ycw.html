@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - Sistema de Arrendamientos</title>
+    <link rel="stylesheet" href="css/styles.css">
+    
+</head>
+<body>
+    <!-- Fondo animado -->
+    <div class="background-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+    </div>
+ 
+    <!-- Contenedor principal -->
+    <div class="login-wrapper">
+        <div class="login-container">
+            <!-- Logo y título -->
+            <div class="logo-section">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <polyline points="9 22 9 12 15 12 15 22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <h1>Nido Rent</h1>
+                <p class="subtitle">Gestión inteligente de propiedades YCW</p>
+            </div>
+ 
+            <!-- Alerta -->
+            <div id="alert" class="alert" style="display: none;">
+                <div class="alert-icon">⚠️</div>
+                <div class="alert-message"></div>
+            </div>
+ 
+            <!-- Formulario de Login -->
+            <form id="loginForm" class="login-form" style="display: block;">
+                <div class="input-group">
+                    <label for="email">Correo Electrónico</label>
+                    <div class="input-wrapper">
+                        <svg class="input-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <polyline points="22,6 12,13 2,6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <input type="email" id="email" placeholder="tu@correo.com" required autocomplete="email">
+                    </div>
+                </div>
+ 
+                <div class="input-group">
+                    <label for="password">Documento de Identidad</label>
+                    <div class="input-wrapper">
+                        <svg class="input-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="5" y="11" width="14" height="10" rx="2" ry="2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <circle cx="12" cy="16" r="1" fill="currentColor"/>
+                            <path d="M8 11V7a4 4 0 0 1 8 0v4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <input type="password" id="password" placeholder="Tu número de documento" required>
+                    </div>
+                </div>
+ 
+                <button type="submit" class="btn-login" id="btnLogin">
+                    <span class="btn-text">Continuar</span>
+                    <span class="btn-loader" style="display: none;">
+                        <div class="spinner"></div>
+                    </span>
+                </button>
+            </form>
+ 
+            <!-- Footer -->
+            <div class="login-footer">
+                <p>¿Problemas para acceder? <a href="#">Contacta soporte</a></p>
+            </div>
+        </div>
+ 
+        <!-- Información adicional -->
+        <div class="info-panel">
+            <div class="info-content">
+                <h2>Bienvenido</h2>
+                <p>Administra tus propiedades de manera eficiente y segura.</p>
+                <ul class="features-list">
+                    <li>
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <polyline points="20 6 9 17 4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <span>Gestión de contratos</span>
+                    </li>
+                    <li>
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <polyline points="20 6 9 17 4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <span>Control de pagos</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+ 
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+ 
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const alertBox = document.getElementById('alert');
+            const btnLogin = document.getElementById('btnLogin');
+            const btnText = btnLogin.querySelector('.btn-text');
+            const btnLoader = btnLogin.querySelector('.btn-loader');
+ 
+            // Mostrar loader
+            btnText.style.display = 'none';
+            btnLoader.style.display = 'flex';
+            btnLogin.disabled = true;
+            alertBox.style.display = 'none';
+ 
+            try {
+                const response = await fetch('http://localhost:3000/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+ 
+                const data = await response.json();
+ 
+                if (data.success) {
+                    // Guardar usuario en localStorage
+                    localStorage.setItem('usuario', JSON.stringify(data.usuario));
+ 
+                    // Redirigir según el rol
+                    if (data.usuario.rol === 'Administrador') {
+                        window.location.href = 'admin.html';
+                    } else {
+                        window.location.href = 'arrendatario.html';
+                    }
+                } else {
+                    throw new Error(data.error || 'Credenciales incorrectas');
+                }
+ 
+            } catch (error) {
+                alertBox.className = 'alert alert-error';
+                alertBox.querySelector('.alert-message').textContent = error.message;
+                alertBox.style.display = 'flex';
+ 
+                // Restaurar botón
+                btnText.style.display = 'block';
+                btnLoader.style.display = 'none';
+                btnLogin.disabled = false;
+            }
+        });
+    </script>
+ 
+</body>
+</html>
