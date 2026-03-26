@@ -826,7 +826,44 @@
     </div>
 </div>
 
-    <script src="js/admin.js"></script>
+<script>
+async function cargarConfigEmpresa() {
+    try {
+        const params = new URLSearchParams(window.location.search);
+        const tenant = params.get('tenant') || localStorage.getItem('tenant') || 'amarilo';
+        localStorage.setItem('tenant', tenant);
+        const response = await fetch(`/api/empresa/config?tenant=${tenant}`);
+        if (!response.ok) return;
+        const empresa = await response.json();
+
+        document.title = `Dashboard - ${empresa.nombre}`;
+        document.querySelector('.navbar h1').textContent = `Administración - ${empresa.nombre}`;
+
+        const primario = empresa.color_primario || '#0f766e';
+        const secundario = empresa.color_secundario || '#14b8a6';
+
+        document.querySelector('.navbar').style.background = 
+            `linear-gradient(135deg, ${primario} 0%, ${secundario} 100%)`;
+
+        const style = document.createElement('style');
+        style.textContent = `
+            .tab.active { background: linear-gradient(135deg, ${primario} 0%, ${secundario} 100%) !important; }
+            .btn-primary { background: linear-gradient(135deg, ${primario} 0%, ${secundario} 100%) !important; }
+            .card h2 { color: ${primario} !important; }
+            .stat-card:nth-child(1) { border-left-color: ${primario} !important; }
+            .stat-card:nth-child(4) { border-left-color: ${secundario} !important; }
+            .modal-header h2 { color: ${primario} !important; }
+        `;
+        document.head.appendChild(style);
+        localStorage.setItem('empresaConfig', JSON.stringify(empresa));
+    } catch(e) {
+        console.log('Config por defecto');
+    }
+}
+cargarConfigEmpresa();
+</script>
+<script src="js/admin.js"></script>
+
 <!-- FOOTER -->
 <footer class="footer">
     <div class="footer-content">

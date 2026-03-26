@@ -99,59 +99,106 @@
     </div>
  
     <script>
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
- 
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const alertBox = document.getElementById('alert');
-            const btnLogin = document.getElementById('btnLogin');
-            const btnText = btnLogin.querySelector('.btn-text');
-            const btnLoader = btnLogin.querySelector('.btn-loader');
- 
-            // Mostrar loader
-            btnText.style.display = 'none';
-            btnLoader.style.display = 'flex';
-            btnLogin.disabled = true;
-            alertBox.style.display = 'none';
- 
-            try {
-                const response = await fetch('http://localhost:3000/api/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, password })
-                });
- 
-                const data = await response.json();
- 
-                if (data.success) {
-                    // Guardar usuario en localStorage
-                    localStorage.setItem('usuario', JSON.stringify(data.usuario));
- 
-                    // Redirigir según el rol
-                    if (data.usuario.rol === 'Administrador') {
-                        window.location.href = 'admin.html';
-                    } else {
-                        window.location.href = 'arrendatario.html';
-                    }
-                } else {
-                    throw new Error(data.error || 'Credenciales incorrectas');
-                }
- 
-            } catch (error) {
-                alertBox.className = 'alert alert-error';
-                alertBox.querySelector('.alert-message').textContent = error.message;
-                alertBox.style.display = 'flex';
- 
-                // Restaurar botón
-                btnText.style.display = 'block';
-                btnLoader.style.display = 'none';
-                btnLogin.disabled = false;
+    // =============================================
+    // CARGAR CONFIGURACIÓN DE LA EMPRESA
+    // =============================================
+    async function cargarConfigEmpresa() {
+        try {
+            const params = new URLSearchParams(window.location.search);
+const tenant = params.get('tenant');
+const url = tenant ? `/api/empresa/config?tenant=${tenant}` : '/api/empresa/config';
+const response = await fetch(url);
+            if (!response.ok) return;
+            const empresa = await response.json();
+
+            // Aplicar nombre y slogan
+            document.querySelector('h1').textContent = empresa.nombre;
+            document.querySelector('.subtitle').textContent = empresa.slogan || 'Gestión inteligente de propiedades';
+            document.title = `Iniciar Sesión - ${empresa.nombre}`;
+
+            // Guardar config para usarla después
+            localStorage.setItem('empresaConfig', JSON.stringify(empresa));
+
+            // Aplicar colores dinámicos
+            aplicarColores(empresa);
+        } catch (e) {
+            console.log('Usando configuración por defecto');
+        }
+    }
+
+    function aplicarColores(empresa) {
+        const root = document.documentElement;
+        root.style.setProperty('--color-primario', empresa.color_primario || '#0f766e');
+        root.style.setProperty('--color-secundario', empresa.color_secundario || '#14b8a6');
+        root.style.setProperty('--color-texto', empresa.color_texto || '#ffffff');
+
+        // Aplicar al fondo animado y elementos clave
+        document.querySelectorAll('.shape').forEach(s => {
+            s.style.background = empresa.color_primario;
+        });
+        document.querySelector('.btn-login').style.background = 
+            `linear-gradient(135deg, ${empresa.color_primario} 0%, ${empresa.color_secundario} 100%)`;
+        document.querySelector('.logo-icon').style.background = 
+            `linear-gradient(135deg, ${empresa.color_primario} 0%, ${empresa.color_secundario} 100%)`;
+    }
+
+    // Cargar al inicio
+    cargarConfigEmpresa();
+
+    // =============================================
+    // LOGIN
+    // =============================================
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const alertBox = document.getElementById('alert');
+        const btnLogin = document.getElementById('btnLogin');
+        const btnText = btnLogin.querySelector('.btn-text');
+        const btnLoader = btnLogin.querySelector('.btn-loader');
+
+        btnText.style.display = 'none';
+        btnLoader.style.display = 'flex';
+        btnLogin.disabled = true;
+        alertBox.style.display = 'none';
+
+        try {
+            const response = await fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+    localStorage.setItem('usuario', JSON.stringify(data.usuario));
+    
+    // Guardar tenant actual
+    const params = new URLSearchParams(window.location.search);
+    const tenant = params.get('tenant') || 'amarilo';
+    localStorage.setItem('tenant', tenant);
+
+    if (data.usuario.rol === 'Administrador') {
+        window.location.href = `admin.html?tenant=${tenant}`;
+    } else {
+        window.location.href = `arrendatario.html?tenant=${tenant}`;
+    }
+            } else {
+                throw new Error(data.error || 'Credenciales incorrectas');
             }
 
-
-        });
-    </script>
+        } catch (error) {
+            alertBox.className = 'alert alert-error';
+            alertBox.querySelector('.alert-message').textContent = error.message;
+            alertBox.style.display = 'flex';
+            btnText.style.display = 'block';
+            btnLoader.style.display = 'none';
+            btnLogin.disabled = false;
+        }
+    });
+</script>
  
 </body>
 </html>

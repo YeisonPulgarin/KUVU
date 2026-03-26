@@ -378,7 +378,7 @@
                 <button class="tab" onclick="showTab('pagos', event)">💳 Realizar Pagos</button>
                 <button class="tab" onclick="showTab('historial', event)">📋 Historial</button>
                 <button class="tab" onclick="showTab('solicitudes', event)">🔧 Solicitudes</button>
-                <button class="tab" onclick="showTab('servicios', event)">⚡ Servicios</button>
+                
             </div>
 
             <!-- Tab Contrato -->
@@ -663,7 +663,87 @@
         </div>
     </div>
 
-    <script src="js/arrendatario.js"></script>
+<script>
+async function cargarConfigEmpresa() {
+    try {
+        const response = await fetch('/api/empresa/config');
+        if (!response.ok) return;
+        const empresa = await response.json();
+
+        document.title = `Panel - ${empresa.nombre}`;
+        document.querySelector('.header h1').textContent = `Panel - ${empresa.nombre}`;
+
+        const primario = empresa.color_primario || '#007bff';
+        const secundario = empresa.color_secundario || '#0056b3';
+
+        // Inyectar CSS dinámico
+        const style = document.createElement('style');
+        style.textContent = `
+            body {
+                background: linear-gradient(135deg, #f4f5f5 0%, ${secundario} 100%) !important;
+            }
+            .tab.active {
+                color: ${primario} !important;
+                border-bottom-color: ${primario} !important;
+            }
+            .btn-primary {
+                background: ${primario} !important;
+            }
+            .btn-primary:hover {
+                background: ${secundario} !important;
+            }
+            .user-detail {
+                border-left-color: ${primario} !important;
+            }
+            input:focus, select:focus, textarea:focus {
+                border-color: ${primario} !important;
+            }
+        `;
+        document.head.appendChild(style);
+
+        localStorage.setItem('empresaConfig', JSON.stringify(empresa));
+    } catch(e) {
+        console.log('Config por defecto');
+    }
+}
+cargarConfigEmpresa();
+</script>
+
+<script>
+async function cargarConfigEmpresa() {
+    try {
+        const params = new URLSearchParams(window.location.search);
+        const tenant = params.get('tenant') || localStorage.getItem('tenant') || 'amarilo';
+        localStorage.setItem('tenant', tenant);
+        const response = await fetch(`/api/empresa/config?tenant=${tenant}`);
+        if (!response.ok) return;
+        const empresa = await response.json();
+
+        document.title = `Panel - ${empresa.nombre}`;
+        document.querySelector('.header h1').textContent = `Panel - ${empresa.nombre}`;
+
+        const primario = empresa.color_primario || '#007bff';
+        const secundario = empresa.color_secundario || '#0056b3';
+
+        const style = document.createElement('style');
+        style.textContent = `
+            body { background: linear-gradient(135deg, #f4f5f5 0%, ${secundario} 100%) !important; }
+            .tab.active { color: ${primario} !important; border-bottom-color: ${primario} !important; }
+            .btn-primary { background: ${primario} !important; }
+            .btn-primary:hover { background: ${secundario} !important; }
+            .user-detail { border-left-color: ${primario} !important; }
+            input:focus, select:focus, textarea:focus { border-color: ${primario} !important; }
+        `;
+        document.head.appendChild(style);
+        localStorage.setItem('empresaConfig', JSON.stringify(empresa));
+    } catch(e) {
+        console.log('Config por defecto');
+    }
+}
+cargarConfigEmpresa();
+</script>
+<script src="js/arrendatario.js"></script>   
+
     <!-- FOOTER -->
 <footer class="footer">
     <div class="footer-content">
