@@ -374,7 +374,7 @@
                <button class="tab" onclick="showTab('contratos')">📄 Contratos</button>
                <button class="tab" onclick="showTab('pagos')">💰 Pagos</button>
                <button class="tab" onclick="showTab('mantenimiento')">🔧 Mantenimiento</button>
-               <button class="tab" onclick="showTab('servicios')">⚡ Servicios</button>
+               
              </div>
         </div>
 
@@ -543,57 +543,7 @@
     </div>
 </div>
 
-<!-- ✅ NUEVO: Selección de servicios específicos -->
-<div id="seleccionServicios" style="display: none;">
-    <label><strong>⚡ Servicios a Pagar:</strong></label>
-    <div class="servicios-checkbox" style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-top: 10px;">
-        <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="serviciosPago[]" value="1" id="servicioAgua">
-            <label class="form-check-label" for="servicioAgua">
-                💧 Agua - $50,000
-            </label>
-        </div>
-        <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="serviciosPago[]" value="2" id="servicioLuz">
-            <label class="form-check-label" for="servicioLuz">
-                💡 Luz - $80,000
-            </label>
-        </div>
-        <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="serviciosPago[]" value="3" id="servicioInternet">
-            <label class="form-check-label" for="servicioInternet">
-                🌐 Internet - $60,000
-            </label>
-        </div>
-    </div>
-</div>
-
-        <!-- En la sección de servicios, agrega este botón -->
-<div class="tab-content" id="servicios">
-    <div class="section-header">
-        <h2>🏠 Servicios por Local</h2>
-        <button class="btn btn-success" onclick="mostrarModalAgregarServicio()">
-            ➕ Agregar Servicio
-        </button>
-    </div>
-    
-    <div class="table-container">
-        <table id="tablaServicios" class="data-table">
-            <thead>
-                <tr>
-                    <th>LOCAL</th>
-                    <th>DIRECCIÓN</th>
-                    <th>SERVICIOS INCLUIDOS</th>
-                    <th>VALOR TOTAL SERVICIOS</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Los datos se cargarán aquí -->
-            </tbody>
-        </table>
-    </div>
-</div>
-
+ 
     <!-- Modal Añadir Local -->
     <div id="modalLocal" class="modal">
         <div class="modal-content">
@@ -767,13 +717,6 @@
     </div>
 </div>
 
-<!-- Modal Agregar Servicio -->
-<div id="modalAgregarServicio" class="modal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h2>➕ Agregar Servicio a Local</h2>
-            <span class="close" onclick="closeModal('modalAgregarServicio')">&times;</span>
-        </div>
         <form id="formAgregarServicio">
             <div class="form-group">
                 <label>Seleccionar Local</label>

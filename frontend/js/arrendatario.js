@@ -1,4 +1,18 @@
 // ==========================================
+// HELPER MULTI-TENANT
+// ==========================================
+function getTenant() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('tenant') || localStorage.getItem('tenant') || 'amarilo';
+}
+
+function apiFetch(url, options = {}) {
+    const tenant = getTenant();
+    const separator = url.includes('?') ? '&' : '?';
+    return fetch(`${url}${separator}tenant=${tenant}`, options);
+}
+
+// ==========================================
 // FUNCIÓN SHOWTAB - NAVEGACIÓN ENTRE PESTAÑAS
 // ==========================================
 function showTab(tabName, event) {
@@ -48,7 +62,7 @@ async function cargarContrato() {
     if (!usuario) return;
 
     try {
-        const response = await fetch(`http://localhost:3000/api/arrendatarios/${usuario.idUsuario}/contratos`);
+        const response = await apiFetch(`/api/arrendatarios/${usuario.idUsuario}/contratos`);
         const contratos = await response.json();
         
         const tbody = document.getElementById('tablaContrato');
@@ -241,7 +255,7 @@ async function cargarPagosPendientesMes() {
     try {
         console.log('📋 Cargando pagos pendientes del mes...');
         
-        const response = await fetch(`http://localhost:3000/api/arrendatarios/${usuario.idUsuario}/pagos-pendientes-mes`);
+        const response = await apiFetch(`/api/arrendatarios/${usuario.idUsuario}/pagos-pendientes-mes`);
         
         if (!response.ok) {
             throw new Error(`Error HTTP: ${response.status}`);
@@ -582,7 +596,7 @@ async function procesarPagoEspecifico(event, index) {
         
         console.log('📤 Enviando datos:', pagoData);
         
-        const response = await fetch('http://localhost:3000/api/pagos/registrar', {
+        const response = await apiFetch('/api/pagos/registrar', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -700,7 +714,7 @@ async function cargarPagosDesdeBD(idArrendatario) {
     try {
         console.log('🔍 [FRONTEND] Cargando pagos para arrendatario:', idArrendatario);
         
-        const response = await fetch(`http://localhost:3000/api/debug/arrendatarios/${idArrendatario}/pagos`);
+        const response = await apiFetch(`/api/debug/arrendatarios/${idArrendatario}/pagos`);
         
         if (response.ok) {
             const pagosDebug = await response.json();
@@ -787,7 +801,7 @@ async function cargarServicios() {
             </div>
         `;
 
-        const rContratos = await fetch(`http://localhost:3000/api/arrendatarios/${usuario.idUsuario}/contratos`);
+        const rContratos = await apiFetch(`/api/arrendatarios/${usuario.idUsuario}/contratos`);
         if (!rContratos.ok) throw new Error(`Error al obtener contratos: ${rContratos.status}`);
         const contratos = await rContratos.json();
 
@@ -801,7 +815,7 @@ async function cargarServicios() {
             return;
         }
 
-        const rServ = await fetch(`http://localhost:3000/api/servicios-por-local`);
+        const rServ = await apiFetch(`/api/servicios-por-local`);
         if (!rServ.ok) throw new Error(`Error al obtener servicios por local: ${rServ.status}`);
         const localesConServicios = await rServ.json();
 
@@ -910,7 +924,7 @@ async function cargarSolicitudesMantenimiento() {
     if (!usuario) return;
 
     try {
-        const response = await fetch(`http://localhost:3000/api/arrendatarios/${usuario.idUsuario}/solicitudes-mantenimiento`);
+        const response = await apiFetch(`/api/arrendatarios/${usuario.idUsuario}/solicitudes-mantenimiento`);
         
         if (!response.ok) {
             throw new Error(`Error HTTP: ${response.status}`);
@@ -1003,7 +1017,7 @@ async function cargarLocalesParaSolicitud() {
     if (!usuario) return;
 
     try {
-        const response = await fetch(`http://localhost:3000/api/arrendatarios/${usuario.idUsuario}/contratos`);
+        const response = await apiFetch(`/api/arrendatarios/${usuario.idUsuario}/contratos`);
         const contratos = await response.json();
         
         const selectLocal = document.getElementById('selectLocalSolicitud');
@@ -1068,7 +1082,7 @@ function inicializarFormularioSolicitudes() {
             }
             
             try {
-                const response = await fetch('http://localhost:3000/api/mantenimiento/solicitud', {
+                const response = await apiFetch('/api/mantenimiento/solicitud', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -1126,9 +1140,11 @@ document.addEventListener('DOMContentLoaded', function() {
     cargarContrato();
     
     document.getElementById('btnCerrarSesion').addEventListener('click', () => {
-        localStorage.removeItem('usuario');
-        window.location.href = 'ycw.html';
-    });
+    localStorage.removeItem('usuario');
+    localStorage.removeItem('tenant');
+    localStorage.removeItem('empresaConfig');
+    window.location.href = 'ycw.html';
+});
 
     inicializarFormularioSolicitudes();
     

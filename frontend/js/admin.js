@@ -1,3 +1,17 @@
+// ==========================================
+// HELPER MULTI-TENANT
+// ==========================================
+function getTenant() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('tenant') || localStorage.getItem('tenant') || 'amarilo';
+}
+
+function apiFetch(url, options = {}) {
+    const tenant = getTenant();
+    const separator = url.includes('?') ? '&' : '?';
+    return fetch(`${url}${separator}tenant=${tenant}`, options);
+}
+
 // Manejo global de errores de fetch
 const originalFetch = window.fetch;
 window.fetch = async function(...args) {
@@ -25,6 +39,8 @@ document.getElementById('userName').textContent = usuario.nombre;
 // Funcion para cerrar sesion
 function logout() {
     localStorage.removeItem('usuario');
+    localStorage.removeItem('tenant');
+    localStorage.removeItem('empresaConfig');
     window.location.href = 'ycw.html';
 }
 
@@ -92,10 +108,6 @@ function showTab(tabName, event = null) {
                 console.log('🔧 Cargando mantenimiento...');
                 cargarMantenimiento();
                 break;
-            case 'servicios':
-                console.log('⚡ Cargando servicios...');
-                cargarServicios();
-                break;
         }
         
     } catch (error) {
@@ -137,19 +149,19 @@ async function cargarEstadisticas() {
         console.log('📊 Cargando estadísticas...');
         
         // Cargar locales
-        const localesResponse = await fetch('http://localhost:3000/api/locales');
+        const localesResponse = await apiFetch('/api/locales');
         const locales = await localesResponse.json();
         
         // Cargar arrendatarios
-        const arrendatariosResponse = await fetch('http://localhost:3000/api/arrendatarios');
+        const arrendatariosResponse = await apiFetch('/api/arrendatarios');
         const arrendatarios = await arrendatariosResponse.json();
         
         // Cargar contratos
-        const contratosResponse = await fetch('http://localhost:3000/api/contratos');
+        const contratosResponse = await apiFetch('/api/contratos');
         const contratos = await contratosResponse.json();
         
         // Cargar pagos
-        const pagosResponse = await fetch('http://localhost:3000/api/pagos');
+        const pagosResponse = await apiFetch('/api/pagos');
         const pagos = await pagosResponse.json();
         
         // Actualizar la interfaz
@@ -175,7 +187,7 @@ async function cargarLocales() {
     try {
         console.log('🏢 Cargando locales...');
         
-        const response = await fetch('http://localhost:3000/api/locales');
+        const response = await apiFetch('/api/locales');
         if (!response.ok) {
             throw new Error(`Error HTTP: ${response.status}`);
         }
@@ -224,7 +236,7 @@ async function editarLocal(id) {
     try {
         console.log('✏️ Editando local ID:', id);
         
-        const response = await fetch(`http://localhost:3000/api/locales/${id}`);
+        const response = await apiFetch(`/api/locales/${id}`);
         const local = await response.json();
         
         console.log('📄 Datos del local:', local);
@@ -248,7 +260,7 @@ async function cargarArrendatarios() {
     try {
         console.log('👥 Cargando arrendatarios...');
         
-        const response = await fetch('http://localhost:3000/api/arrendatarios');
+        const response = await apiFetch('/api/arrendatarios');
         if (!response.ok) {
             throw new Error(`Error HTTP: ${response.status}`);
         }
@@ -305,7 +317,7 @@ async function editarArrendatario(id) {
     try {
         console.log('✏️ Editando arrendatario ID:', id);
         
-        const response = await fetch(`http://localhost:3000/api/arrendatarios/${id}`);
+        const response = await apiFetch(`/api/arrendatarios/${id}`);
         const arrendatario = await response.json();
         
         console.log('📄 Datos del arrendatario:', arrendatario);
@@ -341,7 +353,7 @@ document.getElementById('formEditarArrendatario').addEventListener('submit', asy
     console.log('📍 Actualizando arrendatario ID:', id, 'Datos:', datosActualizados);
     
     try {
-        const response = await fetch(`http://localhost:3000/api/arrendatarios/${id}`, {
+        const response = await apiFetch(`/api/arrendatarios/${id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(datosActualizados)
@@ -437,7 +449,7 @@ async function cargarTodosLosPagos() {
     try {
         console.log('💰 Cargando todos los pagos...');
         
-        const response = await fetch('http://localhost:3000/api/pagos');
+        const response = await apiFetch('/api/pagos');
         
         if (!response.ok) {
             throw new Error(`Error HTTP: ${response.status}`);
@@ -710,7 +722,7 @@ async function cargarDatosReportePagos() {
     try {
         console.log('📊 [FRONTEND] Cargando datos del reporte...');
         
-        const response = await fetch('http://localhost:3000/api/pagos/reporte-pagos-mes');
+        const response = await apiFetch('/api/pagos/reporte-pagos-mes');
         
         if (!response.ok) {
             throw new Error(`Error HTTP: ${response.status}`);
@@ -873,7 +885,7 @@ function descargarReportePDF() {
 
 async function cargarDatosMora() {
     try {
-        const response = await fetch('http://localhost:3000/api/pagos/reporte-mora');
+        const response = await apiFetch('/api/pagos/reporte-mora');
         const data = await response.json();
         
         const listaMora = document.getElementById('listaMora');
@@ -966,7 +978,7 @@ async function cargarServicios() {
     
     try {
         // Primero probar si la ruta existe
-        const testResponse = await fetch('http://localhost:3000/api/servicios-por-local');
+        const testResponse = await apiFetch('/api/servicios-por-local');
         
         if (!testResponse.ok) {
             throw new Error(`Error HTTP: ${testResponse.status} - La ruta no existe`);
@@ -1038,7 +1050,7 @@ async function cargarDatosParaAgregarServicio() {
         console.log('📥 Cargando datos para modal...');
         
         // Cargar locales disponibles
-        const responseLocales = await fetch('http://localhost:3000/api/locales');
+        const responseLocales = await apiFetch('/api/locales');
         const locales = await responseLocales.json();
         
         const selectLocal = document.getElementById('selectLocalServicio');
@@ -1049,8 +1061,8 @@ async function cargarDatosParaAgregarServicio() {
 
         // Cargar servicios disponibles y servicios ya asignados
         const [serviciosResponse, serviciosAsignadosResponse] = await Promise.all([
-            fetch('http://localhost:3000/api/servicios-disponibles'),
-            fetch('http://localhost:3000/api/servicios-por-local')
+            apiFetch('/api/servicios-disponibles'),
+            apiFetch('/api/servicios-por-local')
         ]);
         
         const servicios = await serviciosResponse.json();
@@ -1094,7 +1106,7 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('📍 Enviando datos:', { idLocal, idServicio });
         
         try {
-            const response = await fetch('http://localhost:3000/api/servicios-por-local', {
+            const response = await apiFetch('/api/servicios-por-local', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -1129,7 +1141,7 @@ async function cargarDatosParaAgregarServicio() {
         console.log('📥 [FRONTEND] Cargando datos para modal...');
         
         // Cargar locales
-        const responseLocales = await fetch('http://localhost:3000/api/locales');
+        const responseLocales = await apiFetch('/api/locales');
         const locales = await responseLocales.json();
         
         const selectLocal = document.getElementById('selectLocalServicio');
@@ -1139,7 +1151,7 @@ async function cargarDatosParaAgregarServicio() {
         });
 
         // Cargar servicios disponibles
-        const responseServicios = await fetch('http://localhost:3000/api/servicios-disponibles');
+        const responseServicios = await apiFetch('/api/servicios-disponibles');
         const servicios = await responseServicios.json();
         
         const selectServicio = document.getElementById('selectServicioDisponible');
@@ -1172,7 +1184,7 @@ document.addEventListener('submit', async function(e) {
         console.log('📍 Enviando a nueva ruta:', { idLocal, idServicio });
         
         try {
-            const response = await fetch('http://localhost:3000/api/agregar-servicio-local', {
+            const response = await apiFetch('/api/agregar-servicio-local', {
                 method: 'POST',
                 headers: { 
                     'Content-Type': 'application/json'
@@ -1229,7 +1241,7 @@ document.getElementById('formLocal').addEventListener('submit', async (e) => {
     console.log('📍 Enviando datos:', datosLocal);
     
     try {
-        const response = await fetch('http://localhost:3000/api/locales', {
+        const response = await apiFetch('/api/locales', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(datosLocal)
@@ -1265,7 +1277,7 @@ document.getElementById('formArrendatario').addEventListener('submit', async (e)
     };
     
     try {
-        const response = await fetch('http://localhost:3000/api/arrendatarios', {
+        const response = await apiFetch('/api/arrendatarios', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(datosArr)
@@ -1292,7 +1304,7 @@ async function eliminarLocal(id) {
     if (!confirm('¿Estás seguro de eliminar este local?')) return;
     
     try {
-        const response = await fetch(`http://localhost:3000/api/locales/${id}`, {
+        const response = await apiFetch(`/api/locales/${id}`, {
             method: 'DELETE'
         });
         
@@ -1331,7 +1343,7 @@ document.getElementById('formEditarLocal').addEventListener('submit', async (e) 
     console.log('📍 Actualizando local ID:', id, 'Datos:', datosActualizados);
     
     try {
-        const response = await fetch(`http://localhost:3000/api/locales/${id}`, {
+        const response = await apiFetch(`/api/locales/${id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(datosActualizados)
@@ -1356,7 +1368,7 @@ document.getElementById('formEditarLocal').addEventListener('submit', async (e) 
 // Función para reorganizar la tabla después de eliminar
 async function reorganizarLocales() {
     try {
-        const response = await fetch('http://localhost:3000/api/locales/reorganizar', {
+        const response = await apiFetch('/api/locales/reorganizar', {
             method: 'POST'
         });
         const data = await response.json();
@@ -1374,7 +1386,7 @@ async function eliminarArrendatario(id) {
     if (!confirm('Estas seguro de eliminar este arrendatario?')) return;
     
     try {
-        const response = await fetch(`http://localhost:3000/api/arrendatarios/${id}`, {
+        const response = await apiFetch(`/api/arrendatarios/${id}`, {
             method: 'DELETE'
         });
         
@@ -1393,7 +1405,7 @@ async function eliminarArrendatario(id) {
 // Función para ver detalles completos del contrato
 async function verContrato(idContrato) {
     try {
-        const response = await fetch(`http://localhost:3000/api/contratos/${idContrato}`);
+        const response = await apiFetch(`/api/contratos/${idContrato}`);
         const contrato = await response.json();
         
         if (contrato) {
@@ -1472,7 +1484,7 @@ function mostrarModalContrato(contrato) {
 async function cargarDatosContrato() {
     try {
         // Cargar locales disponibles
-        const responseLocales = await fetch('http://localhost:3000/api/locales');
+        const responseLocales = await apiFetch('/api/locales');
         const locales = await responseLocales.json();
         
         const selectLocal = document.getElementById('idLocal');
@@ -1482,7 +1494,7 @@ async function cargarDatosContrato() {
         });
 
         // Cargar arrendatarios
-        const responseArrendatarios = await fetch('http://localhost:3000/api/arrendatarios');
+        const responseArrendatarios = await apiFetch('/api/arrendatarios');
         const arrendatarios = await responseArrendatarios.json();
         
         const selectArrendatario = document.getElementById('idArrendatario');
@@ -1513,7 +1525,7 @@ document.getElementById('formContratoNuevo').addEventListener('submit', async (e
     console.log('📍 Enviando datos contrato:', datosContrato);
     
     try {
-        const response = await fetch('http://localhost:3000/api/contratos', {
+        const response = await apiFetch('/api/contratos', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(datosContrato)
@@ -1541,7 +1553,7 @@ document.getElementById('formContratoNuevo').addEventListener('submit', async (e
 async function cargarContratos() {
     try {
         console.log('📄 Cargando contratos...');
-        const response = await fetch('http://localhost:3000/api/contratos');
+        const response = await apiFetch('/api/contratos');
         
         if (!response.ok) {
             throw new Error(`Error HTTP: ${response.status}`);
@@ -1596,7 +1608,7 @@ async function editarContrato(id) {
     try {
         console.log('✏️ Editando contrato ID:', id);
         
-        const response = await fetch(`http://localhost:3000/api/contratos/${id}`);
+        const response = await apiFetch(`/api/contratos/${id}`);
         const contrato = await response.json();
         
         console.log('📄 Datos del contrato:', contrato);
@@ -1630,7 +1642,7 @@ document.getElementById('formEditarContrato').addEventListener('submit', async (
     console.log('📍 Actualizando contrato ID:', id, 'Datos:', datosActualizados);
     
     try {
-        const response = await fetch(`http://localhost:3000/api/contratos/${id}`, {
+        const response = await apiFetch(`/api/contratos/${id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(datosActualizados)
@@ -1723,7 +1735,7 @@ async function verContrato(idContrato) {
     try {
         console.log('🔍 Solicitando contrato ID:', idContrato);
         
-        const response = await fetch(`http://localhost:3000/api/contratos/${idContrato}`);
+        const response = await apiFetch(`/api/contratos/${idContrato}`);
         
         if (!response.ok) {
             throw new Error(`Error HTTP: ${response.status}`);
@@ -1829,7 +1841,7 @@ async function cargarMantenimiento() {
     
     try {
         console.log('📡 Haciendo fetch a la API...');
-        const response = await fetch('http://localhost:3000/api/mantenimiento/solicitudes');
+        const response = await apiFetch('/api/mantenimiento/solicitudes');
         console.log('📡 Respuesta HTTP:', response.status, response.statusText);
         
         // Verificar si la respuesta es OK
@@ -2163,7 +2175,7 @@ function inicializarFormularioEstado() {
             }
             
             try {
-                const response = await fetch('http://localhost:3000/api/mantenimiento/actualizar-estado', {
+                const response = await apiFetch('/api/mantenimiento/actualizar-estado', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
