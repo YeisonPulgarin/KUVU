@@ -8,13 +8,17 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: 'Segoe UI', sans-serif;
-            min-height: 100vh;
-            background: url('images/equipo/Muchachos.png') center center / cover no-repeat fixed;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+    font-family: 'Segoe UI', sans-serif;
+    min-height: 100vh;
+    background-color: #1a1a2e;
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
         .overlay {
             position: fixed;
@@ -287,8 +291,8 @@
                 document.querySelector('.logo-icon').style.background = primario;
                 document.querySelector('.btn-login').style.background = primario;
                 if (empresa.logo_url) {
-                 document.body.style.backgroundImage = `url('${empresa.logo_url}')`;
-                }
+    document.body.style.backgroundImage = `url('/${empresa.logo_url}')`;
+}
                 localStorage.setItem('empresaConfig', JSON.stringify(empresa));
             } catch(e) {
                 document.getElementById('nombreEmpresa').textContent = 'Sistema';
