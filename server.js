@@ -476,6 +476,14 @@ function obtenerNombreMesActual() {
     return `${meses[f.getMonth()]} ${f.getFullYear()}`;
 }
 
+app.get('/api/empresas', (req, res) => {
+    const query = 'SELECT nombre, subdominio, slogan, color_primario FROM empresas WHERE activo = 1';
+    conexion.query(query, (err, resultados) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(resultados);
+    });
+});
+
 app.listen(PORT, () => {
     console.log(`!!!! Servidor corriendo en http://localhost:${PORT}!!!!`);
 });
