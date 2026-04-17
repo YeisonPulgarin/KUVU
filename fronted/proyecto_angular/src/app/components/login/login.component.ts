@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -21,6 +21,21 @@ export class LoginComponent implements OnInit {
   documento = signal('');
   error     = signal('');
   cargando  = signal(false);
+
+  // Mapa de subdominio → nombre de archivo en /login-backgrounds/
+  private readonly BG_MAP: Record<string, string> = {
+    'kuvu':        'kuvu.webp',
+    'amarilo':     'amarilo.webp',
+    'balcones':    'balcones.webp',
+    'miinmueble':  'miinmueble.webp',
+    'nido':        'nido-rent.webp',
+  };
+
+  bgUrl = computed(() => {
+    const sub = this.empresaSeleccionada()?.subdominio ?? '';
+    const file = this.BG_MAP[sub.toLowerCase()] ?? 'kuvu.webp';
+    return `/login-backgrounds/${file}`;
+  });
 
   ngOnInit(): void {
     // Si ya está autenticado, ir al dashboard
