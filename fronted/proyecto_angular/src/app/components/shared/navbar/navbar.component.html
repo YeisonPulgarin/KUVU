@@ -1,0 +1,35 @@
+<nav class="navbar">
+  <div class="navbar__brand">
+    <span class="navbar__logo-icon">🏢</span>
+    <div class="navbar__brand-text">
+      <span class="navbar__empresa">{{ empresa()?.nombre ?? 'ArrendApp' }}</span>
+      <span class="navbar__slogan">{{ empresa()?.slogan ?? 'Gestión de arriendos' }}</span>
+    </div>
+  </div>
+
+  <ul class="navbar__links" [class.open]="menuAbierto">
+    <li><a routerLink="/dashboard"     routerLinkActive="active">🏠 Dashboard</a></li>
+
+    <!-- Solo Administrador -->
+    @if (esAdmin()) {
+      <li><a routerLink="/locales"   routerLinkActive="active">🏗️ Locales</a></li>
+    }
+
+    <li><a routerLink="/contratos"     routerLinkActive="active">📄 Contratos</a></li>
+    <li><a routerLink="/pagos"         routerLinkActive="active">💰 Pagos</a></li>
+    <li><a routerLink="/mantenimiento" routerLinkActive="active">🔧 Mantenimiento</a></li>
+
+    <!-- Solo Administrador -->
+    @if (esAdmin()) {
+      <li><a routerLink="/usuarios"  routerLinkActive="active">👥 Usuarios</a></li>
+    }
+  </ul>
+
+  <div class="navbar__user">
+    <span class="navbar__user-name">{{ usuario()?.nombre?.split(' ')?.[0] ?? '' }}</span>
+    <span class="navbar__user-rol">{{ usuario()?.nombreRol }}</span>
+    <button class="btn-logout" (click)="logout()">Salir</button>
+  </div>
+
+  <button class="navbar__hamburger" (click)="toggleMenu()">☰</button>
+</nav>

@@ -1,0 +1,110 @@
+<div class="app-layout">
+  <app-sidebar></app-sidebar>
+  <main class="main-content" [class.collapsed]="sidebarColapsado()">
+<div class="page">
+  <div class="page__header">
+    <div>
+      <h1>👥 Usuarios</h1>
+      <p>{{ empresa()?.nombre }} · {{ admins().length }} administradores · {{ arrendatarios().length }} arrendatarios</p>
+    </div>
+    <button class="btn-primary" (click)="abrirFormulario()">+ Nuevo Usuario</button>
+  </div>
+
+  <!-- Filtros -->
+  <div class="filtros-bar">
+    <div class="filtros-bar__left">
+      <input
+        type="text"
+        placeholder="🔍 Buscar nombre o correo..."
+        [ngModel]="filtroBusqueda()"
+        (ngModelChange)="filtroBusqueda.set($event)" />
+
+      <select [ngModel]="filtroRol()" (ngModelChange)="filtroRol.set(+$event)">
+        <option [ngValue]="0">Todos los roles</option>
+        <option [ngValue]="1">Administradores</option>
+        <option [ngValue]="2">Arrendatarios</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Tarjetas de usuarios -->
+  <div class="usuarios-grid">
+    @for (u of usuarios(); track u.idUsuario) {
+      <div class="usuario-card">
+        <div class="usuario-card__avatar" [style.background]="getAvatarColor(u.idUsuario)">
+          {{ getInicial(u.nombre) }}
+        </div>
+        <div class="usuario-card__info">
+          <div class="usuario-card__nombre">{{ u.nombre }}</div>
+          <div class="usuario-card__doc">CC: {{ u.documento }}</div>
+          @if (u.correo) {
+            <div class="usuario-card__correo">✉️ {{ u.correo }}</div>
+          }
+          @if (u.telefono) {
+            <div class="usuario-card__tel">📱 {{ u.telefono }}</div>
+          }
+        </div>
+        <div class="usuario-card__rol">
+          <!-- idRol 1 = Admin  |  idRol 2 = Arrendatario -->
+          <span class="badge" [class.badge--blue]="u.idRol === 1" [class.badge--green]="u.idRol === 2">
+            {{ u.idRol === 1 ? '🛡️ Admin' : '🏠 Arrendatario' }}
+          </span>
+        </div>
+        <div class="usuario-card__actions">
+          <button class="btn-icon" (click)="abrirFormulario(u)" title="Editar">✏️</button>
+          <button class="btn-icon btn-icon--danger" (click)="eliminar(u)" title="Eliminar">🗑️</button>
+        </div>
+      </div>
+    } @empty {
+      <div class="empty-state">No se encontraron usuarios con los filtros aplicados.</div>
+    }
+  </div>
+</div>
+
+<!-- Modal -->
+@if (mostrarFormulario()) {
+  <div class="modal-overlay" (click)="cerrarFormulario()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="modal__header">
+        <h2>👤 {{ usuarioEditando() ? 'Editar Usuario' : 'Nuevo Usuario' }}</h2>
+        <button class="modal__close" (click)="cerrarFormulario()">✕</button>
+      </div>
+      <div class="form-grid">
+        <div class="form-group form-group--full">
+          <label>Nombre completo *</label>
+          <input type="text" placeholder="Nombres y apellidos" [(ngModel)]="form.nombre" />
+        </div>
+        <div class="form-group">
+          <label>Documento *</label>
+          <input type="text" placeholder="Cédula de ciudadanía" [(ngModel)]="form.documento" />
+        </div>
+        <div class="form-group">
+          <label>Rol</label>
+          <select [(ngModel)]="form.idRol">
+            <option [ngValue]="1">Administrador</option>
+            <option [ngValue]="2">Arrendatario</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Teléfono</label>
+          <input type="text" placeholder="3001234567" [(ngModel)]="form.telefono" />
+        </div>
+        <div class="form-group">
+          <label>Correo electrónico</label>
+          <input type="email" placeholder="correo@gmail.com" [(ngModel)]="form.correo" />
+        </div>
+      </div>
+      @if (errorMsg()) {
+        <div class="error-msg">⚠️ {{ errorMsg() }}</div>
+      }
+      <div class="modal__footer">
+        <button class="btn-secondary" (click)="cerrarFormulario()">Cancelar</button>
+        <button class="btn-primary" [disabled]="guardando()" (click)="guardar()">
+          {{ guardando() ? 'Guardando...' : 'Guardar' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}
+  </main>
+</div>
