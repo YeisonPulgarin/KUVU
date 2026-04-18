@@ -45,15 +45,18 @@ input, select, textarea, button { font-family: inherit; }
 // ── LAYOUT APP: sidebar + main ──────────────────────────────
 .app-layout {
   display: flex;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
+  align-items: flex-start;
 }
 
 .main-content {
   flex: 1;
   margin-left: var(--sidebar-w);
   transition: margin-left .25s cubic-bezier(.4,0,.2,1);
-  min-height: 100vh;
   background: var(--color-bg);
+  height: 100vh;
+  overflow-y: auto;
 
   &.collapsed { margin-left: var(--sidebar-w-col); }
 }
