@@ -9,7 +9,7 @@ const app  = express();
 const PORT = 3000;
 
 // ── Middleware ───────────────────────────────────────────────
-app.use(cors({ origin: 'http://localhost:4200' })); // Permite Angular
+app.use(cors()); // Permite Angular
 app.use(express.json());
 
 // ── Rutas ────────────────────────────────────────────────────
