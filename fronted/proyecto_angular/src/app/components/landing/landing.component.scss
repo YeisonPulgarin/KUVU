@@ -67,10 +67,10 @@
 // ── Marca ─────────────────────────────────────────────────────
 .brand {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 1rem;
+  gap: 0.3rem;
 }
-
 .brand-logo {
   width: 48px; height: 48px;
   background: linear-gradient(135deg, #3a6fd8, #7c3aed);
@@ -94,6 +94,7 @@
   letter-spacing: 6px;
   color: #fff;
   line-height: 1;
+  text-align: center;
   text-shadow: 0 2px 16px rgba(0,0,0,0.5);
 }
 
