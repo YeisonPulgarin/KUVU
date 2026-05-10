@@ -4,6 +4,7 @@ import 'contratos_screen.dart';
 import 'pagos_screen.dart';
 import 'mantenimiento_screen.dart';
 import 'usuarios_screen.dart';
+import 'reportes_screen.dart';
 
 class DashboardScreen extends StatelessWidget {
   final Map<String, dynamic> usuario;
@@ -138,7 +139,9 @@ class DashboardScreen extends StatelessWidget {
                       _modulo(context, icon: Icons.people_outline, label: 'Usuarios', color: const Color(0xFFdc2626), onTap: () {
                         Navigator.push(context, MaterialPageRoute(builder: (_) => UsuariosScreen(empresa: empresa)));
                       }),
-                      _modulo(context, icon: Icons.bar_chart_outlined, label: 'Reportes', color: const Color(0xFF0891b2)),
+                     _modulo(context, icon: Icons.bar_chart_outlined, label: 'Reportes', color: const Color(0xFF0891b2), onTap: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (_) => ReportesScreen(empresa: empresa)));
+                      }),
                     ],
                   ),
                 ]),
