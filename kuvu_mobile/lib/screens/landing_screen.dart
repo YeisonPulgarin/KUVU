@@ -146,7 +146,7 @@ class _LandingScreenState extends State<LandingScreen> {
                   ]),
                 ),
                 const SizedBox(height: 20),
-                Text('© 2025 KUVU · YCW', style: TextStyle(color: Colors.white.withOpacity(0.2), fontSize: 11, letterSpacing: 1)),
+                Text('© 2026 KUVU · YCW', style: TextStyle(color: Colors.white.withOpacity(0.2), fontSize: 11, letterSpacing: 1)),
               ]),
             ),
           ),
