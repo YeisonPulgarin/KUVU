@@ -20,6 +20,7 @@ class _LandingScreenState extends State<LandingScreen> {
   List<Empresa> empresas = [];
   List<Empresa> filtradas = [];
   bool cargando = true;
+  String error = '';
   final _ctrl = TextEditingController();
 
   @override
@@ -37,17 +38,20 @@ class _LandingScreenState extends State<LandingScreen> {
   }
 
   Future<void> _cargarEmpresas() async {
-    try {
-      final data = await ApiService.getEmpresas();
-      setState(() {
-        empresas = data;
-        filtradas = data;
-        cargando = false;
-      });
-    } catch (_) {
-      setState(() => cargando = false);
-    }
+  try {
+    final data = await ApiService.getEmpresas();
+    setState(() {
+      empresas = data;
+      filtradas = data;
+      cargando = false;
+    });
+  } catch (e) {
+    setState(() {
+      cargando = false;
+      error = e.toString();
+    });
   }
+}
 
   void _seleccionar(Empresa empresa) {
     Navigator.push(
@@ -76,24 +80,14 @@ class _LandingScreenState extends State<LandingScreen> {
               padding: const EdgeInsets.all(24),
               child: Column(children: [
                 // Logo
-                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  Container(
-                    width: 48, height: 48,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(14),
-                      gradient: const LinearGradient(
-                        colors: [Color(0xFF3a6fd8), Color(0xFF7c3aed)],
-                      ),
-                      boxShadow: [BoxShadow(color: const Color(0xFF3a6fd8).withOpacity(0.4), blurRadius: 16, offset: const Offset(0, 6))],
-                    ),
-                    child: const Center(child: Text('K', style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.w900))),
-                  ),
-                  const SizedBox(width: 12),
-                  Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
                     const Text('KUVU', style: TextStyle(color: Colors.white, fontSize: 26, fontWeight: FontWeight.w900, letterSpacing: 6)),
                     Text('GESTIÓN INTELIGENTE DE PROPIEDADES', style: TextStyle(color: Colors.white.withOpacity(0.4), fontSize: 7, letterSpacing: 2)),
-                  ]),
-                ]),
+                  ],
+                ),
                 const SizedBox(height: 28),
 
                 // Card
@@ -136,7 +130,12 @@ class _LandingScreenState extends State<LandingScreen> {
 
                     if (cargando)
                       ...List.generate(3, (_) => _skeleton())
-                    else if (filtradas.isEmpty)
+                    else if (error.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 20),
+                        child: Center(child: Text('Error: $error', style: TextStyle(color: Colors.red.withOpacity(0.8), fontSize: 12))),
+                      )
+                      else if (filtradas.isEmpty)
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 20),
                         child: Center(child: Text('No se encontró ninguna empresa.', style: TextStyle(color: Colors.white.withOpacity(0.35), fontSize: 13))),
