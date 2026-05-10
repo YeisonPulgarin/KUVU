@@ -8,7 +8,7 @@ import { Observable, tap } from 'rxjs';
 import { Empresa } from '../models/empresa.model';
 import { Usuario } from '../models/index';
 
-const API = 'http://localhost:3000/api';
+const API = 'https://kuvu-production.up.railway.app/api';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
