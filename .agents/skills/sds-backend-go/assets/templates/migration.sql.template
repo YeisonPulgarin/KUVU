@@ -1,0 +1,13 @@
+-- +goose Up
+CREATE TABLE IF NOT EXISTS {{TABLE_NAME}} (
+    id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    -- TODO: agregar columnas del módulo
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    deleted_at TIMESTAMPTZ
+);
+
+CREATE INDEX IF NOT EXISTS idx_{{TABLE_NAME}}_deleted_at ON {{TABLE_NAME}} (deleted_at);
+
+-- +goose Down
+DROP TABLE IF EXISTS {{TABLE_NAME}};

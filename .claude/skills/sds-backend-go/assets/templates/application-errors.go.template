@@ -1,0 +1,8 @@
+package application
+
+import "errors"
+
+var (
+	ErrAlreadyExists = errors.New("record already exists")
+	// TODO: errores de negocio específicos del módulo
+)

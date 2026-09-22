@@ -1,0 +1,11 @@
+package domain
+
+import "context"
+
+type {{MODULE_PASCAL}}Repository interface {
+	Create(ctx context.Context, entity *{{MODULE_PASCAL}}) error
+	GetByID(ctx context.Context, id string) (*{{MODULE_PASCAL}}, error)
+	Update(ctx context.Context, entity *{{MODULE_PASCAL}}) error
+	Delete(ctx context.Context, id string) error
+	// TODO: agregar métodos específicos del dominio
+}

@@ -1,0 +1,82 @@
+package http
+
+import (
+	"encoding/json"
+	"errors"
+	"log/slog"
+	"net/http"
+
+	"{{PACKAGE_PATH}}/internal/{{MODULE}}/application"
+	"{{PACKAGE_PATH}}/pkg/apierrors"
+	"{{PACKAGE_PATH}}/pkg/logger"
+	"{{PACKAGE_PATH}}/pkg/response"
+)
+
+type {{MODULE_PASCAL}}Handler struct {
+	createUseCase *application.Create{{MODULE_PASCAL}}UseCase
+	getUseCase    *application.Get{{MODULE_PASCAL}}UseCase
+}
+
+func New{{MODULE_PASCAL}}Handler(
+	createUseCase *application.Create{{MODULE_PASCAL}}UseCase,
+	getUseCase *application.Get{{MODULE_PASCAL}}UseCase,
+) *{{MODULE_PASCAL}}Handler {
+	return &{{MODULE_PASCAL}}Handler{
+		createUseCase: createUseCase,
+		getUseCase:    getUseCase,
+	}
+}
+
+type Create{{MODULE_PASCAL}}RequestDTO struct {
+	// TODO: campos con json tags en snake_case
+}
+
+func (h *{{MODULE_PASCAL}}Handler) Create(w http.ResponseWriter, r *http.Request) {
+	var req Create{{MODULE_PASCAL}}RequestDTO
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		response.Error(w, http.StatusBadRequest, apierrors.CodeInvalidBody, err.Error())
+		return
+	}
+
+	result, err := h.createUseCase.Execute(r.Context(), application.Create{{MODULE_PASCAL}}Request{
+		// TODO: mapear desde req
+	})
+	if err != nil {
+		switch {
+		case errors.Is(err, application.ErrAlreadyExists):
+			response.Error(w, http.StatusConflict, apierrors.CodeConflict, "Already exists")
+		default:
+			slog.Error("create {{MODULE}}: unexpected error",
+				"request_id", logger.RequestIDFromContext(r.Context()),
+				"error", err)
+			response.Error(w, http.StatusInternalServerError, apierrors.CodeInternalError, "Internal error")
+		}
+		return
+	}
+
+	response.Success(w, http.StatusCreated, result, "{{MODULE_PASCAL}} created successfully")
+}
+
+func (h *{{MODULE_PASCAL}}Handler) GetByID(w http.ResponseWriter, r *http.Request) {
+	id := r.PathValue("id")
+	if id == "" {
+		response.Error(w, http.StatusBadRequest, apierrors.CodeMissingFields, "id is required")
+		return
+	}
+
+	result, err := h.getUseCase.Execute(r.Context(), application.Get{{MODULE_PASCAL}}Request{ID: id})
+	if err != nil {
+		switch {
+		case errors.Is(err, application.ErrNotFound):
+			response.Error(w, http.StatusNotFound, apierrors.CodeNotFound, "{{MODULE_PASCAL}} not found")
+		default:
+			slog.Error("get {{MODULE}}: unexpected error",
+				"request_id", logger.RequestIDFromContext(r.Context()),
+				"id", id, "error", err)
+			response.Error(w, http.StatusInternalServerError, apierrors.CodeInternalError, "Internal error")
+		}
+		return
+	}
+
+	response.Success(w, http.StatusOK, result, "{{MODULE_PASCAL}} retrieved successfully")
+}

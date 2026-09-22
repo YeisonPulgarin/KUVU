@@ -1,0 +1,47 @@
+// src/lib/api.ts
+// Cliente para el backend Go — usado en frontmatter de páginas Astro (server-side)
+
+const BASE_URL = import.meta.env.API_URL ?? 'http://localhost:8000/api/v1'
+
+class ApiError extends Error {
+  constructor(
+    public status: number,
+    public code: string,
+    message: string,
+  ) {
+    super(message)
+    this.name = 'ApiError'
+  }
+}
+
+async function request<T>(path: string, init?: RequestInit): Promise<T> {
+  const res = await fetch(`${BASE_URL}${path}`, {
+    ...init,
+    headers: {
+      'Content-Type': 'application/json',
+      // En SSR con auth: leer cookie o header de Astro.request
+      ...init?.headers,
+    },
+  })
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ message: res.statusText, code: 'UNKNOWN' }))
+    throw new ApiError(res.status, err.code ?? 'UNKNOWN', err.message ?? res.statusText)
+  }
+
+  if (res.status === 204) return undefined as T
+  return res.json() as Promise<T>
+}
+
+export const api = {
+  get: <T>(path: string) => request<T>(path),
+  post: <T>(path: string, body: unknown) =>
+    request<T>(path, { method: 'POST', body: JSON.stringify(body) }),
+}
+
+// Ejemplo de uso en un archivo .astro:
+//
+// ---
+// import { api } from '../lib/api'
+// const products = await api.get<Product[]>('/products')
+// ---

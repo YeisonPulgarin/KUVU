@@ -1,0 +1,53 @@
+// src/features/{{FEATURE}}/hooks/use-{{FEATURE}}.ts
+'use client'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { api } from '../api'
+import type { Filter{{FEATURE_PASCAL_PLURAL}}Input, Create{{FEATURE_PASCAL}}Input, Update{{FEATURE_PASCAL}}Input } from '../schemas'
+
+const QUERY_KEY = '{{FEATURE}}' as const
+
+export function use{{FEATURE_PASCAL_PLURAL}}(filters?: Filter{{FEATURE_PASCAL_PLURAL}}Input) {
+  return useQuery({
+    queryKey: [QUERY_KEY, filters],
+    queryFn: () => api.list(filters),
+  })
+}
+
+export function use{{FEATURE_PASCAL}}(id: string) {
+  return useQuery({
+    queryKey: [QUERY_KEY, id],
+    queryFn: () => api.get(id),
+    enabled: !!id,
+  })
+}
+
+export function useCreate{{FEATURE_PASCAL}}() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (data: Create{{FEATURE_PASCAL}}Input) => api.create(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEY] })
+    },
+  })
+}
+
+export function useUpdate{{FEATURE_PASCAL}}(id: string) {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (data: Update{{FEATURE_PASCAL}}Input) => api.update(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEY] })
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEY, id] })
+    },
+  })
+}
+
+export function useDelete{{FEATURE_PASCAL}}() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (id: string) => api.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEY] })
+    },
+  })
+}

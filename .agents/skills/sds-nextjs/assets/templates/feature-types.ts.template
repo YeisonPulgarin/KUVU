@@ -1,0 +1,34 @@
+// src/features/{{FEATURE}}/types.ts
+
+// Tipo de la entidad tal como viene del backend (snake_case)
+export type Api{{FEATURE_PASCAL}} = {
+  id: string
+  // TODO: agregar campos según la entidad del backend
+  created_at: string
+  updated_at: string
+}
+
+// Tipo interno de la aplicación (camelCase)
+export type {{FEATURE_PASCAL}} = {
+  id: string
+  // TODO: mapear campos de Api{{FEATURE_PASCAL}}
+  createdAt: Date
+  updatedAt: Date
+}
+
+// Mapper
+export function to{{FEATURE_PASCAL}}(raw: Api{{FEATURE_PASCAL}}): {{FEATURE_PASCAL}} {
+  return {
+    id: raw.id,
+    // TODO: mapear campos
+    createdAt: new Date(raw.created_at),
+    updatedAt: new Date(raw.updated_at),
+  }
+}
+
+// Respuesta paginada del backend
+export type Paged{{FEATURE_PASCAL_PLURAL}} = {
+  items: Api{{FEATURE_PASCAL}}[]
+  total: number
+  next_cursor: string | null
+}

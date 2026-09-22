@@ -1,0 +1,39 @@
+// src/features/{{FEATURE}}/api.ts
+import { apiClient } from '@/lib/api-client'
+import { to{{FEATURE_PASCAL}} } from './types'
+import type { {{FEATURE_PASCAL}}, Api{{FEATURE_PASCAL}}, Paged{{FEATURE_PASCAL_PLURAL}} } from './types'
+import type { Create{{FEATURE_PASCAL}}Input, Update{{FEATURE_PASCAL}}Input, Filter{{FEATURE_PASCAL_PLURAL}}Input } from './schemas'
+
+const BASE = '{{API_PATH}}'
+
+export const api = {
+  list: async (filters?: Filter{{FEATURE_PASCAL_PLURAL}}Input): Promise<{{FEATURE_PASCAL}}[]> => {
+    const params = new URLSearchParams()
+    if (filters?.search) params.set('search', filters.search)
+    if (filters?.cursor) params.set('cursor', filters.cursor)
+    if (filters?.limit) params.set('limit', String(filters.limit))
+
+    const query = params.size ? `?${params}` : ''
+    const raw = await apiClient.get<Api{{FEATURE_PASCAL}}[]>(`${BASE}${query}`)
+    return raw.map(to{{FEATURE_PASCAL}})
+  },
+
+  get: async (id: string): Promise<{{FEATURE_PASCAL}}> => {
+    const raw = await apiClient.get<Api{{FEATURE_PASCAL}}>(`${BASE}/${id}`)
+    return to{{FEATURE_PASCAL}}(raw)
+  },
+
+  create: async (data: Create{{FEATURE_PASCAL}}Input): Promise<{{FEATURE_PASCAL}}> => {
+    const raw = await apiClient.post<Api{{FEATURE_PASCAL}}>(BASE, data)
+    return to{{FEATURE_PASCAL}}(raw)
+  },
+
+  update: async (id: string, data: Update{{FEATURE_PASCAL}}Input): Promise<{{FEATURE_PASCAL}}> => {
+    const raw = await apiClient.patch<Api{{FEATURE_PASCAL}}>(`${BASE}/${id}`, data)
+    return to{{FEATURE_PASCAL}}(raw)
+  },
+
+  delete: async (id: string): Promise<void> => {
+    await apiClient.delete(`${BASE}/${id}`)
+  },
+}

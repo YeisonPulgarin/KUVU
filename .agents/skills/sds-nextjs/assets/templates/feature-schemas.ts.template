@@ -1,0 +1,19 @@
+// src/features/{{FEATURE}}/schemas.ts
+import { z } from 'zod'
+
+export const create{{FEATURE_PASCAL}}Schema = z.object({
+  // TODO: definir campos del formulario de creación
+  name: z.string().min(1, 'Requerido').max(100, 'Máximo 100 caracteres'),
+})
+
+export const update{{FEATURE_PASCAL}}Schema = create{{FEATURE_PASCAL}}Schema.partial()
+
+export const filter{{FEATURE_PASCAL_PLURAL}}Schema = z.object({
+  search: z.string().optional(),
+  cursor: z.string().optional(),
+  limit: z.coerce.number().min(1).max(100).default(20),
+})
+
+export type Create{{FEATURE_PASCAL}}Input = z.infer<typeof create{{FEATURE_PASCAL}}Schema>
+export type Update{{FEATURE_PASCAL}}Input = z.infer<typeof update{{FEATURE_PASCAL}}Schema>
+export type Filter{{FEATURE_PASCAL_PLURAL}}Input = z.infer<typeof filter{{FEATURE_PASCAL_PLURAL}}Schema>

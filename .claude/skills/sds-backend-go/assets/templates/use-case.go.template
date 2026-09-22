@@ -1,0 +1,24 @@
+package application
+
+import (
+	"context"
+
+	"{{PACKAGE_PATH}}/internal/{{MODULE}}/domain"
+)
+
+type {{USE_CASE}}UseCase struct {
+	repo domain.{{MODULE_PASCAL}}Repository
+}
+
+func New{{USE_CASE}}UseCase(repo domain.{{MODULE_PASCAL}}Repository) *{{USE_CASE}}UseCase {
+	return &{{USE_CASE}}UseCase{repo: repo}
+}
+
+type {{USE_CASE}}Request struct {
+	// TODO: campos del request
+}
+
+func (uc *{{USE_CASE}}UseCase) Execute(ctx context.Context, req {{USE_CASE}}Request) (*domain.{{MODULE_PASCAL}}Response, error) {
+	// TODO: implementar lógica de negocio
+	return nil, nil
+}

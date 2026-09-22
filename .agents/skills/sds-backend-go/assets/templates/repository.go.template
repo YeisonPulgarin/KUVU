@@ -1,0 +1,40 @@
+package repository
+
+import (
+	"context"
+	"errors"
+
+	"gorm.io/gorm"
+
+	"{{PACKAGE_PATH}}/internal/{{MODULE}}/domain"
+)
+
+type Gorm{{MODULE_PASCAL}}Repository struct {
+	db *gorm.DB
+}
+
+// NewGorm{{MODULE_PASCAL}}Repository retorna la interfaz, no el concreto.
+func NewGorm{{MODULE_PASCAL}}Repository(db *gorm.DB) domain.{{MODULE_PASCAL}}Repository {
+	return &Gorm{{MODULE_PASCAL}}Repository{db: db}
+}
+
+func (r *Gorm{{MODULE_PASCAL}}Repository) Create(ctx context.Context, entity *domain.{{MODULE_PASCAL}}) error {
+	return r.db.WithContext(ctx).Create(entity).Error
+}
+
+func (r *Gorm{{MODULE_PASCAL}}Repository) GetByID(ctx context.Context, id string) (*domain.{{MODULE_PASCAL}}, error) {
+	var entity domain.{{MODULE_PASCAL}}
+	err := r.db.WithContext(ctx).First(&entity, "id = ?", id).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, domain.ErrNotFound
+	}
+	return &entity, err
+}
+
+func (r *Gorm{{MODULE_PASCAL}}Repository) Update(ctx context.Context, entity *domain.{{MODULE_PASCAL}}) error {
+	return r.db.WithContext(ctx).Save(entity).Error
+}
+
+func (r *Gorm{{MODULE_PASCAL}}Repository) Delete(ctx context.Context, id string) error {
+	return r.db.WithContext(ctx).Delete(&domain.{{MODULE_PASCAL}}{}, "id = ?", id).Error
+}

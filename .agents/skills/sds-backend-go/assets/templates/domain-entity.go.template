@@ -1,0 +1,38 @@
+package domain
+
+import (
+	"time"
+
+	"github.com/google/uuid"
+	"gorm.io/gorm"
+)
+
+// {{MODULE_PASCAL}} — entity, solo gorm tags
+type {{MODULE_PASCAL}} struct {
+	ID        uuid.UUID      `gorm:"type:uuid;primaryKey"`
+	// TODO: agregar campos con solo gorm tags
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt gorm.DeletedAt `gorm:"index"`
+}
+
+func (e *{{MODULE_PASCAL}}) BeforeCreate(tx *gorm.DB) error {
+	if e.ID == uuid.Nil {
+		e.ID = uuid.New()
+	}
+	return nil
+}
+
+// {{MODULE_PASCAL}}Response — DTO de respuesta, solo json tags
+type {{MODULE_PASCAL}}Response struct {
+	ID        string    `json:"id"`
+	// TODO: campos en snake_case
+	CreatedAt time.Time `json:"created_at"`
+}
+
+func (e *{{MODULE_PASCAL}}) ToResponse() {{MODULE_PASCAL}}Response {
+	return {{MODULE_PASCAL}}Response{
+		ID:        e.ID.String(),
+		CreatedAt: e.CreatedAt,
+	}
+}
