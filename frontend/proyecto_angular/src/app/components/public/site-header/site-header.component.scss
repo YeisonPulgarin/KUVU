@@ -1,0 +1,182 @@
+// ─── Tailwind v4 reference ────────────────────────────────────
+// Grants access to Tailwind's theme/utilities for @apply in this
+// component-scoped stylesheet without duplicating its CSS output.
+@reference "../../../../styles.css";
+
+$ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+.site-header {
+  @apply sticky top-0 z-50;
+  background-color: var(--color-home-surface);
+  border-bottom: 1px solid var(--color-home-border);
+}
+
+.nav-container {
+  @apply flex items-center justify-between px-4 max-w-6xl mx-auto;
+  height: 64px;
+
+  @media (width >= 768px) {
+    height: 80px;
+    @apply px-6;
+  }
+}
+
+.logo-area {
+  @apply flex items-center;
+
+  .logo-link {
+    @apply flex items-center;
+  }
+
+  .logo-img {
+    @apply w-auto flex-shrink-0;
+    object-fit: contain;
+
+    &--full {
+      @apply h-10;
+      display: none;
+
+      @media (width >= 768px) {
+        @apply h-12;
+        display: block;
+      }
+    }
+
+    &--responsive {
+      @apply h-12;
+      display: block;
+
+      @media (width >= 768px) {
+        display: none;
+      }
+    }
+  }
+}
+
+.nav-links {
+  @apply hidden items-center gap-6;
+
+  @media (width >= 1024px) {
+    @apply flex gap-8;
+  }
+
+  .nav-item {
+    @apply flex items-center gap-1 text-sm font-medium no-underline;
+    color: var(--color-home-text);
+    transition: color 0.2s $ease-out-expo;
+
+    &.active,
+    &:hover {
+      color: var(--color-brand-600);
+    }
+  }
+}
+
+.nav-actions {
+  @apply hidden items-center gap-4;
+
+  @media (width >= 1024px) {
+    @apply flex;
+  }
+
+  .btn-primary {
+    @apply text-sm font-semibold px-6 py-2.5 rounded-pill no-underline text-white;
+    background-color: var(--color-brand-700);
+    transition: transform 0.2s $ease-out-expo, opacity 0.2s $ease-out-expo;
+
+    &:hover {
+      transform: translateY(-2px);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+}
+
+.icon-group {
+  @apply flex items-center gap-2;
+
+  .icon-btn {
+    @apply w-10 h-10 rounded-icon flex items-center justify-center cursor-pointer border no-underline;
+    background-color: var(--color-home-surface);
+    border-color: var(--color-home-border);
+    color: var(--color-home-text);
+    transition: transform 0.2s $ease-out-expo, background-color 0.2s $ease-out-expo;
+
+    svg { @apply w-[18px] h-[18px]; }
+
+    &:hover {
+      background-color: var(--color-home-surface-alt);
+      transform: translateY(-1px);
+    }
+
+    &.wa {
+      @apply text-white;
+      background-color: #25d366;
+      border-color: #25d366;
+
+      &:hover {
+        background-color: #1da851;
+        border-color: #1da851;
+      }
+    }
+  }
+}
+
+.hamburger-btn {
+  @apply flex items-center justify-center w-11 h-11 rounded-icon cursor-pointer bg-transparent border-0;
+  color: var(--color-home-text);
+  transition: background-color 0.2s $ease-out-expo;
+
+  @media (width >= 1024px) {
+    @apply hidden;
+  }
+
+  &:hover { background-color: var(--color-home-surface-alt); }
+
+  svg { @apply w-6 h-6; }
+}
+
+.mobile-menu {
+  @apply px-4 py-4 flex flex-col gap-3;
+  background-color: var(--color-home-surface);
+  border-top: 1px solid var(--color-home-border);
+
+  @media (width >= 1024px) {
+    @apply hidden;
+  }
+
+  &.hidden { display: none !important; }
+
+  .nav-item {
+    @apply text-sm font-medium py-2 no-underline;
+    color: var(--color-home-text);
+    border-bottom: 1px solid var(--color-home-border);
+    transition: color 0.2s $ease-out-expo;
+
+    &:last-of-type { border-bottom: 0; }
+    &:hover { color: var(--color-brand-600); }
+  }
+
+  .mobile-actions {
+    @apply flex flex-col gap-3 mt-2;
+
+    .btn-primary {
+      @apply text-sm font-semibold px-5 py-3 rounded-pill text-center text-white no-underline block;
+      background-color: var(--color-brand-700);
+      min-height: 44px;
+    }
+
+    .btn-outline.theme-toggle-mobile {
+      @apply text-sm font-medium px-5 py-3 rounded-pill text-center cursor-pointer;
+      min-height: 44px;
+      color: var(--color-home-text);
+      border: 1px solid var(--color-home-border);
+      background-color: transparent;
+      transition: background-color 0.2s $ease-out-expo;
+
+      &:hover { background-color: var(--color-home-surface-alt); }
+    }
+  }
+}

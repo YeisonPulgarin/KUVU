@@ -1,0 +1,49 @@
+<div
+  class="intro"
+  [class.flotando]="fase() >= 2"
+  [class.ensamblando]="fase() >= 3"
+  [class.iluminada]="fase() >= 4"
+  [class.final]="fase() >= 5">
+
+  <!-- ── Fase 1: blueprint arquitectónico ─────────────────────── -->
+  <div class="blueprint" aria-hidden="true">
+    <div class="blueprint-grid"></div>
+    <svg class="tech-lines" viewBox="0 0 400 240" preserveAspectRatio="xMidYMid slice">
+      <polyline
+        class="trazado"
+        points="25,215 25,150 70,150 70,110 130,110 130,70 175,70 230,70 230,105 285,105 285,175 345,175 345,215" />
+      <polyline class="trazado trazado-retrasado" points="40,200 345,200" />
+      <line class="trazado trazado-cota" x1="25" y1="215" x2="70" y2="215" />
+      <line class="trazado trazado-cota" x1="285" y1="215" x2="345" y2="215" />
+      <circle class="marca" cx="130" cy="70" r="3" />
+      <circle class="marca" cx="285" cy="105" r="3" />
+    </svg>
+
+    @for (p of particulas; track p) {
+      <span class="particula" [class.part-p]="true"></span>
+    }
+  </div>
+
+  <!-- ── Stage 3D: casa moderna ───────────────────────────────── -->
+  <div class="stage">
+    <div class="casa">
+      <div class="pieza pieza-losa"></div>
+      <div class="pieza pieza-muro-b"></div>
+      <div class="pieza pieza-muro-f"></div>
+      <div class="pieza pieza-muro-d"></div>
+      <div class="pieza pieza-entre-piso"></div>
+      <div class="pieza pieza-techo"></div>
+      <div class="pieza pieza-techo-b"></div>
+      <div class="pieza pieza-ventana pieza-ventana-1"></div>
+      <div class="pieza pieza-ventana pieza-ventana-2"></div>
+      <div class="pieza pieza-puerta"></div>
+      <div class="pieza pieza-volado"></div>
+      <div class="pieza pieza-chimenea"></div>
+    </div>
+    <div class="glow-interior"></div>
+  </div>
+
+  <!-- ── Capas finales ────────────────────────────────────────── -->
+  <div class="intro-vignette"></div>
+  <div class="intro-glow"></div>
+</div>

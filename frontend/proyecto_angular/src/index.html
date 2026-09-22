@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>KUVU. Gestión de arriendos</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Sistema de gestión de arriendos multi-empresa">
+  <script>
+    // Aplica el tema guardado antes del bootstrap para evitar flash.
+    try {
+      if (localStorage.getItem('kuvu-theme') === 'dark') {
+        document.documentElement.classList.add('dark');
+      }
+    } catch (e) {}
+  </script>
+  <link rel="icon" type="image/png" href="/logo-rediseno/logo-responsive-light.png">
+</head>
+<body>
+  <app-root></app-root>
+</body>
+</html>

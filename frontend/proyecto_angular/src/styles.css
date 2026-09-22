@@ -1,0 +1,120 @@
+/* ============================================================
+   ESTILOS GLOBALES — ArrendApp Angular
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&display=swap');
+
+/* Tailwind v4: Import via PostCSS (processed before SCSS) */
+@import "tailwindcss";
+
+/* Dark variant por CLASE (botón manual, no prefers-color-scheme) */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ─── Tokens de marca — fuente única del sistema visual ───────
+   Verde KUVU = acento ÚNICO (Color Consistency Lock).
+   Neutros tintados al hue del verde (light + dark).
+   Shape Consistency Lock: "botones pill, cards 16, íconos 12". */
+@theme {
+  --font-sans: "Geist", system-ui, sans-serif;
+
+  /* Verde de marca */
+  --color-brand-700: #2f4a2f;
+  --color-brand-600: #3e5c40;
+  --color-brand-500: #6b8e6b;
+  --color-brand-300: #a3bfa3;
+  --color-brand-200: #cddccd;
+  --color-brand-100: #e8efe8;
+
+  /* Superficies y texto — home (light) */
+  --color-home-bg:         #f6f7f4;
+  --color-home-surface:    #ffffff;
+  --color-home-surface-alt: #eef1ec;
+  --color-home-text:       #1f2920;
+  --color-home-muted:      #4c5a4e;
+  --color-home-border:     #cddccd;
+
+  /* Radios documentados */
+  --radius-pill: 9999px;
+  --radius-card: 16px;
+  --radius-icon: 12px;
+}
+
+/* Dark mode — overrides de superficie y acento aclarado */
+.dark {
+  --color-brand-600: #8fb28f;
+  --color-brand-500: #7fa17f;
+  --color-brand-100: #22301f;
+  --color-home-bg:          #141a14;
+  --color-home-surface:     #1b231b;
+  --color-home-surface-alt: #222c22;
+  --color-home-text:        #eef0ec;
+  --color-home-muted:       #a8b2a8;
+  --color-home-border:      #2c382c;
+}
+
+:root {
+  /* Tokens de la app existente (sidebar/dashboard, sin cambios) */
+  --color-primario:    #2B4C8C;
+  --color-secundario:  #3A6FD8;
+  --color-texto:       #FFFFFF;
+  --color-bg:          #F0F4F8;
+  --color-surface:     #FFFFFF;
+  --radius:            10px;
+  --sidebar-w:         240px;
+  --sidebar-w-col:     68px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+
+body {
+  font-family: 'Geist', system-ui, sans-serif;
+  background: var(--color-bg);
+  color: #1f444e;
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Quality floor: foco visible de teclado */
+:focus-visible {
+  outline: 2px solid var(--color-brand-500);
+  outline-offset: 2px;
+}
+
+::-webkit-scrollbar       { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #cbd5e0; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #a0aec0; }
+
+a { color: inherit; text-decoration: none; }
+input, select, textarea, button { font-family: inherit; }
+.text-center { text-align: center; }
+.mt-1 { margin-top: .5rem; }
+.mt-2 { margin-top: 1rem; }
+
+/* ── LAYOUT APP: sidebar + main ────────────────────────────── */
+.app-layout {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  align-items: flex-start;
+}
+
+.main-content {
+  flex: 1;
+  margin-left: var(--sidebar-w);
+  transition: margin-left .25s cubic-bezier(.4,0,.2,1);
+  background: var(--color-bg);
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.main-content.collapsed { margin-left: var(--sidebar-w-col); }
+
+@media (max-width: 767px) {
+  .main-content {
+    margin-left: 0 !important;
+    padding-top: 4.5rem;
+  }
+}

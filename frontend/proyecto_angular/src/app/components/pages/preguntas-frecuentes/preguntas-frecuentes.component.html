@@ -1,0 +1,33 @@
+<div class="page-layout">
+
+  <app-site-header [navLinks]="navLinks"></app-site-header>
+
+  <!-- ── Hero de página ─────────────────────────────────────── -->
+  <section class="page-hero">
+    <div class="container">
+      <h1 class="page-title">Preguntas frecuentes</h1>
+      <p class="page-lead">
+        Resolvé las dudas más comunes sobre KUVU. Si no encontrás la respuesta,
+        escribinos por WhatsApp.
+      </p>
+    </div>
+  </section>
+
+  <!-- ── FAQ completo agrupado ─────────────────────────────────┐ -->
+  <section class="faq-sections">
+    <div class="container">
+      <div class="faq-group" data-reveal *ngFor="let group of groups">
+        <h2 class="faq-group-title">{{ group.group }}</h2>
+        <div class="faq-list">
+          <article class="faq-item" *ngFor="let item of group.items">
+            <h3 class="faq-q">{{ item.q }}</h3>
+            <p class="faq-a">{{ item.a }}</p>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <app-site-footer></app-site-footer>
+
+</div>

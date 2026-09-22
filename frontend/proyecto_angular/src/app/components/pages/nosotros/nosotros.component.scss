@@ -1,0 +1,146 @@
+@reference "../../../../styles.css";
+
+$ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+.page-layout {
+  @apply font-sans min-h-screen overflow-x-hidden;
+  background-color: var(--color-home-bg);
+  color: var(--color-home-text);
+}
+
+.container {
+  @apply max-w-6xl mx-auto px-4;
+
+  @media (width >= 768px) {
+    @apply px-6;
+  }
+}
+
+.page-hero {
+  @apply text-center;
+  background-color: var(--color-home-surface);
+  border-bottom: 1px solid var(--color-home-border);
+  padding-top: 5rem;
+  padding-bottom: 5rem;
+
+  @media (width >= 768px) {
+    padding-top: 7rem;
+    padding-bottom: 7rem;
+  }
+
+  .page-title {
+    @apply m-0 mb-4;
+    font-size: clamp(2.25rem, 5vw, 3.5rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--color-home-text);
+  }
+
+  .page-lead {
+    @apply m-0 text-base max-w-xl mx-auto;
+    color: var(--color-home-muted);
+
+    @media (width >= 768px) {
+      @apply text-lg;
+    }
+  }
+}
+
+.about-sections {
+  @apply py-20;
+  background-color: var(--color-home-bg);
+
+  @media (width >= 768px) {
+    @apply py-28;
+  }
+
+  .about-section {
+    @apply mb-12;
+    max-width: 48rem;
+
+    &:last-child {
+      @apply mb-0;
+    }
+
+    .about-title {
+      @apply m-0 mb-3 text-2xl font-extrabold;
+      letter-spacing: -0.01em;
+      color: var(--color-brand-600);
+    }
+
+    .about-body {
+      @apply m-0 text-base leading-relaxed;
+      color: var(--color-home-muted);
+
+      @media (width >= 768px) {
+        @apply text-lg;
+      }
+    }
+  }
+}
+
+.origin {
+  @apply py-20;
+  background-color: var(--color-home-surface);
+  border-top: 1px solid var(--color-home-border);
+  border-bottom: 1px solid var(--color-home-border);
+
+  @media (width >= 768px) {
+    @apply py-28;
+  }
+
+  .about-title {
+    @apply m-0 mb-4 text-2xl font-extrabold;
+    letter-spacing: -0.01em;
+    color: var(--color-brand-600);
+  }
+
+  .origin-paragraph {
+    @apply m-0 mb-4 text-base leading-relaxed max-w-3xl;
+    color: var(--color-home-muted);
+
+    @media (width >= 768px) {
+      @apply text-lg;
+    }
+  }
+}
+
+.cta-contact {
+  @apply py-20 text-center;
+  background-color: var(--color-home-bg);
+
+  @media (width >= 768px) {
+    @apply py-28;
+  }
+
+  .cta-contact-inner {
+    @apply flex flex-col items-center gap-5;
+  }
+
+  h2 {
+    @apply m-0 font-extrabold;
+    font-size: clamp(1.875rem, 3.5vw, 2.75rem);
+    letter-spacing: -0.02em;
+    color: var(--color-home-text);
+  }
+
+  p {
+    @apply m-0 text-base max-w-xl;
+    color: var(--color-home-muted);
+  }
+
+  .btn-whatsapp {
+    @apply inline-flex items-center rounded-pill px-10 py-4 text-base font-bold text-white no-underline;
+    background-color: #25d366;
+    transition: transform 0.2s $ease-out-expo, background-color 0.2s $ease-out-expo;
+
+    &:hover {
+      transform: translateY(-2px);
+      background-color: #1da851;
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+}

@@ -1,0 +1,86 @@
+<div class="landing-bg">
+  <div class="bg-photo"></div>
+  <div class="bg-overlay"></div>
+
+  @if (estado() === 'INTRO') {
+    <app-auth-intro
+      [class.saliendo]="transicionando()"
+      (completada)="completadaIntro()" />
+  }
+
+  @if (estado() === 'SELECTION' || transicionando()) {
+    <div class="landing-container">
+
+      <!-- MARCA -->
+      <div class="brand">
+        <img src="/logo-rediseno/logo-dark.png" alt="KUVU" class="brand-logo-img" />
+        <span class="brand-tagline">GESTIÓN INTELIGENTE DE PROPIEDADES</span>
+      </div>
+
+      <!-- CARD -->
+      <div class="landing-card">
+        <div class="card-header">
+          <h2 class="card-title">Bienvenido</h2>
+          <p class="card-sub">Gestiona tu operación inmobiliaria desde un solo lugar</p>
+          <span class="card-label">Selecciona tu inmobiliaria</span>
+        </div>
+
+        <!-- Buscador -->
+        <div class="search-wrap">
+          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+          </svg>
+          <input
+            type="text"
+            class="search-input"
+            placeholder="Ej: Amarilo, Nido Rent..."
+            [ngModel]="busqueda()"
+            (ngModelChange)="busqueda.set($event)"
+            autofocus
+          />
+        </div>
+
+        <!-- Skeleton cargando -->
+        @if (cargando()) {
+          <div class="empresa-list">
+            <div class="skeleton-item"></div>
+            <div class="skeleton-item"></div>
+            <div class="skeleton-item"></div>
+          </div>
+        }
+
+        <!-- Lista de empresas -->
+        @if (!cargando() && empresasFiltradas().length > 0) {
+          <div class="empresa-list">
+            @for (emp of empresasFiltradas(); track emp.id) {
+              <button
+                class="empresa-row"
+                [style.--emp-color]="emp.color_primario"
+                (click)="seleccionar(emp)">
+                <div class="emp-avatar" [style.background]="emp.color_primario">
+                  {{ emp.nombre.charAt(0).toUpperCase() }}
+                </div>
+                <div class="emp-info">
+                  <span class="emp-nombre">{{ emp.nombre }}</span>
+                  <span class="emp-slogan">{{ emp.slogan }}</span>
+                </div>
+                <svg class="emp-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M9 18l6-6-6-6"/>
+                </svg>
+              </button>
+            }
+          </div>
+        }
+
+        <!-- Sin resultados -->
+        @if (!cargando() && busqueda() && empresasFiltradas().length === 0) {
+          <div class="empty-state">
+            No se encontró ninguna empresa con ese nombre.
+          </div>
+        }
+      </div>
+
+      <p class="footer-copy">© 2026 KUVU · YCW</p>
+    </div>
+  }
+</div>

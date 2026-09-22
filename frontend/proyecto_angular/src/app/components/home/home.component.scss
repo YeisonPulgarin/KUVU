@@ -1,0 +1,455 @@
+// ─── Tailwind v4 reference ────────────────────────────────────
+// Grants access to Tailwind's theme/utilities for @apply in this
+// component-scoped stylesheet without duplicating its CSS output.
+@reference "../../../styles.css";
+
+// Easing estándar del sistema (regla MOTION)
+$ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+// ─── Home layout ─────────────────────────────────────────────
+.home-layout {
+  @apply font-sans min-h-screen overflow-x-hidden;
+  background-color: var(--color-home-bg);
+  color: var(--color-home-text);
+}
+
+// ─── Container ────────────────────────────────────────────────
+.container {
+  @apply max-w-6xl mx-auto px-4;
+
+  @media (width >= 768px) {
+    @apply px-6;
+  }
+}
+
+// ─── Hero ─────────────────────────────────────────────────────
+.hero {
+  @apply relative flex items-center justify-center text-center overflow-hidden;
+  min-height: calc(100dvh - 64px);
+  background-color: var(--color-home-bg);
+  border-bottom: 1px solid var(--color-home-border);
+
+  // Rejilla de marca sutil (patrón, no gradiente decorativo)
+  background-image:
+    radial-gradient(circle at 15% 20%, var(--color-brand-100) 0 2px, transparent 3px),
+    radial-gradient(circle at 85% 70%, var(--color-brand-100) 0 2px, transparent 3px);
+  background-size: 240px 240px;
+  background-position: 0 0, 120px 120px;
+
+  @media (width >= 768px) {
+    min-height: calc(100dvh - 80px);
+  }
+}
+
+.hero-inner {
+  @apply py-20 flex flex-col items-center gap-6;
+}
+
+.hero-brand {
+  @apply m-0 text-5xl font-extrabold tracking-tight;
+  color: var(--color-brand-500);
+
+  @media (width >= 768px) {
+    @apply text-6xl;
+  }
+}
+
+.hero-title {
+  @apply m-0 font-extrabold leading-tight text-balance;
+  font-size: clamp(2.25rem, 6vw, 4rem);
+  max-width: 22ch;
+  color: var(--color-home-text);
+
+  @media (width >= 768px) {
+    font-size: clamp(3rem, 5.5vw, 4.5rem);
+  }
+}
+
+.hero-subtitle {
+  @apply m-0 text-base font-normal text-pretty max-w-xl;
+  color: var(--color-home-muted);
+
+  @media (width >= 768px) {
+    @apply text-xl;
+  }
+}
+
+.hero-cta {
+  @apply inline-flex items-center rounded-pill px-10 py-4 text-base font-bold text-white no-underline;
+  background-color: var(--color-brand-700);
+  transition: transform 0.2s $ease-out-expo, opacity 0.2s $ease-out-expo;
+
+  &:hover { transform: translateY(-2px); }
+  &:active { transform: translateY(0); }
+}
+
+// ─── Generic section ──────────────────────────────────────────
+.section {
+  @apply py-20;
+
+  @media (width >= 768px) {
+    @apply py-32;
+  }
+
+  @media (width >= 1280px) {
+    @apply py-40;
+  }
+}
+
+.section-title {
+  @apply m-0 mb-4;
+  font-size: clamp(1.875rem, 3.5vw, 2.75rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--color-home-text);
+}
+
+.section-lead {
+  @apply m-0 text-base leading-relaxed max-w-2xl;
+  color: var(--color-home-muted);
+
+  @media (width >= 768px) {
+    @apply text-lg;
+  }
+}
+
+// ─── ¿Qué es KUVU? ────────────────────────────────────────────
+.about {
+  background-color: var(--color-home-surface);
+
+  .section-title {
+    color: var(--color-brand-600);
+  }
+}
+
+// ─── Servicios (split + lista divide-y, sin cards idénticas) ─
+.services {
+  background-color: var(--color-home-bg);
+
+  .services-inner {
+    @apply grid grid-cols-1 gap-12;
+
+    @media (width >= 1024px) {
+      @apply grid-cols-[1fr_1.5fr] gap-16;
+    }
+  }
+
+  .services-heading {
+    .section-title {
+      color: var(--color-brand-500);
+    }
+  }
+
+  .services-list {
+    @apply flex flex-col;
+    border-top: 1px solid var(--color-home-border);
+  }
+
+  .service-row {
+    @apply flex items-start gap-6 py-8;
+    border-bottom: 1px solid var(--color-home-border);
+    transition: transform 0.2s $ease-out-expo;
+
+    .service-icon {
+      @apply flex items-center justify-center shrink-0;
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-icon);
+      background-color: var(--color-brand-100);
+      color: var(--color-brand-600);
+
+      svg { @apply w-[20px] h-[20px]; }
+    }
+
+    .service-body {
+      h3 {
+        @apply m-0 mb-2 text-lg font-bold;
+        color: var(--color-home-text);
+      }
+
+      p {
+        @apply m-0 text-sm leading-relaxed;
+        color: var(--color-home-muted);
+      }
+    }
+  }
+}
+
+// ─── Compañías (wordmarks tipográficos) ───────────────────────
+.companies {
+  background-color: var(--color-home-surface);
+
+  .companies-list {
+    @apply flex flex-wrap items-center gap-x-12 gap-y-6;
+
+    .company-item {
+      @apply font-bold;
+      letter-spacing: -0.01em;
+      color: var(--color-home-text);
+      transition: color 0.2s $ease-out-expo, transform 0.2s $ease-out-expo;
+      cursor: default;
+
+      &:hover {
+        color: var(--color-brand-600);
+        transform: translateY(-1px);
+      }
+    }
+
+    // Wordmark variances (tipográficos, sin pills ni logos)
+    .company-amarilo   { font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; font-size: 1.05rem; }
+    .company-nido      { font-weight: 700; font-style: normal; }
+    .company-balcones  { font-weight: 600; }
+    .company-mi        { font-weight: 800; }
+  }
+}
+
+// ─── Cómo funciona (pasos numerados, no cards idénticas) ──────
+.steps {
+  background-color: var(--color-home-surface);
+
+  .steps-list {
+    @apply list-none m-0 p-0 grid grid-cols-1 gap-6;
+
+    @media (width >= 768px) {
+      @apply grid-cols-2 gap-8;
+    }
+  }
+
+  .step {
+    @apply flex items-start gap-5 p-6;
+    border: 1px solid var(--color-home-border);
+    border-radius: var(--radius-card);
+
+    .step-number {
+      @apply flex items-center justify-center shrink-0 font-bold text-white;
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-icon);
+      background-color: var(--color-brand-600);
+    }
+
+    .step-body {
+      h3 {
+        @apply m-0 mb-1.5 text-lg font-bold;
+        color: var(--color-home-text);
+      }
+
+      p {
+        @apply m-0 text-sm leading-relaxed;
+        color: var(--color-home-muted);
+      }
+    }
+  }
+}
+
+// ─── Beneficios por rol (split 2 cols con jerarquía clara) ────
+.roles {
+  background-color: var(--color-home-bg);
+
+  .roles-grid {
+    @apply grid grid-cols-1 gap-8;
+
+    @media (width >= 768px) {
+      @apply grid-cols-2 gap-8;
+    }
+  }
+
+  .role-card {
+    @apply p-8 flex flex-col;
+    background-color: var(--color-home-surface);
+    border: 1px solid var(--color-home-border);
+    border-radius: var(--radius-card);
+
+    .role-role {
+      @apply m-0 mb-1 text-sm font-bold uppercase tracking-wide;
+      color: var(--color-brand-600);
+    }
+
+    .role-title {
+      @apply m-0 mb-2 text-2xl font-extrabold;
+      color: var(--color-home-text);
+    }
+
+    .role-description {
+      @apply m-0 text-sm leading-relaxed;
+      color: var(--color-home-muted);
+    }
+
+    .role-points {
+      @apply m-0 mt-5 pl-5 flex flex-col gap-2 text-sm;
+      color: var(--color-home-text);
+
+      li::marker {
+        color: var(--color-brand-500);
+      }
+    }
+  }
+}
+
+// ─── Seguridad y soporte (destacados descriptivos) ────────────
+.security {
+  background-color: var(--color-home-surface);
+
+  .security-list {
+    @apply flex flex-col;
+    border-top: 1px solid var(--color-home-border);
+  }
+
+  .security-item {
+    @apply py-8;
+    border-bottom: 1px solid var(--color-home-border);
+
+    h3 {
+      @apply m-0 mb-1.5 text-lg font-bold;
+      color: var(--color-home-text);
+    }
+
+    p {
+      @apply m-0 text-sm leading-relaxed;
+      color: var(--color-home-muted);
+    }
+  }
+}
+
+// ─── Origen de KUVU ───────────────────────────────────────────
+.origin {
+  background-color: var(--color-home-bg);
+
+  .origin-paragraph {
+    @apply m-0 mb-4 text-base leading-relaxed max-w-3xl;
+    color: var(--color-home-muted);
+
+    @media (width >= 768px) {
+      @apply text-lg;
+    }
+  }
+
+  .origin-link {
+    @apply inline-flex mt-4 text-base font-semibold no-underline;
+    color: var(--color-brand-600);
+    transition: color 0.2s $ease-out-expo;
+
+    &:hover {
+      color: var(--color-brand-500);
+    }
+  }
+}
+
+// ─── FAQ corto ────────────────────────────────────────────────
+.faq {
+  background-color: var(--color-home-surface);
+
+  .faq-inner {
+    @apply flex flex-col;
+  }
+
+  .faq-list {
+    @apply flex flex-col;
+    border-top: 1px solid var(--color-home-border);
+  }
+
+  .faq-item {
+    @apply py-8;
+    border-bottom: 1px solid var(--color-home-border);
+
+    .faq-q {
+      @apply m-0 mb-2 text-lg font-bold;
+      color: var(--color-home-text);
+    }
+
+    .faq-a {
+      @apply m-0 text-sm leading-relaxed;
+      color: var(--color-home-muted);
+    }
+  }
+
+  .faq-link {
+    @apply inline-flex mt-8 text-base font-semibold no-underline;
+    color: var(--color-brand-600);
+    transition: color 0.2s $ease-out-expo;
+
+    &:hover {
+      color: var(--color-brand-500);
+    }
+  }
+}
+
+// ─── CTA final ────────────────────────────────────────────────
+.cta-final {
+  @apply relative overflow-hidden;
+  background-color: var(--color-brand-700);
+  color: #fff;
+
+  .cta-final-inner {
+    @apply py-20 text-center flex flex-col items-center gap-5;
+
+    @media (width >= 768px) {
+      @apply py-28;
+    }
+  }
+
+  h2 {
+    @apply m-0 font-extrabold;
+    font-size: clamp(1.875rem, 3.5vw, 2.75rem);
+    letter-spacing: -0.02em;
+  }
+
+  p {
+    @apply m-0 text-base max-w-xl;
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .cta-button {
+    @apply inline-flex items-center rounded-pill px-10 py-4 text-base font-bold no-underline;
+    background-color: #fff;
+    color: var(--color-brand-700);
+    transition: transform 0.2s $ease-out-expo, background-color 0.2s $ease-out-expo;
+
+    &:hover {
+      transform: translateY(-2px);
+      background-color: var(--color-brand-100);
+    }
+
+    &:active { transform: translateY(0); }
+  }
+}
+
+// ─── Motion — animaciones (solo transform/opacity) ─────────────
+// Respeto obligatorio de prefers-reduced-motion: todo el bloque de
+// animación queda suspendido bajo reduced-motion.
+@media (prefers-reduced-motion: no-preference) {
+  // Hero entrance: único momento orquestado (stagger).
+  .hero-brand,
+  .hero-title,
+  .hero-subtitle,
+  .hero-cta {
+    opacity: 0;
+    animation: rise-in 0.6s $ease-out-expo forwards;
+  }
+
+  .hero-title   { animation-delay: 0.12s; }
+  .hero-subtitle { animation-delay: 0.24s; }
+  .hero-cta     { animation-delay: 0.36s; }
+
+  @keyframes rise-in {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+// Reduced motion (o sin soporte): hero visible sin transición.
+@media (prefers-reduced-motion: reduce) {
+  .hero-brand,
+  .hero-title,
+  .hero-subtitle,
+  .hero-cta {
+    opacity: 1;
+    transform: none;
+  }
+}

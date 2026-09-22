@@ -1,0 +1,54 @@
+<div class="page-layout">
+
+  <app-site-header [navLinks]="navLinks"></app-site-header>
+
+  <!-- ── Hero de página ─────────────────────────────────────── -->
+  <section class="page-hero">
+    <div class="container">
+      <h1 class="page-title">Nosotros</h1>
+      <p class="page-lead">
+        Conocé quién es KUVU, cómo opera y con quién trabaja.
+      </p>
+    </div>
+  </section>
+
+  <!-- ── Secciones (quién es / cómo opera / con quién trabaja) ── -->
+  <section class="about-sections">
+    <div class="container">
+      <article class="about-section" data-reveal *ngFor="let section of sections">
+        <h2 class="about-title">{{ section.title }}</h2>
+        <p class="about-body">{{ section.body }}</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- ── Origen ──────────────────────────────────────────────── -->
+  <section class="origin">
+    <div class="container">
+      <h2 class="about-title">{{ origin.title }}</h2>
+      <p class="origin-paragraph" data-reveal *ngFor="let paragraph of origin.paragraphs">
+        {{ paragraph }}
+      </p>
+    </div>
+  </section>
+
+  <!-- ── CTA de contacto ─────────────────────────────────────── -->
+  <section class="cta-contact">
+    <div class="container cta-contact-inner">
+      <h2>¿Querés saber más sobre KUVU?</h2>
+      <p>Escribinos y te contamos cómo acompañamos a tu inmobiliaria.</p>
+      <a
+        class="btn-whatsapp"
+        [href]="whatsappLink"
+        target="_blank"
+        rel="noopener"
+        aria-label="Escríbenos por WhatsApp para información sobre KUVU"
+      >
+        Escríbenos por WhatsApp
+      </a>
+    </div>
+  </section>
+
+  <app-site-footer></app-site-footer>
+
+</div>

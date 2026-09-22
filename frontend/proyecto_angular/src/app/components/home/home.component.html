@@ -1,0 +1,186 @@
+<div class="home-layout">
+
+  <app-site-header></app-site-header>
+
+  <!-- ── Hero ────────────────────────────────────────────── -->
+  <section id="inicio" class="hero">
+    <div class="container hero-inner">
+      <p class="hero-brand">KUVU.</p>
+      <h1 class="hero-title">Administración inmobiliaria para empresas que crecen</h1>
+      <p class="hero-subtitle">
+        Gestioná locales, contratos, pagos y mantenimientos de múltiples compañías
+        desde un solo sistema.
+      </p>
+      <a routerLink="/acceder" class="btn-primary hero-cta">Ingresar</a>
+    </div>
+  </section>
+
+  <!-- ── ¿Qué es KUVU? ──────────────────────────────────── -->
+  <section id="que-es" class="section about">
+    <div class="container">
+      <h2 class="section-title">¿Qué es KUVU?</h2>
+      <p class="section-lead">
+        KUVU es un sistema de administración de inmobiliarias que brinda servicio a
+        distintas compañías. Unificamos la gestión de propiedades, contratos y
+        operaciones diarias para que cada empresa administradora trabaje desde una
+        sola plataforma, con datos centralizados y acceso por rol.
+      </p>
+    </div>
+  </section>
+
+  <!-- ── Cómo funciona ──────────────────────────────────── -->
+  <section id="como-funciona" class="section steps">
+    <div class="container">
+      <h2 class="section-title">¿Cómo funciona?</h2>
+      <p class="section-lead">En cuatro pasos, KUVU reemplaza tus planillas dispersas por una sola plataforma.</p>
+
+      <ol class="steps-list">
+        <li class="step" data-reveal *ngFor="let step of howItWorks; let i = index">
+          <span class="step-number">{{ i + 1 }}</span>
+          <div class="step-body">
+            <h3>{{ step.title }}</h3>
+            <p>{{ step.description }}</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ── Servicios ──────────────────────────────────────── -->
+  <section id="servicios" class="section services">
+    <div class="container services-inner">
+      <div class="services-heading">
+        <h2 class="section-title">Servicios</h2>
+        <p class="section-lead">Todo lo que tu inmobiliaria necesita administrar, en un solo lugar.</p>
+      </div>
+
+      <div class="services-list">
+        <article class="service-row" data-reveal *ngFor="let svc of services">
+          <span class="service-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <ng-container [ngSwitch]="svc.icon">
+                <!-- building -->
+                <ng-container *ngSwitchCase="'building'">
+                  <path d="M3 21h18M5 21V7l7-4 7 4v14M9 9h1M14 9h1M9 13h1M14 13h1M10 21v-4h4v4"/>
+                </ng-container>
+                <!-- file -->
+                <ng-container *ngSwitchCase="'file'">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                  <polyline points="14 2 14 8 20 8"/>
+                  <line x1="9" y1="13" x2="15" y2="13"/>
+                  <line x1="9" y1="17" x2="15" y2="17"/>
+                </ng-container>
+                <!-- card -->
+                <ng-container *ngSwitchCase="'card'">
+                  <rect x="1" y="4" width="22" height="16" rx="2"/>
+                  <line x1="1" y1="10" x2="23" y2="10"/>
+                </ng-container>
+                <!-- wrench -->
+                <ng-container *ngSwitchCase="'wrench'">
+                  <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+                </ng-container>
+                <!-- users -->
+                <ng-container *ngSwitchCase="'users'">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                  <circle cx="9" cy="7" r="4"/>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                </ng-container>
+              </ng-container>
+            </svg>
+          </span>
+          <div class="service-body">
+            <h3>{{ svc.title }}</h3>
+            <p>{{ svc.description }}</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Beneficios por rol ─────────────────────────────── -->
+  <section id="beneficios" class="section roles">
+    <div class="container">
+      <h2 class="section-title">Beneficios por rol</h2>
+      <p class="section-lead">KUVU se adapta a la decisión de quien lidera y al día a día de quienes operan.</p>
+
+      <div class="roles-grid">
+        <article class="role-card" data-reveal *ngFor="let role of benefitsByRole">
+          <h3 class="role-role">{{ role.role }}</h3>
+          <h4 class="role-title">{{ role.title }}</h4>
+          <p class="role-description">{{ role.description }}</p>
+          <ul class="role-points">
+            <li *ngFor="let point of role.points">{{ point }}</li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Seguridad y soporte ────────────────────────────── -->
+  <section id="seguridad" class="section security">
+    <div class="container">
+      <h2 class="section-title">Seguridad y soporte</h2>
+      <p class="section-lead">Cuidamos la información de tus inmobiliarias.</p>
+
+      <div class="security-list">
+        <article class="security-item" data-reveal *ngFor="let item of securityHighlights">
+          <h3>{{ item.title }}</h3>
+          <p>{{ item.description }}</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Compañías que confían ──────────────────────────── -->
+  <section id="companias" class="section companies">
+    <div class="container">
+      <h2 class="section-title">Compañías que confían</h2>
+      <p class="section-lead">Distintas empresas administran sus inmobiliarias con KUVU.</p>
+
+      <div class="companies-list" data-reveal>
+        <span class="company-item" *ngFor="let company of companies" [ngClass]="company.className">{{ company.name }}</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Origen de KUVU ─────────────────────────────────── -->
+  <section id="origen" class="section origin">
+    <div class="container">
+      <h2 class="section-title">{{ origin.title }}</h2>
+      <p class="origin-paragraph" data-reveal *ngFor="let paragraph of origin.paragraphs">{{ paragraph }}</p>
+      <a routerLink="/nosotros" class="origin-link" data-reveal>Conocé más sobre KUVU</a>
+    </div>
+  </section>
+
+  <!-- ── FAQ corto ──────────────────────────────────────── -->
+  <section id="faq" class="section faq">
+    <div class="container faq-inner">
+      <div class="faq-header">
+        <h2 class="section-title">Preguntas frecuentes</h2>
+        <p class="section-lead">Las dudas más comunes sobre cómo funciona KUVU.</p>
+      </div>
+
+      <div class="faq-list">
+        <article class="faq-item" data-reveal *ngFor="let item of homeFaqItems()">
+          <h3 class="faq-q">{{ item.q }}</h3>
+          <p class="faq-a">{{ item.a }}</p>
+        </article>
+      </div>
+
+      <a routerLink="/preguntas-frecuentes" class="faq-link" data-reveal>Ver todas las preguntas frecuentes</a>
+    </div>
+  </section>
+
+  <!-- ── CTA Final ──────────────────────────────────────── -->
+  <section class="cta-final">
+    <div class="container cta-final-inner">
+      <h2>¿Listo para administrar tus inmobiliarias?</h2>
+      <p>Ingresá a tu cuenta y gestioná todas tus compañías desde un solo lugar.</p>
+      <a routerLink="/acceder" class="btn-primary cta-button">Ingresar</a>
+    </div>
+  </section>
+
+  <app-site-footer></app-site-footer>
+
+</div>

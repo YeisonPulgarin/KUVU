@@ -1,0 +1,45 @@
+<footer class="site-footer">
+  <div class="container footer-inner">
+
+    <!-- Marca -->
+    <div class="footer-brand">
+      <div class="footer-logo">
+        <img
+          [src]="isDark() ? logo.dark : logo.light"
+          [alt]="brandName"
+          class="footer-logo--full"
+        />
+        <img
+          [src]="isDark() ? logo.responsiveDark : logo.responsiveLight"
+          [alt]="brandName"
+          class="footer-logo--responsive"
+        />
+      </div>
+      <p class="footer-name">{{ brandName }}.</p>
+      <p class="footer-tagline">{{ tagline }}</p>
+    </div>
+
+    <!-- Navegación -->
+    <nav class="footer-nav" aria-label="Pie de página">
+      <a routerLink="/" class="footer-link">Inicio</a>
+      <a routerLink="/nosotros" class="footer-link">Nosotros</a>
+      <a routerLink="/preguntas-frecuentes" class="footer-link">Preguntas frecuentes</a>
+      <a routerLink="/acceder" class="footer-link">Acceso</a>
+    </nav>
+
+    <!-- Contacto -->
+    <div class="footer-contact">
+      <a
+        class="footer-cta"
+        [href]="whatsappLink"
+        target="_blank"
+        rel="noopener"
+      >
+        Escríbenos por WhatsApp
+      </a>
+    </div>
+
+    <!-- Copyright -->
+    <p class="footer-copy">© {{ year }} {{ brandName }} · YCW</p>
+  </div>
+</footer>
