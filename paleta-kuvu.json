@@ -1,0 +1,119 @@
+{
+  "brand": "KUVU",
+  "description": "Paleta oficial de colores (fuente: src/styles.css y componentes)",
+  "groups": {
+    "marca_principal": {
+      "primario": "#2B4C8C",
+      "secundario": "#3A6FD8",
+      "texto_sobre_marca": "#FFFFFF",
+      "fondo_app": "#F0F4F8",
+      "superficie": "#FFFFFF"
+    },
+    "verde_natural_home": {
+      "verde_700": "#2F4A2F",
+      "verde_600": "#3E5C40",
+      "verde_500": "#6B8E6B",
+      "verde_300": "#A3BFA3",
+      "verde_200": "#CDDCCD",
+      "verde_100": "#E8EFE8"
+    },
+    "home_modo_claro": {
+      "fondo": "#F6F7F4",
+      "superficie": "#FFFFFF",
+      "superficie_alt": "#EEF1EC",
+      "texto": "#1F2920",
+      "texto_muted": "#4C5A4E",
+      "borde": "#CDDCCD"
+    },
+    "home_modo_oscuro": {
+      "fondo": "#141A14",
+      "superficie": "#1B231B",
+      "superficie_alt": "#222C22",
+      "texto": "#EEF0EC",
+      "texto_muted": "#A8B2A8",
+      "borde": "#2C382C"
+    },
+    "usos_puntuales": {
+      "whatsapp": "#25D366",
+      "whatsapp_hover": "#1DA851",
+      "gradiente_login_inicio": "#3A6FD8",
+      "gradiente_login_fin": "#7C3AED",
+      "sidebar_dark_fondo": "#133937",
+      "sidebar_dark_superficie": "#1E2130"
+    },
+    "gestion_dashboard_estados": {
+      "azul_700": "#2B6CB0",
+      "azul_100": "#EBF8FF",
+      "azul_200": "#BEE3F8",
+      "verde_600": "#38A169",
+      "verde_700": "#276749",
+      "verde_100": "#F0FFF4",
+      "verde_200": "#C6F6D5",
+      "dorado_600": "#D69E2E",
+      "dorado_700": "#B7791F",
+      "rojo_600": "#E53E3E",
+      "rojo_700": "#C53030",
+      "rojo_100": "#FFF5F5",
+      "rojo_200": "#FED7D7"
+    },
+    "neutros_gestion": {
+      "gris_900": "#1A202C",
+      "gris_800": "#2D3748",
+      "gris_600": "#4A5568",
+      "gris_500": "#718096",
+      "gris_400": "#A0AEC0",
+      "gris_200": "#E2E8F0",
+      "gris_100": "#EDF2F7",
+      "gris_50": "#F7FAFC",
+      "gris_50_alt": "#F8FAFC"
+    }
+  },
+  "escala_tailwind_azul": {
+    "azul_50": "#EFF2FC",
+    "azul_100": "#D6DFF7",
+    "azul_200": "#ADC0F0",
+    "azul_300": "#84A3EA",
+    "azul_400": "#5C86E2",
+    "azul_500": "#3A6FD8",
+    "azul_600": "#2E63C0",
+    "azul_700": "#2F5FA8",
+    "azul_800": "#2B4C8C",
+    "azul_900": "#1E3A68",
+    "azul_950": "#14294C"
+  },
+  "escala_tailwind_verde": {
+    "verde_50": "#F4F7F4",
+    "verde_100": "#E8EFE8",
+    "verde_200": "#CDDCCD",
+    "verde_300": "#A3BFA3",
+    "verde_400": "#7FA680",
+    "verde_500": "#6B8E6B",
+    "verde_600": "#3E5C40",
+    "verde_700": "#2F4A2F",
+    "verde_800": "#223722",
+    "verde_900": "#172517",
+    "verde_950": "#0F1810"
+  },
+  "escala_tailwind_neutros": {
+    "gris_50": "#F7FAFC",
+    "gris_100": "#EDF2F7",
+    "gris_200": "#E2E8F0",
+    "gris_300": "#CBD5E0",
+    "gris_400": "#A0AEC0",
+    "gris_500": "#718096",
+    "gris_600": "#4A5568",
+    "gris_700": "#374151",
+    "gris_800": "#2D3748",
+    "gris_900": "#1A202C"
+  },
+  "flat_list": [
+    "#2B4C8C", "#3A6FD8", "#FFFFFF", "#F0F4F8",
+    "#2F4A2F", "#3E5C40", "#6B8E6B", "#A3BFA3", "#CDDCCD", "#E8EFE8",
+    "#F6F7F4", "#EEF1EC", "#1F2920", "#4C5A4E",
+    "#141A14", "#1B231B", "#222C22", "#EEF0EC", "#A8B2A8", "#2C382C",
+    "#25D366", "#1DA851", "#7C3AED", "#133937", "#1E2130",
+    "#2B6CB0", "#EBF8FF", "#BEE3F8", "#38A169", "#276749", "#F0FFF4", "#C6F6D5",
+    "#D69E2E", "#B7791F", "#E53E3E", "#C53030", "#FFF5F5", "#FED7D7",
+    "#1A202C", "#2D3748", "#4A5568", "#718096", "#A0AEC0", "#E2E8F0", "#EDF2F7", "#F7FAFC", "#F8FAFC"
+  ]
+}
