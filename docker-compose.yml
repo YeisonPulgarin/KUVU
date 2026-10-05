@@ -1,0 +1,39 @@
+# KUVU local database.
+#
+# Start:    docker compose up -d
+# Stop:     docker compose stop
+# Reset:    docker compose down -v   (destroys all data, requires confirmation)
+#
+# The application user (kuvu_app) is the one the backend connects with.
+# root is only for administration from an external client.
+
+services:
+  db:
+    image: mariadb:10.4
+    container_name: kuvu_db
+    restart: unless-stopped
+    ports:
+      # Bound to loopback on purpose. Publishing on all interfaces would let any
+      # machine on the local network reach the database.
+      - "127.0.0.1:${DB_PORT:-3306}:3306"
+    environment:
+      # Without this the image also creates root@'%', which accepts the root
+      # password from any host. root must stay reachable only via localhost.
+      MARIADB_ROOT_HOST: localhost
+      MARIADB_ROOT_PASSWORD: "${DB_ROOT_PASSWORD}"
+      MARIADB_DATABASE: "${DB_NAME:-bd_arrendamientos}"
+      MARIADB_USER: "${DB_APP_USER:-kuvu_app}"
+      MARIADB_PASSWORD: "${DB_APP_PASSWORD}"
+    volumes:
+      - kuvu_mysql_data:/var/lib/mysql
+      # Scripts here run once, in alphabetical order, only when the volume is empty.
+      - ./db/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+volumes:
+  kuvu_mysql_data:

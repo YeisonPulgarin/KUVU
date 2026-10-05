@@ -1,0 +1,9 @@
+# Local credentials. See .env.example for the expected variables.
+.env
+.env.local
+
+# Database backups: generated artifacts, never source.
+db/backups/*.sql
+
+# Office lock files created while a document is open.
+~$*

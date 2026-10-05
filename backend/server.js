@@ -4,6 +4,7 @@
 // ─────────────────────────────────────────────────────────────
 const express = require('express');
 const cors    = require('cors');
+const db      = require('./db');
 
 const app  = express();
 const PORT = process.env.PORT || 3000;
@@ -45,8 +46,19 @@ app.use((err, req, res, next) => {
 });
 
 // ── Iniciar servidor ──────────────────────────────────────────
-app.listen(PORT, () => {
-  console.log(`\n🚀 ArrendApp Backend corriendo en http://localhost:${PORT}`);
-  console.log(`   Angular debe correr en http://localhost:4200`);
-  console.log(`   Prueba en: http://localhost:${PORT}/\n`);
-});
+// Verify the database before listening: a dead database discovered per-request
+// looks like an application bug instead of a startup failure.
+db.checkConnection()
+  .then(() => {
+    console.log('✅ Conectado a MySQL');
+    app.listen(PORT, () => {
+      console.log(`\n🚀 ArrendApp Backend corriendo en http://localhost:${PORT}`);
+      console.log(`   Angular debe correr en http://localhost:4200`);
+      console.log(`   Prueba en: http://localhost:${PORT}/\n`);
+    });
+  })
+  .catch(err => {
+    console.error(`❌ No se pudo conectar a MySQL en ${db.config.host}:${db.config.port}: ${err.message}`);
+    console.error('   Verificá que la base de datos esté levantada: docker compose ps');
+    process.exit(1);
+  });
