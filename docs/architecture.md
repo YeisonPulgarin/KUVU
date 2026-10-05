@@ -24,12 +24,12 @@ por la propia SPA (sin API), y la app autenticada hoy consume datos mock (los m�
 - `src/app/content/` — contenido institucional en módulos TS tipados (site, services,
   companies, howItWorks, benefits, security, origin, about, faq, logo), fuente única del texto.
 - `src/app/components/public/site-header/` y `site-footer/` — chrome compartido (logo, nav,
-  CTA "Ingresar", WhatsApp, toggle de tema; footer con marca y navegación). El logo son 4
-  variantes (completo/símbolo × claro/oscuro); header y footer alternan por tema vía
-  `isDark()` y por viewport con el breakpoint `768px`.
-- `frontend/proyecto_angular/public/logo-rediseno/` — los 4 PNG del logo (light/dark ×
-  completo/responsive), con rutas centralizadas en `content/logo.ts`; el favicon de
-  `src/index.html` apunta al símbolo light como PNG.
+  CTA "Ingresar", WhatsApp, toggle de tema; footer con marca y navegación). El logo tiene 2
+  variantes (web y responsive) y se alterna por viewport con el breakpoint `768px`; el tema no
+  interviene en su selección.
+- `frontend/proyecto_angular/public/logo-rediseno/` — los 2 PNG del logo (`Logo_Kuvu.png` web,
+  `Logo_Responsive.png` símbolo), con rutas centralizadas en `content/logo.ts`; el favicon de
+  `src/index.html` apunta al símbolo como PNG.
 - `src/app/components/pages/nosotros/` y `preguntas-frecuentes/` — las páginas secundarias,
   lazy en `app.routes.ts`, con la misma columna de chrome.
 - `src/app/components/home/` — la home: hero + secciones que leen de `content/`, header y

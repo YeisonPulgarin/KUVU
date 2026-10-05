@@ -257,11 +257,11 @@ describe('HomeComponent', () => {
   });
 
   describe('logo', () => {
-    it('should render the KUVU light logo image instead of a CSS box', () => {
+    it('should render the KUVU web logo image instead of a CSS box', () => {
       const img = asElement(root.querySelector('.logo-img--full'));
       expect(img).toBeTruthy();
       expect(img.tagName).toBe('IMG');
-      expect(img.getAttribute('src')).toBe('/logo-rediseno/logo-light.png');
+      expect(img.getAttribute('src')).toBe('/logo-rediseno/Logo_Kuvu.png');
       expect(img.getAttribute('alt')).toBe('KUVU');
     });
 

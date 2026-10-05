@@ -29,10 +29,10 @@ describe('NavbarComponent', () => {
     root = fixture.nativeElement as HTMLElement;
   });
 
-  it('should render the KUVU logo built for dark backgrounds', () => {
+  it('should render the KUVU web logo', () => {
     const img = asElement(root.querySelector('.navbar__logo-img'));
     expect(img.tagName).toBe('IMG');
-    expect(img.getAttribute('src')).toBe('/logo-rediseno/logo-dark.png');
+    expect(img.getAttribute('src')).toBe('/logo-rediseno/Logo_Kuvu.png');
     expect(img.getAttribute('alt')).toBe('KUVU');
   });
 });

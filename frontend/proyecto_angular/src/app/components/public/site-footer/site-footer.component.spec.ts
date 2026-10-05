@@ -27,22 +27,22 @@ describe('SiteFooterComponent', () => {
     expect(tagline?.textContent).toContain('Administración inmobiliaria');
   });
 
-  it('should render the KUVU logo with the light variants by default', () => {
+  it('should render the KUVU web and responsive logos', () => {
     const full = root.querySelector('.footer-logo--full') as HTMLElement;
     const responsive = root.querySelector('.footer-logo--responsive') as HTMLElement;
     expect(full.tagName).toBe('IMG');
-    expect(full.getAttribute('src')).toBe(logo.light);
-    expect(responsive.getAttribute('src')).toBe(logo.responsiveLight);
+    expect(full.getAttribute('src')).toBe(logo.web);
+    expect(responsive.getAttribute('src')).toBe(logo.responsive);
     expect(full.getAttribute('alt')).toBe('KUVU');
   });
 
-  it('should swap the footer logo to the dark variants with the theme', () => {
+  it('should keep both footer logos unchanged when the theme is dark', () => {
     fixture.componentInstance.theme.toggle();
     fixture.detectChanges();
     const full = root.querySelector('.footer-logo--full');
     const responsive = root.querySelector('.footer-logo--responsive');
-    expect(full?.getAttribute('src')).toBe(logo.dark);
-    expect(responsive?.getAttribute('src')).toBe(logo.responsiveDark);
+    expect(full?.getAttribute('src')).toBe(logo.web);
+    expect(responsive?.getAttribute('src')).toBe(logo.responsive);
   });
 
   it('should render the public navigation links', () => {

@@ -1,6 +1,4 @@
 export const logo = {
-  light: '/logo-rediseno/logo-light.png',
-  dark: '/logo-rediseno/logo-dark.png',
-  responsiveLight: '/logo-rediseno/logo-responsive-light.png',
-  responsiveDark: '/logo-rediseno/logo-responsive-dark.png'
+  web: '/logo-rediseno/Logo_Kuvu.png',
+  responsive: '/logo-rediseno/Logo_Responsive.png'
 } as const;

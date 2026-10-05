@@ -1,4 +1,4 @@
-import { Component, Signal, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ThemeService } from '../../../services/theme.service';
@@ -14,7 +14,6 @@ import { contactWhatsAppLink, pageNavLinks, siteInfo } from '../../../content/si
 })
 export class SiteFooterComponent {
   readonly theme = inject(ThemeService);
-  readonly isDark: Signal<boolean> = this.theme.isDark;
   readonly logo = logo;
   readonly brandName = siteInfo.name;
   readonly tagline = siteInfo.tagline;

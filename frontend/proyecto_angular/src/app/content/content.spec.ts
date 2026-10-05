@@ -132,16 +132,14 @@ describe('content modules', () => {
   });
 
   describe('logo', () => {
-    it('should expose the four logo variants under /logo-rediseno/', () => {
-      expect(logo.light).toBe('/logo-rediseno/logo-light.png');
-      expect(logo.dark).toBe('/logo-rediseno/logo-dark.png');
-      expect(logo.responsiveLight).toBe('/logo-rediseno/logo-responsive-light.png');
-      expect(logo.responsiveDark).toBe('/logo-rediseno/logo-responsive-dark.png');
+    it('should expose the web and responsive logos under /logo-rediseno/', () => {
+      expect(logo.web).toBe('/logo-rediseno/Logo_Kuvu.png');
+      expect(logo.responsive).toBe('/logo-rediseno/Logo_Responsive.png');
     });
 
-    it('should keep the four variants distinct', () => {
+    it('should keep the two logos distinct', () => {
       const variants = Object.values(logo);
-      expect(new Set(variants).size).toBe(4);
+      expect(new Set(variants).size).toBe(2);
     });
   });
 

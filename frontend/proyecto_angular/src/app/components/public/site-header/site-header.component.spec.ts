@@ -32,31 +32,31 @@ describe('SiteHeaderComponent', () => {
   });
 
   describe('brand', () => {
-    it('should render the KUVU full logo linking to the home route', () => {
+    it('should render the KUVU web logo linking to the home route', () => {
       const link = asElement(root.querySelector('.logo-link'));
       const full = asElement(link.querySelector('.logo-img--full'));
       expect(full.tagName).toBe('IMG');
-      expect(full.getAttribute('src')).toBe(logo.light);
+      expect(full.getAttribute('src')).toBe(logo.web);
       expect(full.getAttribute('alt')).toBe('KUVU');
       expect(link.getAttribute('href')).toBe('/');
     });
 
-    it('should render the responsive logo variant next to the full one', () => {
+    it('should render the responsive logo next to the web one', () => {
       const link = asElement(root.querySelector('.logo-link'));
       const responsive = asElement(link.querySelector('.logo-img--responsive'));
       expect(responsive.tagName).toBe('IMG');
-      expect(responsive.getAttribute('src')).toBe(logo.responsiveLight);
+      expect(responsive.getAttribute('src')).toBe(logo.responsive);
       expect(responsive.getAttribute('alt')).toBe('KUVU');
     });
 
-    it('should swap both logo variants to dark when the theme is dark', () => {
+    it('should keep both logos unchanged when the theme is dark', () => {
       component.theme.toggle();
       fixture.detectChanges();
       const link = asElement(root.querySelector('.logo-link'));
       const full = link.querySelector('.logo-img--full');
       const responsive = link.querySelector('.logo-img--responsive');
-      expect(full?.getAttribute('src')).toBe(logo.dark);
-      expect(responsive?.getAttribute('src')).toBe(logo.responsiveDark);
+      expect(full?.getAttribute('src')).toBe(logo.web);
+      expect(responsive?.getAttribute('src')).toBe(logo.responsive);
     });
 
     it('should not render redundant text next to the logo', () => {

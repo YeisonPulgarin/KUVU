@@ -60,10 +60,10 @@ describe('LoginComponent', () => {
   });
 
   describe('PANTALLA 2', () => {
-    it('should render the KUVU logo built for dark backgrounds', () => {
+    it('should render the KUVU web logo', () => {
       const img = asElement(root.querySelector('.brand-logo-img'));
       expect(img.tagName).toBe('IMG');
-      expect(img.getAttribute('src')).toBe('/logo-rediseno/logo-dark.png');
+      expect(img.getAttribute('src')).toBe('/logo-rediseno/Logo_Kuvu.png');
       expect(img.getAttribute('alt')).toBe('KUVU');
     });
 

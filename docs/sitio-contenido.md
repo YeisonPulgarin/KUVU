@@ -78,7 +78,7 @@ El CTA de contacto es WhatsApp: `https://wa.me/573223192760?text=<mensaje prelle
 - No hay formulario de contacto ni página `/contacto`: el contacto es WhatsApp.
 - No hay blog, legal (T&C / política de datos) ni precios/planes en este cambio.
 - No hay SEO avanzado: solo `title`, `meta description` y el favicon existente
-  (`/Logo_Kuvu.jpeg`). Sin JSON-LD, sitemap ni Open Graph.
+  (`/logo-rediseno/Logo_Responsive.png`). Sin JSON-LD, sitemap ni Open Graph.
 - El contenido de seguridad es solo descriptivo: no se publica ningún mecanismo interno.
 - Deuda registrada en `refine` y `secure`: la columna de chrome (`.page-layout`,
   `.container`, `.page-hero`) está duplicada entre `nosotros` y `preguntas-frecuentes`

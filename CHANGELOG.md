@@ -14,13 +14,13 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com) y este proyecto 
   preferencia `prefers-reduced-motion`.
 - Nueva pantalla de selección de inmobiliaria (`/acceder`) con copy de bienvenida, reutilizando el
   buscador y la lista de empresas.
-- Se incorpora el logo real de KUVU (`Logo_Kuvu.jpeg`) en la página de inicio, el login, la selección de empresa y el navbar interno, reemplazando los cuadros CSS y el emoji anteriores.
+- Se incorpora el logo real de KUVU (`Logo_Kuvu.png`) en la página de inicio, el login, la selección de empresa y el navbar interno, reemplazando los cuadros CSS y el emoji anteriores.
 - La página de inicio ofrece un botón para alternar entre tema claro y oscuro. La preferencia queda guardada en el navegador, se recuerda entre visitas y se aplica sin destello al cargar.
 - La página de inicio se amplía con cinco secciones nuevas, en orden: cómo funciona, beneficios por rol (dueño/gerente vs equipo operativo), seguridad y soporte, el origen de KUVU (tres estudiantes, biblioteca de su universidad) y una FAQ breve con enlace a la página completa de preguntas frecuentes.
 - Nueva página pública **Nosotros** (`/nosotros`) que explica quién es KUVU, cómo opera, con quién trabaja y su origen, y cierra con un botón de contacto por WhatsApp.
 - Nueva página pública **Preguntas frecuentes** (`/preguntas-frecuentes`) con todas las preguntas agrupadas por tema, cada una con su respuesta visible.
 - Cada página pública del sitio (inicio, nosotros, preguntas frecuentes) define su propio título y descripción (`title` + `meta description`).
-- El logo del sitio ahora tiene 4 variantes (completo y símbolo, cada una para tema claro y oscuro) y el favicon pasó a ser un PNG del símbolo.
+- El logo del sitio tiene 2 variantes: el logo web (completo) en escritorio y el símbolo en móvil, con el favicon apuntando al símbolo.
 
 ### Changed
 
@@ -36,7 +36,7 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com) y este proyecto 
 - La página de inicio se rediseñó con la identidad visual de KUVU: tipografía Geist, paleta verde de una sola escala, secciones con más aire, animaciones de entrada suaves (que se desactivan si el sistema pide movimiento reducido) y la oferta de servicios presentada como una lista editorial en lugar de tarjetas repetidas.
 - La navegación de la página de inicio queda con una sola llamada a la acción, "Ingresar", con destino a `/acceder`; antes el mismo destino aparecía con etiquetas distintas.
 - Todas las páginas públicas (inicio, nosotros y preguntas frecuentes) comparten el mismo encabezado y pie de página con navegación, toggle de tema claro/oscuro y acceso por WhatsApp; la página de inicio ahora incluye un pie de página.
-- El logo del sitio se rediseñó como sistema de variantes: se adapta al tema claro/oscuro (alternando al tocar el toggle, sin recargar) y muestra solo el símbolo en móvil; el header y el footer públicos usan las variantes según tema y viewport, mientras que la selección de empresa, el login y el navbar interno usan la variante oscura sobre sus fondos oscuros. Reemplaza la imagen única anterior.
+- El logo del sitio se rediseñó como sistema de variantes: el header y el footer públicos alternan entre el logo web y el símbolo según el viewport (768px), y muestran el mismo logo en tema claro y oscuro; la selección de empresa, el login y el navbar interno usan el logo web. El favicon es el símbolo en PNG. Reemplaza la imagen única anterior.
 
 ### Removed
 

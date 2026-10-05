@@ -5,12 +5,12 @@
     <div class="logo-area">
       <a routerLink="/" class="logo-link" aria-label="{{ brandName }}">
         <img
-          [src]="isDark() ? logo.dark : logo.light"
+          [src]="logo.web"
           [alt]="brandName"
           class="logo-img logo-img--full"
         />
         <img
-          [src]="isDark() ? logo.responsiveDark : logo.responsiveLight"
+          [src]="logo.responsive"
           [alt]="brandName"
           class="logo-img logo-img--responsive"
         />
