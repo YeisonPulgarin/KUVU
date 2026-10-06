@@ -2,11 +2,12 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { SiteHeaderComponent } from '../../public/site-header/site-header.component';
+import { BreadcrumbComponent } from '../../public/breadcrumb/breadcrumb.component';
 import { SiteFooterComponent } from '../../public/site-footer/site-footer.component';
 import { RevealDirective } from '../../../directives/reveal.directive';
 import { PageMetaService } from '../../../services/page-meta.service';
 import { faqGroups } from '../../../content';
-import { pageNavLinks } from '../../../content/site';
+import { breadcrumbFor, pageNavLinks } from '../../../content/site';
 
 @Component({
   selector: 'app-preguntas-frecuentes',
@@ -14,6 +15,7 @@ import { pageNavLinks } from '../../../content/site';
   imports: [
     CommonModule,
     RouterModule,
+    BreadcrumbComponent,
     SiteHeaderComponent,
     SiteFooterComponent,
     RevealDirective
@@ -23,6 +25,7 @@ import { pageNavLinks } from '../../../content/site';
 })
 export class PreguntasFrecuentesComponent implements OnInit {
   readonly pageMeta = inject(PageMetaService);
+  readonly breadcrumb = breadcrumbFor('/preguntas-frecuentes');
   readonly groups = faqGroups;
   readonly navLinks = pageNavLinks;
 

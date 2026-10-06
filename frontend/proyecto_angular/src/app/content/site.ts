@@ -32,3 +32,16 @@ export function buildWhatsAppLink(phone: string, message: string): string {
 }
 
 export const contactWhatsAppLink = buildWhatsAppLink(contact.whatsappNumber, contact.whatsappMessage);
+
+/**
+ * Ruta de dos niveles ("Inicio › Página") para el breadcrumb de una página pública interna.
+ * Toma etiquetas y rutas de `pageNavLinks`, así el breadcrumb no diverge del menú.
+ */
+export function breadcrumbFor(href: string): readonly NavItem[] {
+  const home = pageNavLinks.find((link) => link.href === '/');
+  const page = pageNavLinks.find((link) => link.href === href);
+  if (!home || !page || page === home) {
+    throw new Error(`breadcrumbFor: "${href}" no es una página pública interna de pageNavLinks`);
+  }
+  return [home, page];
+}

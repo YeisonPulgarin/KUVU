@@ -116,4 +116,31 @@ describe('NosotrosComponent', () => {
       expect(root.querySelectorAll('.origin .origin-paragraph[data-reveal]').length).toBe(3);
     });
   });
+
+  // breadcrumb-y-cta-legible, slice breadcrumb (CA-3, CA-6, CA-7).
+  describe('breadcrumb', () => {
+    it('should render "Inicio › Nosotros" inside the page hero, before the h1', () => {
+      const hero = asElement(root.querySelector('.page-hero'));
+      const nav = asElement(hero.querySelector('nav[aria-label="Ruta de navegación"]'));
+      const h1 = asElement(hero.querySelector('h1'));
+      expect(nav.textContent?.replace(/\s+/g, ' ').trim()).toBe('Inicio › Nosotros');
+      expect(nav.compareDocumentPosition(h1) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    });
+
+    it('should publish a single BreadcrumbList with two absolute items', () => {
+      const scripts = document.querySelectorAll('script[type="application/ld+json"]');
+      expect(scripts.length).toBe(1);
+      const data = JSON.parse(scripts[0].textContent ?? '');
+      expect(data['@type']).toBe('BreadcrumbList');
+      expect(data.itemListElement.map((i: { item: string }) => i.item)).toEqual([
+        `${location.origin}/`,
+        `${location.origin}/nosotros`
+      ]);
+    });
+
+    it('should remove the BreadcrumbList when the page is destroyed', () => {
+      fixture.destroy();
+      expect(document.querySelector('script[type="application/ld+json"]')).toBeNull();
+    });
+  });
 });

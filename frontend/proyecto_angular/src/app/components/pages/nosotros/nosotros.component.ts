@@ -2,6 +2,8 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { SiteHeaderComponent } from '../../public/site-header/site-header.component';
+import { BreadcrumbComponent } from '../../public/breadcrumb/breadcrumb.component';
+import { breadcrumbFor } from '../../../content/site';
 import { SiteFooterComponent } from '../../public/site-footer/site-footer.component';
 import { RevealDirective } from '../../../directives/reveal.directive';
 import { ResponsiveImageComponent } from '../../public/responsive-image/responsive-image.component';
@@ -15,6 +17,7 @@ import { contactWhatsAppLink, pageNavLinks, siteInfo } from '../../../content/si
   imports: [
     CommonModule,
     RouterModule,
+    BreadcrumbComponent,
     SiteHeaderComponent,
     SiteFooterComponent,
     RevealDirective,
@@ -25,6 +28,7 @@ import { contactWhatsAppLink, pageNavLinks, siteInfo } from '../../../content/si
 })
 export class NosotrosComponent implements OnInit {
   readonly pageMeta = inject(PageMetaService);
+  readonly breadcrumb = breadcrumbFor('/nosotros');
   readonly brandName = siteInfo.name;
   readonly navLinks = pageNavLinks;
   readonly sections = aboutSections;

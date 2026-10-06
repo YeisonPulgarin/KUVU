@@ -24,6 +24,7 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com) y este proyecto 
 - Nueva página pública **Preguntas frecuentes** (`/preguntas-frecuentes`) con todas las preguntas agrupadas por tema, cada una con su respuesta visible.
 - Cada página pública del sitio (inicio, nosotros, preguntas frecuentes) define su propio título y descripción (`title` + `meta description`).
 - El logo del sitio tiene 2 variantes: el logo web (completo) en escritorio y el símbolo en móvil, con el favicon apuntando al símbolo.
+- Las páginas **Nosotros** y **Preguntas frecuentes** muestran un breadcrumb ("Inicio › Nosotros", "Inicio › Preguntas frecuentes") arriba del título, con enlace a la página de inicio, y publican esa ruta como datos estructurados schema.org (`BreadcrumbList`) para buscadores.
 
 ### Changed
 
@@ -40,6 +41,11 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com) y este proyecto 
 - La navegación de la página de inicio queda con una sola llamada a la acción, "Ingresar", con destino a `/acceder`; antes el mismo destino aparecía con etiquetas distintas.
 - Todas las páginas públicas (inicio, nosotros y preguntas frecuentes) comparten el mismo encabezado y pie de página con navegación, toggle de tema claro/oscuro y acceso por WhatsApp; la página de inicio ahora incluye un pie de página.
 - El logo del sitio se rediseñó como sistema de variantes: el header y el footer públicos alternan entre el logo web y el símbolo según el viewport (768px), y muestran el mismo logo en tema claro y oscuro; la selección de empresa, el login y el navbar interno usan el logo web. El favicon es el símbolo en PNG. Reemplaza la imagen única anterior.
+
+### Fixed
+
+- La sección final de la página de inicio ("¿Listo para administrar tus inmobiliarias?") se lee en modo claro: el titular y el párrafo blancos quedaban sobre un fondo gris claro casi del mismo tono. La banda mantiene su fondo verde.
+- El botón "Ingresar" de esa sección se lee: muestra texto blanco sobre el azul de los botones principales (antes, texto verde oscuro sobre azul) y un contorno blanco visible al navegar con teclado.
 
 ### Removed
 

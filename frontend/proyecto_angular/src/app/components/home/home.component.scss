@@ -377,7 +377,8 @@ $ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 // ─── CTA final ────────────────────────────────────────────────
 .cta-final {
   @apply relative overflow-hidden;
-  background-color: var(--color-brand-700);
+  // Fallback: Tailwind v4 puede no emitir el token al CSS global (mismo patrón que team-band).
+  background-color: var(--color-brand-700, #2f4a2f);
   color: #fff;
 
   .cta-final-inner {
@@ -399,18 +400,21 @@ $ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
     color: rgba(255, 255, 255, 0.85);
   }
 
+  // Fondo: gradiente azul de .btn-primary (igual que hero y header). Texto blanco ≥ 4.5:1.
   .cta-button {
     @apply inline-flex items-center rounded-pill px-10 py-4 text-base font-bold no-underline;
-    background-color: #fff;
-    color: var(--color-brand-700);
-    transition: transform 0.2s $ease-out-expo, background-color 0.2s $ease-out-expo;
+    color: #fff;
+    transition: transform 0.2s $ease-out-expo, opacity 0.2s $ease-out-expo;
 
-    &:hover {
-      transform: translateY(-2px);
-      background-color: var(--color-brand-100);
-    }
+    &:hover { transform: translateY(-2px); }
 
     &:active { transform: translateY(0); }
+
+    // El contorno global (verde medio) no llega a 3:1 sobre la banda; blanco sí.
+    &:focus-visible {
+      outline: 2px solid #fff;
+      outline-offset: 3px;
+    }
   }
 }
 

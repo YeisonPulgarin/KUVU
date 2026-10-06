@@ -92,4 +92,31 @@ describe('PreguntasFrecuentesComponent', () => {
       expect(root.querySelectorAll('.faq-group[data-reveal]').length).toBe(faqGroups.length);
     });
   });
+
+  // breadcrumb-y-cta-legible, slice breadcrumb (CA-3, CA-6, CA-7).
+  describe('breadcrumb', () => {
+    it('should render "Inicio › Preguntas frecuentes" inside the page hero, before the h1', () => {
+      const hero = asElement(root.querySelector('.page-hero'));
+      const nav = asElement(hero.querySelector('nav[aria-label="Ruta de navegación"]'));
+      const h1 = asElement(hero.querySelector('h1'));
+      expect(nav.textContent?.replace(/\s+/g, ' ').trim()).toBe('Inicio › Preguntas frecuentes');
+      expect(nav.compareDocumentPosition(h1) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    });
+
+    it('should publish a single BreadcrumbList with two absolute items', () => {
+      const scripts = document.querySelectorAll('script[type="application/ld+json"]');
+      expect(scripts.length).toBe(1);
+      const data = JSON.parse(scripts[0].textContent ?? '');
+      expect(data['@type']).toBe('BreadcrumbList');
+      expect(data.itemListElement.map((i: { name: string; item: string }) => [i.name, i.item])).toEqual([
+        ['Inicio', `${location.origin}/`],
+        ['Preguntas frecuentes', `${location.origin}/preguntas-frecuentes`]
+      ]);
+    });
+
+    it('should remove the BreadcrumbList when the page is destroyed', () => {
+      fixture.destroy();
+      expect(document.querySelector('script[type="application/ld+json"]')).toBeNull();
+    });
+  });
 });

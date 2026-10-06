@@ -35,7 +35,12 @@ por la propia SPA (sin API), y la app autenticada hoy consume datos mock (los m�
 - `src/app/components/home/` — la home: hero + secciones que leen de `content/`, header y
   footer compartidos.
 - `src/app/services/theme.service.ts` — tema claro/oscuro persistido en `kuvu-theme`.
-- `src/app/services/page-meta.service.ts` — `title` y `meta description` por página.
+- `src/app/services/page-meta.service.ts` — `title` y `meta description` por página, y el
+  JSON-LD `BreadcrumbList` (`setBreadcrumb`/`clearBreadcrumb`, script único en `<head>`).
+- `src/app/components/public/breadcrumb/` — `app-breadcrumb`: "Inicio › {Página}" en el
+  `.page-hero` de `/nosotros` y `/preguntas-frecuentes`. Los ítems salen de
+  `breadcrumbFor(href)` (`content/site.ts`, sobre `pageNavLinks`). El componente publica el
+  JSON-LD al montarse y lo retira al destruirse.
 - `src/app/directives/reveal.directive.ts` — reveals `[data-reveal]` con
   `IntersectionObserver` y respeto de `prefers-reduced-motion`.
 - `frontend/proyecto_angular/public/Imagenes_web/` — imágenes del sitio público en variantes
@@ -78,6 +83,8 @@ Visitante → SPA →
 ```
 
 Todas renderizan `SiteHeader` + `SiteFooter`; los reveals se disparan por IntersectionObserver.
+Las dos páginas secundarias muestran `app-breadcrumb` arriba del `h1`, que mientras está montado
+mantiene un único `BreadcrumbList` en `<head>` con URLs absolutas sobre `location.origin`.
 
 ### Acceso autenticado
 
@@ -121,6 +128,21 @@ Las rutas de gestión pasan por `authGuard` (cualquier rol) y, locales/usuarios,
   gradiente de `.btn-primary`.
 - **Sitio público sin API**: textos estáticos en el bundle. Tradeoff: el contenido no cambia
   sin redeploy; nada que proteger expuesto ni latencia de red en el sitio.
+- **Patrón `var(--token, valor)` para tokens de marca en estilos de componentes**: Tailwind v4
+  emite una variable de `@theme` solo si encuentra su nombre en los archivos que escanea
+  (`.ts`/`.html`), y los usos en SCSS de componentes no cuentan. En modo claro el build emite
+  `--color-brand-700` (porque su nombre figura en un archivo escaneado) y `--color-brand-500`,
+  pero no `--color-home-*`, `--radius-*` ni el resto de `--color-brand-*`. La banda `cta-final`,
+  `team-band` y `app-breadcrumb` declaran fallback literal. Los nombres de tokens no se
+  escriben en `.ts`/`.html`: los tests los arman por partes. Tradeoff: el valor se repite en
+  cada punto que lo necesita, a cambio de no cambiar el aspecto del resto de la home.
+- **Breadcrumb visual y JSON-LD desde una sola fuente**: `app-breadcrumb` recibe los ítems y
+  los publica vía `PageMetaService`. Tradeoff: un componente presentacional escribe en
+  `<head>`, a cambio de que el visual y los datos estructurados no puedan divergir.
+- **Botones primarios con gradiente global**: los botones "Ingresar" del hero, el header y
+  `cta-final` toman el gradiente de `.btn-primary` (`--color-primario` → `--color-secundario`)
+  con texto blanco. El de `cta-final` da 4.72 : 1 en el extremo claro (`#3A6FD8`): aclarar
+  `--color-secundario` lo baja de 4.5 : 1.
 
 ## Límites y no-goals
 
@@ -132,3 +154,7 @@ Las rutas de gestión pasan por `authGuard` (cualquier rol) y, locales/usuarios,
 - Deuda registrada: `pagos.component.ts` usa `document.write` (work item de seguridad
   dedicado); la columna de chrome de las páginas secundarias está duplicada hasta una tercera
   página del mismo tipo.
+- El JSON-LD del breadcrumb usa el origen donde corre la app: sin dominio de producción, las
+  URLs son locales. No hay SSR, así que el JSON-LD existe después del render en el cliente.
+- Deuda registrada: actualizar `@angular/*` a ≥ 21.2.24 (aviso de DoS solo en SSR, no
+  alcanzable hoy; prioridad alta si se agrega SSR).
