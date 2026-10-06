@@ -222,13 +222,59 @@ describe('HomeComponent', () => {
       expect(link.textContent).toContain('preguntas frecuentes');
     });
 
-    it('should keep the five new sections in the expected order', () => {
+    it('should keep the new sections in the expected order, with the team band before the origin', () => {
+      const expected = ['como-funciona', 'beneficios', 'seguridad', 'equipo', 'origen', 'faq'];
       const ids = Array.from(root.querySelectorAll('.home-layout section'))
         .map((el) => el.id)
-        .filter((id) =>
-          ['como-funciona', 'beneficios', 'seguridad', 'origen', 'faq'].includes(id)
-        );
-      expect(ids).toEqual(['como-funciona', 'beneficios', 'seguridad', 'origen', 'faq']);
+        .filter((id) => expected.includes(id));
+      expect(ids).toEqual(expected);
+    });
+
+    it('should place the team band right after the companies section', () => {
+      const ids = Array.from(root.querySelectorAll('.home-layout > section')).map((el) => el.id);
+      expect(ids.indexOf('equipo')).toBe(ids.indexOf('companias') + 1);
+    });
+  });
+
+  describe('team band', () => {
+    let band: HTMLElement;
+
+    beforeEach(() => {
+      band = asElement(root.querySelector('#equipo'));
+    });
+
+    it('should render the team heading as an H2 labelling the section', () => {
+      const title = asElement(band.querySelector('h2'));
+      expect(title.textContent?.trim()).toBe('El equipo detrás de KUVU');
+      expect(band.getAttribute('aria-labelledby')).toBe(title.id);
+    });
+
+    it('should list the three members left to right as in the photo', () => {
+      const caption = band.querySelector('.team-band-caption')?.textContent ?? '';
+      const positions = ['Wilson Solano', 'Carlos Arciniegas', 'Yeison Pulgarin'].map((name) =>
+        caption.indexOf(name)
+      );
+      positions.forEach((p) => expect(p).toBeGreaterThanOrEqual(0));
+      expect([...positions].sort((a, b) => a - b)).toEqual(positions);
+    });
+
+    it('should link to /nosotros with a descriptive accessible label', () => {
+      const link = asElement(band.querySelector('a.team-band-link'));
+      expect(link.getAttribute('href')).toBe('/nosotros');
+      expect(link.textContent?.trim()).toBe('Conocé al equipo');
+      expect(link.getAttribute('aria-label')).toContain('Nosotros');
+    });
+
+    it('should render the photo as a decorative cover background', () => {
+      const img = asElement(band.querySelector('.team-band-media app-responsive-image picture img'));
+      expect(img.getAttribute('alt')).toBe('');
+      expect(img.classList).toContain('responsive-image__img--cover');
+      expect(img.getAttribute('sizes')).toBe('100vw');
+      expect(img.getAttribute('src')).toBe('/Imagenes_web/equipo-ycw-1536.jpeg');
+    });
+
+    it('should mark the text block for reveal', () => {
+      expect(band.querySelector('.team-band-content[data-reveal]')).toBeTruthy();
     });
   });
 

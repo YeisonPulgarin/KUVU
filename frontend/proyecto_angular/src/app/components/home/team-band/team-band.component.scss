@@ -1,0 +1,108 @@
+@reference "../../../../styles.css";
+
+$ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+// ─── Equipo (banda full-bleed) ───────────────────────────────
+// Banda oscura en ambos temas: texto blanco fijo sobre velo de marca.
+// Mobile: foto completa 3:2 + texto sobre verde de marca (un recorte cover
+// dejaría afuera a los integrantes laterales). Desktop: foto de fondo.
+//
+// --team-band-green lleva fallback literal: Tailwind v4 no emite
+// --color-brand-700 al CSS global (solo se usa en estilos de componentes),
+// y sin fallback la banda queda sin fondo ni velo.
+:host {
+  --team-band-green: var(--color-brand-700, #2f4a2f);
+  display: block;
+  @apply relative overflow-hidden;
+  background-color: var(--team-band-green);
+  color: #fff;
+
+  .team-band-media {
+    aspect-ratio: 3 / 2;
+    --responsive-image-position: center 10%;
+
+    > app-responsive-image {
+      height: 100%;
+    }
+  }
+
+  .team-band-content {
+    @apply relative flex flex-col items-start gap-4 py-12;
+  }
+
+  .team-band-title {
+    @apply m-0 font-extrabold text-balance;
+    font-size: clamp(1.875rem, 4.5vw, 3.25rem);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    max-width: 18ch;
+    color: #fff;
+  }
+
+  .team-band-lead {
+    @apply m-0 text-base leading-relaxed text-pretty max-w-xl;
+    color: rgb(255 255 255 / 0.9);
+
+    @media (width >= 768px) {
+      @apply text-lg;
+    }
+  }
+
+  .team-band-caption {
+    @apply m-0 text-sm font-semibold uppercase;
+    letter-spacing: 0.12em;
+    color: rgb(255 255 255 / 0.85);
+  }
+
+  .team-band-link {
+    @apply inline-flex items-center rounded-pill px-8 py-3 mt-2 text-base font-bold no-underline;
+    color: #fff;
+    border: 2px solid #fff;
+    transition: transform 0.2s $ease-out-expo, background-color 0.2s $ease-out-expo;
+
+    &:hover {
+      transform: translateY(-2px);
+      background-color: var(--color-brand-500);
+    }
+
+    &:active { transform: translateY(0); }
+  }
+
+  @media (width >= 768px) {
+    @apply flex items-end;
+    min-height: clamp(28rem, 72vh, 44rem);
+
+    .team-band-media {
+      @apply absolute inset-0;
+      aspect-ratio: auto;
+
+      // Velo: denso en el 0-60 % inferior (bloque de texto, >= 4.5:1 aun
+      // sobre las camisas blancas) y liviano arriba (caras y logo).
+      &::after {
+        content: '';
+        @apply absolute inset-0 pointer-events-none;
+        background: linear-gradient(
+          to top,
+          color-mix(in srgb, var(--team-band-green) 88%, #000) 0%,
+          color-mix(in srgb, var(--team-band-green) 90%, transparent) 30%,
+          color-mix(in srgb, var(--team-band-green) 84%, transparent) 60%,
+          rgb(0 0 0 / 0.2) 80%,
+          rgb(0 0 0 / 0.15) 100%
+        );
+      }
+    }
+
+    .team-band-content {
+      @apply w-full py-16;
+    }
+  }
+}
+
+// Contenedor equivalente al de la home (max-w-6xl + gutters).
+.container {
+  @apply max-w-6xl mx-auto px-4;
+
+  @media (width >= 768px) {
+    @apply px-6;
+  }
+}

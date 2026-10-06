@@ -66,6 +66,33 @@ describe('NosotrosComponent', () => {
     });
   });
 
+  describe('team photo', () => {
+    it('should render the full team photo between the about sections and the origin', () => {
+      const sections = Array.from(root.querySelectorAll('.page-layout > section')).map(
+        (s) => s.className
+      );
+      const team = sections.indexOf('team');
+      expect(team).toBeGreaterThan(sections.indexOf('about-sections'));
+      expect(team).toBeLessThan(sections.indexOf('origin'));
+
+      const img = asElement(root.querySelector('.team figure app-responsive-image picture img'));
+      expect(img.classList).not.toContain('responsive-image__img--cover');
+      expect(img.getAttribute('src')).toBe('/Imagenes_web/equipo-ycw-1536.jpeg');
+      expect(img.getAttribute('sizes')).toBe('(min-width: 1152px) 1104px, 100vw');
+    });
+
+    it('should describe the photo with an alt text naming YCW and the members', () => {
+      const alt = asElement(root.querySelector('.team picture img')).getAttribute('alt') ?? '';
+      expect(alt).toContain('YCW');
+      expect(alt).toContain('Wilson Solano');
+    });
+
+    it('should caption the photo with the members left to right', () => {
+      const caption = asElement(root.querySelector('.team figcaption'));
+      expect(caption.textContent?.trim()).toBe('Wilson Solano · Carlos Arciniegas · Yeison Pulgarin');
+    });
+  });
+
   describe('contact CTA', () => {
     it('should render a WhatsApp contact link with the pre-filled message', () => {
       const cta = asElement(root.querySelector('.btn-whatsapp'));

@@ -9,6 +9,9 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com) y este proyecto 
 
 ### Added
 
+- La página de inicio muestra la foto del equipo YCW Systems (Wilson Solano, Carlos Arciniegas y Yeison Pulgarin) en una banda a ancho completo, "El equipo detrás de KUVU", entre "Compañías que confían" y "El origen de KUVU", con un botón hacia Nosotros. En móvil la foto se ve completa con el texto debajo.
+- La página **Nosotros** muestra la foto completa del equipo con sus nombres al pie.
+- Las imágenes del sitio se sirven en WebP con respaldo JPEG y en el tamaño adecuado a cada pantalla, con carga diferida; un script (`scripts/generate-image-variants.py`) genera las variantes de nuevas imágenes de `public/Imagenes_web/`.
 - Intro cinematográfica de ~5 segundos al entrar a `/acceder`: una casa moderna se ensambla en 3D
   (estética navy + blueprint cian/teal + glow ámbar), una vez por carga de la app y respetando la
   preferencia `prefers-reduced-motion`.

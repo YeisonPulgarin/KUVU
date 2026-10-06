@@ -50,6 +50,28 @@ npx ng test --watch=false --browsers=ChromeHeadless
 
 ---
 
+## 🖼️ Imágenes del sitio público
+
+Las imágenes viven en `public/Imagenes_web/` como variantes `{nombre-base}-{ancho}.{webp|jpeg}`
+y se sirven con el componente `app-responsive-image` (WebP con respaldo JPEG, carga diferida).
+Para sumar una imagen nueva (requiere Python 3 + Pillow, `pip install pillow`):
+
+```bash
+# 1. Generar las variantes 640/1024/1536 (solo las que no superen el ancho original)
+python scripts/generate-image-variants.py "ruta/a/Original.jpeg" nombre-base --keep-original-as-max
+
+# 2. Declararla en src/app/content/ como SiteImage
+#    { basePath: '/Imagenes_web/nombre-base', widths: [640, 1024, 1536],
+#      width: <ancho original>, height: <alto original>, alt: '...', caption?: '...' }
+
+# 3. Renderizarla
+#    <app-responsive-image [image]="miImagen" sizes="100vw"></app-responsive-image>
+```
+
+Usar nombres sin espacios y borrar el original de `public/` si no se usa (se publica tal cual).
+
+---
+
 ## 🗂️ Estructura del proyecto
 
 ```
@@ -79,11 +101,13 @@ src/
     ├── components/
     │   ├── public/
     │   │   ├── site-header/          # Header compartido (nav, tema, WhatsApp)
-    │   │   └── site-footer/          # Footer compartido
+    │   │   ├── site-footer/          # Footer compartido
+    │   │   └── responsive-image/     # <picture> WebP + JPEG para imágenes de content/
     │   ├── pages/
     │   │   ├── nosotros/             # Página pública /nosotros
     │   │   └── preguntas-frecuentes/ # Página pública /preguntas-frecuentes
     │   ├── home/                     # Página pública / (hero + secciones de content/)
+    │   │   └── team-band/            # Banda "El equipo detrás de KUVU"
     │   ├── shared/
     │   │   ├── auth-intro/           # Intro cinematográfica CSS 3D (casa en ensamblaje)
     │   │   ├── navbar/               # Barra de navegación dinámica por empresa

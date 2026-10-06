@@ -22,6 +22,20 @@
     </div>
   </section>
 
+  <!-- ── Equipo ──────────────────────────────────────────────── -->
+  <section class="team">
+    <div class="container">
+      <figure class="team-figure" data-reveal>
+        <app-responsive-image
+          class="team-photo"
+          [image]="team.image"
+          sizes="(min-width: 1152px) 1104px, 100vw"
+        ></app-responsive-image>
+        <figcaption class="team-caption">{{ team.image.caption }}</figcaption>
+      </figure>
+    </div>
+  </section>
+
   <!-- ── Origen ──────────────────────────────────────────────── -->
   <section class="origin">
     <div class="container">

@@ -9,3 +9,4 @@ export * from './security';
 export * from './origin';
 export * from './about';
 export * from './faq';
+export * from './team';

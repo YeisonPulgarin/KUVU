@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { SiteHeaderComponent } from '../public/site-header/site-header.component';
 import { SiteFooterComponent } from '../public/site-footer/site-footer.component';
 import { RevealDirective } from '../../directives/reveal.directive';
+import { TeamBandComponent } from './team-band/team-band.component';
 import {
   benefitsByRole,
   companies,
@@ -22,7 +23,8 @@ import {
     RouterModule,
     SiteHeaderComponent,
     SiteFooterComponent,
-    RevealDirective
+    RevealDirective,
+    TeamBandComponent
   ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']

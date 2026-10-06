@@ -4,8 +4,9 @@ import { RouterModule } from '@angular/router';
 import { SiteHeaderComponent } from '../../public/site-header/site-header.component';
 import { SiteFooterComponent } from '../../public/site-footer/site-footer.component';
 import { RevealDirective } from '../../../directives/reveal.directive';
+import { ResponsiveImageComponent } from '../../public/responsive-image/responsive-image.component';
 import { PageMetaService } from '../../../services/page-meta.service';
-import { aboutOrigin, aboutSections } from '../../../content';
+import { aboutOrigin, aboutSections, team } from '../../../content';
 import { contactWhatsAppLink, pageNavLinks, siteInfo } from '../../../content/site';
 
 @Component({
@@ -16,7 +17,8 @@ import { contactWhatsAppLink, pageNavLinks, siteInfo } from '../../../content/si
     RouterModule,
     SiteHeaderComponent,
     SiteFooterComponent,
-    RevealDirective
+    RevealDirective,
+    ResponsiveImageComponent
   ],
   templateUrl: './nosotros.component.html',
   styleUrls: ['./nosotros.component.scss']
@@ -27,6 +29,7 @@ export class NosotrosComponent implements OnInit {
   readonly navLinks = pageNavLinks;
   readonly sections = aboutSections;
   readonly origin = aboutOrigin;
+  readonly team = team;
   readonly whatsappLink = contactWhatsAppLink;
 
   ngOnInit(): void {

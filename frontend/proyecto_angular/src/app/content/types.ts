@@ -60,3 +60,24 @@ export interface OriginSection {
   readonly title: string;
   readonly paragraphs: readonly string[];
 }
+
+/**
+ * Imagen responsive servida desde `public/`. Los archivos siguen la convención
+ * `{basePath}-{ancho}.{webp|jpeg}` (ver `scripts/generate-image-variants.py`).
+ */
+export interface SiteImage {
+  readonly basePath: string;
+  readonly widths: readonly number[];
+  readonly width: number;
+  readonly height: number;
+  readonly alt: string;
+  readonly caption?: string;
+}
+
+export interface TeamSection {
+  readonly title: string;
+  readonly lead: string;
+  readonly linkLabel: string;
+  readonly members: readonly string[];
+  readonly image: SiteImage;
+}

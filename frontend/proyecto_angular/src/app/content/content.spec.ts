@@ -13,7 +13,8 @@ import {
   origin,
   securityHighlights,
   services,
-  siteInfo
+  siteInfo,
+  team
 } from './index';
 
 describe('content modules', () => {
@@ -128,6 +129,42 @@ describe('content modules', () => {
     it('should not claim invented figures or awards', () => {
       const text = origin.paragraphs.join(' ').toLowerCase();
       expect(text).not.toMatch(/\d+\s*\+?\s*(clientes|empresas|contratos|años)/);
+    });
+  });
+
+  describe('team', () => {
+    it('should present the team section with its title and link label', () => {
+      expect(team.title).toBe('El equipo detrás de KUVU');
+      expect(team.linkLabel).toBe('Conocé al equipo');
+      expect(team.lead.trim().length).toBeGreaterThan(0);
+    });
+
+    it('should list the members left to right as they appear in the photo', () => {
+      expect(team.members).toEqual(['Wilson Solano', 'Carlos Arciniegas', 'Yeison Pulgarin']);
+      expect(team.image.caption).toBe('Wilson Solano · Carlos Arciniegas · Yeison Pulgarin');
+    });
+
+    it('should declare the photo under /Imagenes_web/ without spaces', () => {
+      expect(team.image.basePath).toBe('/Imagenes_web/equipo-ycw');
+      expect(team.image.basePath).not.toMatch(/\s|%20/);
+    });
+
+    it('should declare ascending widths that never exceed the intrinsic width', () => {
+      const { widths, width } = team.image;
+      expect(widths.length).toBeGreaterThanOrEqual(2);
+      expect([...widths].sort((a, b) => a - b)).toEqual([...widths]);
+      widths.forEach((w) => expect(w).toBeLessThanOrEqual(width));
+      expect(widths[widths.length - 1]).toBe(width);
+    });
+
+    it('should keep the 3:2 aspect ratio of the original photo', () => {
+      expect(team.image.width / team.image.height).toBeCloseTo(1.5, 2);
+    });
+
+    it('should describe the photo naming YCW and the three members', () => {
+      const alt = team.image.alt;
+      expect(alt).toContain('YCW');
+      team.members.forEach((member) => expect(alt).toContain(member));
     });
   });
 

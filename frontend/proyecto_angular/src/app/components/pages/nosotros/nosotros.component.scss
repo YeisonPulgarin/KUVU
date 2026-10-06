@@ -46,6 +46,31 @@ $ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   }
 }
 
+.team {
+  @apply pb-20;
+  background-color: var(--color-home-bg);
+
+  @media (width >= 768px) {
+    @apply pb-28;
+  }
+
+  .team-figure {
+    @apply m-0;
+  }
+
+  .team-photo {
+    @apply block overflow-hidden rounded-2xl;
+    aspect-ratio: 3 / 2;
+    box-shadow: 0 20px 40px -24px rgb(31 41 32 / 0.45);
+  }
+
+  .team-caption {
+    @apply mt-4 text-sm font-semibold uppercase text-center;
+    letter-spacing: 0.12em;
+    color: var(--color-home-muted);
+  }
+}
+
 .about-sections {
   @apply py-20;
   background-color: var(--color-home-bg);

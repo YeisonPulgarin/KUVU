@@ -38,6 +38,16 @@ por la propia SPA (sin API), y la app autenticada hoy consume datos mock (los m�
 - `src/app/services/page-meta.service.ts` — `title` y `meta description` por página.
 - `src/app/directives/reveal.directive.ts` — reveals `[data-reveal]` con
   `IntersectionObserver` y respeto de `prefers-reduced-motion`.
+- `frontend/proyecto_angular/public/Imagenes_web/` — imágenes del sitio público en variantes
+  responsive `{nombre-base}-{ancho}.{webp|jpeg}` (640/1024/1536), generadas con
+  `scripts/generate-image-variants.py` (Python + Pillow, fuera del build). Cada imagen se declara
+  como `SiteImage` en `content/` (hoy: `content/team.ts`, la foto del equipo YCW).
+- `src/app/components/public/responsive-image/` — `app-responsive-image`: renderiza un
+  `SiteImage` como `<picture>` (WebP + respaldo JPEG, `srcset`/`sizes`, `width`/`height`,
+  `loading="lazy"`), con modos `contain`/`cover` y `decorative`.
+- `src/app/components/home/team-band/` — banda full-bleed "El equipo detrás de KUVU" de la home
+  (selector de atributo sobre `<section id="equipo">`); `/nosotros` muestra la misma foto como
+  `<figure>`.
 
 ### Clúster autenticado (app de gestión)
 
@@ -62,7 +72,7 @@ por la propia SPA (sin API), y la app autenticada hoy consume datos mock (los m�
 
 ```
 Visitante → SPA →
-  '/'            → HomeComponent (hero + secciones de content/)
+  '/'            → HomeComponent (hero + secciones de content/, banda #equipo → app-responsive-image)
   '/nosotros'    → NosotrosComponent (lazy) → PageMetaService (title + description)
   '/preguntas-frecuentes' → PreguntasFrecuentesComponent (lazy) → PageMetaService
 ```
@@ -95,6 +105,20 @@ Las rutas de gestión pasan por `authGuard` (cualquier rol) y, locales/usuarios,
   bindeado al tema y visibilidad resuelta en el breakpoint `768px`. Tradeoff: duplica el
   markup del logo en header y footer (2 usos, se revisa ante un tercero) a cambio de no
   pagar `<picture>`/`srcset` ni recarga al alternar tema.
+- **Imágenes responsive con `<picture>` + contenido tipado** (`SiteImage` + `app-responsive-image`)
+  en lugar de `NgOptimizedImage` o `background-image`: formato y ancho por `<source>`/`srcset`,
+  lazy nativo, `alt` real y testeable. Tradeoff: las variantes se generan a mano con un script y
+  la declaración en `content/` debe coincidir con los anchos generados. El logo mantiene su
+  patrón propio (swap por viewport), porque su variante depende del breakpoint, no del ancho.
+- **Tokens de Tailwind v4 solo usados en componentes no existen en runtime**: Tailwind emite al
+  CSS global únicamente los tokens de `@theme` cuyo nombre encuentra en los archivos que escanea.
+  En modo claro faltan `--color-home-*`, `--radius-*` y `--color-brand-100/200/300/600`, y
+  `--color-brand-700` se emite solo de forma incidental (ver el patrón `var(--token, valor)` más
+  abajo). Un componente que depende de uno de ellos lo referencia con fallback literal, en una
+  custom property local (`--team-band-green: var(--color-brand-700, #2f4a2f)` en `team-band`) o
+  en la propia declaración (fondo de `cta-final`). Tradeoff: el valor se repite en cada punto, a
+  cambio de no alterar los CTA del hero y del header, que no llevan fallback y se ven con el
+  gradiente de `.btn-primary`.
 - **Sitio público sin API**: textos estáticos en el bundle. Tradeoff: el contenido no cambia
   sin redeploy; nada que proteger expuesto ni latencia de red en el sitio.
 
