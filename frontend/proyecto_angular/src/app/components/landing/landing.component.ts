@@ -1,4 +1,14 @@
-import { Component, OnDestroy, OnInit, signal, computed, inject } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  Injector,
+  OnInit,
+  afterNextRender,
+  computed,
+  inject,
+  signal,
+  viewChild
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -16,19 +26,20 @@ type LandingState = 'INTRO' | 'SELECTION';
   templateUrl: './landing.component.html',
   styleUrls: ['./landing.component.scss']
 })
-export class LandingComponent implements OnInit, OnDestroy {
+export class LandingComponent implements OnInit {
   private auth       = inject(AuthService);
   private router     = inject(Router);
   private introState = inject(IntroStateService);
+  private injector   = inject(Injector);
+  private searchInput = viewChild<ElementRef<HTMLInputElement>>('searchInput');
 
   estado     = signal<LandingState>(this.introState.debeReproducirse() ? 'INTRO' : 'SELECTION');
-  transicionando = signal(false);
+  /** True when this visit starts with the intro; drives the selector's settle transition. */
+  readonly startsWithIntro = this.estado() === 'INTRO';
 
   busqueda = signal('');
   empresas = signal<Empresa[]>([]);
   cargando = signal(true);
-
-  private timeout?: ReturnType<typeof setTimeout>;
 
   empresasFiltradas = computed(() => {
     const q = this.busqueda().toLowerCase().trim();
@@ -43,10 +54,6 @@ export class LandingComponent implements OnInit, OnDestroy {
     this.cargarEmpresas();
   }
 
-  ngOnDestroy(): void {
-    if (this.timeout) clearTimeout(this.timeout);
-  }
-
   private cargarEmpresas(): void {
     this.auth.cargarEmpresas()
       .subscribe({
@@ -57,8 +64,12 @@ export class LandingComponent implements OnInit, OnDestroy {
 
   completadaIntro(): void {
     this.introState.marcarComoReproducida();
-    this.transicionando.set(true);
-    this.timeout = setTimeout(() => this.estado.set('SELECTION'), 650);
+    this.estado.set('SELECTION');
+    // The selector stops being inert on the next render; focus it right after.
+    afterNextRender(
+      () => this.searchInput()?.nativeElement.focus({ preventScroll: true }),
+      { injector: this.injector }
+    );
   }
 
   seleccionar(empresa: Empresa): void {

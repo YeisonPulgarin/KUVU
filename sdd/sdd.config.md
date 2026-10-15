@@ -4,7 +4,7 @@
 
 - **Proyecto:** KUVU
 - **Idioma de trabajo:** español
-- **Stack:** Angular 21 + Tailwind CSS v4 / Node.js backend / PostgreSQL
+- **Stack:** Angular 21 + Tailwind CSS v4 / Node.js + Express (API REST `/api/*` consumida por el SPA) / MariaDB 10.4 en Docker (contenedor `kuvu_db`)
 
 ## Extensiones activas
 
@@ -17,11 +17,9 @@
 
 | Orden | Slice | Qué cubre | Obligatorio |
 |---|---|---|---|
-| 1 | `contenido` | Módulos de contenido del sitio público (`content/*.ts`) + tests de forma | Sí |
-| 2 | `chrome` | ThemeService, RevealDirective, SiteHeader/SiteFooter, PageMetaService, home refactorizada | Sí |
-| 3 | `home-expandida` | Secciones nuevas de la home (cómo funciona, beneficios, seguridad, origen, FAQ) | Sí |
-| 4 | `paginas` | Páginas `/nosotros` y `/preguntas-frecuentes` + rutas lazy | Sí |
-| — | `cierre` | Config de tests en `sdd.config.md` + docs/CHANGELOG/README (al último slice) | Sí |
+| 1 | `backend-orden` | Rutas del backend Express (`backend/routes/`) + tests `node --test` | Sí, si el cambio toca el backend |
+| 2 | `intro` | Frontend Angular: componentes, servicios y estilos (`frontend/proyecto_angular/src/app/`) + tests Karma | Sí, si el cambio toca el frontend |
+| — | `cierre` | Config SDD (`sdd.config.md`, `sdd-init.md`) al último slice | Sí |
 
 ## Modalidad de tests
 
@@ -33,6 +31,8 @@ Comandos de test:
 - `frontend`: en Windows, fijar el binario de Chrome antes de correr:
   `$env:CHROME_BIN='C:\Program Files\Google\Chrome\Application\chrome.exe'`, luego
   `npx ng test --watch=false --browsers=ChromeHeadless` desde `frontend/proyecto_angular`.
+- `backend`: `npm test` desde `backend/` (`node --test`, sin base de datos: los tests de rutas
+  reemplazan `db` por un doble).
 
 ## Documentación
 

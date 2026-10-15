@@ -1,49 +1,46 @@
-<div
-  class="intro"
-  [class.flotando]="fase() >= 2"
-  [class.ensamblando]="fase() >= 3"
-  [class.iluminada]="fase() >= 4"
-  [class.final]="fase() >= 5">
+<div class="stage" aria-hidden="true">
+  <div class="cast-shadow"></div>
+  <div class="sheet">
+    <ng-container *ngTemplateOutlet="strip; context: { $implicit: 0 }" />
+  </div>
+</div>
 
-  <!-- ── Fase 1: blueprint arquitectónico ─────────────────────── -->
-  <div class="blueprint" aria-hidden="true">
-    <div class="blueprint-grid"></div>
-    <svg class="tech-lines" viewBox="0 0 400 240" preserveAspectRatio="xMidYMid slice">
-      <polyline
-        class="trazado"
-        points="25,215 25,150 70,150 70,110 130,110 130,70 175,70 230,70 230,105 285,105 285,175 345,175 345,215" />
-      <polyline class="trazado trazado-retrasado" points="40,200 345,200" />
-      <line class="trazado trazado-cota" x1="25" y1="215" x2="70" y2="215" />
-      <line class="trazado trazado-cota" x1="285" y1="215" x2="345" y2="215" />
-      <circle class="marca" cx="130" cy="70" r="3" />
-      <circle class="marca" cx="285" cy="105" r="3" />
-    </svg>
+<button
+  #skipButton
+  type="button"
+  class="skip"
+  aria-label="Saltar introducción"
+  (click)="onHostClick($event)">
+  Saltar
+</button>
 
-    @for (p of particulas; track p) {
-      <span class="particula" [class.part-p]="true"></span>
+<!-- One vertical strip of the sheet; each strip nests the next one. -->
+<ng-template #strip let-i>
+  <div class="strip" [class.strip-root]="i === 0" [style.--i]="i">
+    <div class="strip-front">
+      <div class="page">
+        <svg
+          class="page-house"
+          viewBox="0 0 120 100"
+          fill="none"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round">
+          <path pathLength="1" d="M8 50 L60 10 L112 50" />
+          <path pathLength="1" d="M20 41 V92 H100 V41" />
+          <path pathLength="1" d="M84 28 V16 H94 V36" />
+          <path pathLength="1" d="M50 92 V66 H70 V92" />
+          <path pathLength="1" d="M30 54 H44 V68 H30 Z M37 54 V68 M30 61 H44" />
+          <path pathLength="1" d="M76 54 H90 V68 H76 Z M83 54 V68 M76 61 H90" />
+          <path pathLength="1" d="M4 92 H116" />
+        </svg>
+        <img class="page-logo" src="/logo-rediseno/Logo_Kuvu.png" alt="" draggable="false" />
+      </div>
+      <div class="strip-shade"></div>
+    </div>
+    <div class="strip-back"></div>
+    @if (i < lastStrip) {
+      <ng-container *ngTemplateOutlet="strip; context: { $implicit: i + 1 }" />
     }
   </div>
-
-  <!-- ── Stage 3D: casa moderna ───────────────────────────────── -->
-  <div class="stage">
-    <div class="casa">
-      <div class="pieza pieza-losa"></div>
-      <div class="pieza pieza-muro-b"></div>
-      <div class="pieza pieza-muro-f"></div>
-      <div class="pieza pieza-muro-d"></div>
-      <div class="pieza pieza-entre-piso"></div>
-      <div class="pieza pieza-techo"></div>
-      <div class="pieza pieza-techo-b"></div>
-      <div class="pieza pieza-ventana pieza-ventana-1"></div>
-      <div class="pieza pieza-ventana pieza-ventana-2"></div>
-      <div class="pieza pieza-puerta"></div>
-      <div class="pieza pieza-volado"></div>
-      <div class="pieza pieza-chimenea"></div>
-    </div>
-    <div class="glow-interior"></div>
-  </div>
-
-  <!-- ── Capas finales ────────────────────────────────────────── -->
-  <div class="intro-vignette"></div>
-  <div class="intro-glow"></div>
-</div>
+</ng-template>

@@ -11,7 +11,7 @@ const db      = require('../db');
 router.get('/', async (req, res) => {
   try {
     const [rows] = await db.execute(
-      'SELECT * FROM empresas WHERE activo = 1 ORDER BY nombre'
+      'SELECT * FROM empresas WHERE activo = 1 ORDER BY id'
     );
     res.json(rows);
   } catch (err) {

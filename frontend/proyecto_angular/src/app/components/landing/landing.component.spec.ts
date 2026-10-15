@@ -10,10 +10,18 @@ function asElement(node: unknown): HTMLElement {
   return node as HTMLElement;
 }
 
+// Ordered by id (as GET /api/empresas returns them); deliberately not alphabetical.
 const EMPRESAS = [
   { id: 1, nombre: 'Amarilo', subdominio: 'amarilo', color_primario: '#123', color_secundario: '#456', color_texto: '#fff', logo_url: '', slogan: 'Vive mejor', activo: true },
-  { id: 2, nombre: 'Nido Rent', subdominio: 'nido', color_primario: '#234', color_secundario: '#567', color_texto: '#fff', logo_url: '', slogan: 'Tu hogar', activo: true }
+  { id: 2, nombre: 'Nido Rent', subdominio: 'nido', color_primario: '#234', color_secundario: '#567', color_texto: '#fff', logo_url: '', slogan: 'Tu hogar', activo: true },
+  { id: 3, nombre: 'Balcones de San Soucci', subdominio: 'balcones', color_primario: '#345', color_secundario: '#678', color_texto: '#fff', logo_url: '', slogan: 'Vista al parque', activo: true },
+  { id: 4, nombre: 'Mi Inmueble', subdominio: 'miinmueble', color_primario: '#456', color_secundario: '#789', color_texto: '#fff', logo_url: '', slogan: 'Tu espacio', activo: true }
 ];
+
+function renderedNames(root: HTMLElement): string[] {
+  return Array.from(root.querySelectorAll('.empresa-row .emp-nombre'))
+    .map(el => el.textContent?.trim() ?? '');
+}
 
 describe('LandingComponent', () => {
   let fixture: ComponentFixture<LandingComponent>;
@@ -59,11 +67,7 @@ describe('LandingComponent', () => {
   });
 
   describe('intro', () => {
-    it('should start directly in SELECTION when debeReproducirse is false', () => {
-      expect(component.estado()).toBe('SELECTION');
-    });
-
-    it('should go SELECTION -> INTRO -> SELECTION when intro runs', fakeAsync(() => {
+    function createWithIntro(): { f2: ComponentFixture<LandingComponent>; c2: LandingComponent; el: HTMLElement } {
       fixture.destroy();
       sessionStorage.clear();
       debeReproducir = true;
@@ -72,20 +76,75 @@ describe('LandingComponent', () => {
       f2.detectChanges();
       httpMock.expectOne('http://localhost:3000/api/empresas').flush(EMPRESAS);
       f2.detectChanges();
+      return { f2, c2, el: f2.nativeElement as HTMLElement };
+    }
 
+    it('should start directly in SELECTION when debeReproducirse is false', () => {
+      expect(component.estado()).toBe('SELECTION');
+      expect(root.querySelector('app-auth-intro')).toBeNull();
+      const container = asElement(root.querySelector('.landing-container'));
+      expect(container.inert).toBeFalse();
+      expect(container.classList).not.toContain('from-intro');
+    });
+
+    it('renders the selector under the intro, inert while the intro is active', fakeAsync(() => {
+      const { f2, c2, el } = createWithIntro();
       expect(c2.estado()).toBe('INTRO');
-      const introEl = asElement(f2.nativeElement.querySelector('app-auth-intro'));
-      expect(introEl).toBeTruthy();
+      expect(el.querySelector('app-auth-intro')).toBeTruthy();
+      const container = asElement(el.querySelector('.landing-container'));
+      expect(container).toBeTruthy();
+      expect(container.inert).toBeTrue();
+      expect(el.querySelectorAll('.empresa-row').length).toBe(4);
+      expect(asElement(el.querySelector('.landing-bg')).classList).toContain('is-intro-active');
+      f2.destroy();
+      tick(2000);
+    }));
 
+    it('completadaIntro goes to SELECTION at once, releases inert and marks the intro as seen', fakeAsync(() => {
+      const { f2, c2, el } = createWithIntro();
       c2.completadaIntro();
+      expect(c2.estado()).toBe('SELECTION');
       f2.detectChanges();
-      expect(marcarSpy).toHaveBeenCalled();
-      expect(c2.transicionando()).toBeTrue();
+      expect(marcarSpy).toHaveBeenCalledTimes(1);
+      expect(el.querySelector('app-auth-intro')).toBeNull();
+      const container = asElement(el.querySelector('.landing-container'));
+      expect(container.inert).toBeFalse();
+      expect(asElement(el.querySelector('.landing-bg')).classList).not.toContain('is-intro-active');
+      f2.destroy();
+    }));
 
-      tick(700);
+    it('focuses the search input after the intro completes', fakeAsync(() => {
+      const { f2, c2, el } = createWithIntro();
+      const input = asElement(el.querySelector('.search-input'));
+      expect(document.activeElement).not.toBe(input);
+      c2.completadaIntro();
+      TestBed.tick();
+      expect(asElement(el.querySelector('.landing-container')).inert).toBeFalse();
+      expect(document.activeElement).toBe(input);
+      f2.destroy();
+    }));
+
+    it('completes when the intro emits completed after 2000 ms', fakeAsync(() => {
+      const { f2, c2 } = createWithIntro();
+      tick(1999);
+      expect(c2.estado()).toBe('INTRO');
+      tick(1);
+      expect(c2.estado()).toBe('SELECTION');
+      expect(marcarSpy).toHaveBeenCalledTimes(1);
+      f2.destroy();
+    }));
+
+    it('a click that skips the intro does not select a company', fakeAsync(() => {
+      const { f2, c2, el } = createWithIntro();
+      const router = TestBed.inject(Router);
+      spyOn(router, 'navigate');
+      asElement(el.querySelector('app-auth-intro')).click();
+      tick(300);
       f2.detectChanges();
       expect(c2.estado()).toBe('SELECTION');
-      expect(f2.nativeElement.querySelector('app-auth-intro')).toBeNull();
+      expect(router.navigate).not.toHaveBeenCalled();
+      expect(sessionStorage.getItem('empresaPreseleccionada')).toBeNull();
+      f2.destroy();
     }));
   });
 
@@ -106,16 +165,21 @@ describe('LandingComponent', () => {
       expect(label.textContent).toContain('Selecciona tu inmobiliaria');
     });
 
-    it('should render the inmobiliarias list', () => {
-      const rows = Array.from(root.querySelectorAll('.empresa-row')) as HTMLElement[];
-      expect(rows.length).toBe(2);
-      const nombres = rows.map(r => r.querySelector('.emp-nombre')?.textContent?.trim() ?? '');
-      expect(nombres).toContain('Amarilo');
-      expect(nombres).toContain('Nido Rent');
+    it('should render the inmobiliarias in the order received (by id)', () => {
+      expect(renderedNames(root)).toEqual(['Amarilo', 'Nido Rent', 'Balcones de San Soucci', 'Mi Inmueble']);
+    });
+
+    it('should keep the received order when filtering', () => {
+      component.busqueda.set('i');
+      fixture.detectChanges();
+      expect(renderedNames(root)).toEqual(['Amarilo', 'Nido Rent', 'Balcones de San Soucci', 'Mi Inmueble']);
+
+      component.busqueda.set('n');
+      fixture.detectChanges();
+      expect(renderedNames(root)).toEqual(['Nido Rent', 'Balcones de San Soucci', 'Mi Inmueble']);
     });
 
     it('should filter empresas by name', () => {
-      const input = asElement(root.querySelector('.search-input'));
       component.busqueda.set('nido');
       fixture.detectChanges();
       const rows = Array.from(root.querySelectorAll('.empresa-row')) as HTMLElement[];

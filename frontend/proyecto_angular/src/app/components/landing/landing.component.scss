@@ -296,3 +296,23 @@
   margin: 0;
   text-shadow: 0 1px 4px rgba(0,0,0,0.5);
 }
+
+// ── Intro overlay ─────────────────────────────────────────────
+// While the intro covers the page, the selector is rendered (inert) underneath
+// and the page does not scroll.
+.landing-bg.is-intro-active {
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+// The selector is already visible under the sheet: it skips the entry fade and
+// settles 8px up when the intro releases it.
+.landing-container.from-intro {
+  animation: none;
+  transition: transform .25s ease-out;
+
+  &[inert] {
+    transform: translateY(8px);
+  }
+}

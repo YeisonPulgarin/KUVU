@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { IntroStateService } from './intro-state.service';
+import { INTRO_SEEN_KEY, IntroStateService } from './intro-state.service';
 
 function stubMatchMedia(reduce: boolean): void {
   spyOn(window, 'matchMedia').and.callFake((query: string) => {
@@ -10,26 +10,80 @@ function stubMatchMedia(reduce: boolean): void {
   });
 }
 
+function createService(): IntroStateService {
+  TestBed.configureTestingModule({ providers: [IntroStateService] });
+  return TestBed.inject(IntroStateService);
+}
+
 describe('IntroStateService', () => {
-  it('debe reproducir la intro en la primera carga sin reduced-motion', () => {
+  beforeEach(() => localStorage.removeItem(INTRO_SEEN_KEY));
+  afterEach(() => localStorage.removeItem(INTRO_SEEN_KEY));
+
+  it('debe reproducir la intro en la primera visita sin reduced-motion', () => {
     stubMatchMedia(false);
-    TestBed.configureTestingModule({ providers: [IntroStateService] });
-    const service = TestBed.inject(IntroStateService);
-    expect(service.debeReproducirse()).toBeTrue();
+    expect(createService().debeReproducirse()).toBeTrue();
   });
 
   it('no debe reproducir la intro una vez marcada como reproducida', () => {
     stubMatchMedia(false);
-    TestBed.configureTestingModule({ providers: [IntroStateService] });
-    const service = TestBed.inject(IntroStateService);
+    const service = createService();
     service.marcarComoReproducida();
     expect(service.debeReproducirse()).toBeFalse();
   });
 
   it('no debe reproducir la intro con prefers-reduced-motion: reduce', () => {
     stubMatchMedia(true);
-    TestBed.configureTestingModule({ providers: [IntroStateService] });
-    const service = TestBed.inject(IntroStateService);
-    expect(service.debeReproducirse()).toBeFalse();
+    expect(createService().debeReproducirse()).toBeFalse();
+  });
+
+  it('con reduced-motion no marca la intro como vista en storage', () => {
+    stubMatchMedia(true);
+    createService().debeReproducirse();
+    expect(localStorage.getItem(INTRO_SEEN_KEY)).toBeNull();
+  });
+
+  it('no reproduce la intro si el storage ya tiene la clave (recarga / nueva sesion)', () => {
+    stubMatchMedia(false);
+    localStorage.setItem(INTRO_SEEN_KEY, '1');
+    expect(createService().debeReproducirse()).toBeFalse();
+  });
+
+  it('ignora un valor distinto de "1" en la clave', () => {
+    stubMatchMedia(false);
+    localStorage.setItem(INTRO_SEEN_KEY, 'true');
+    expect(createService().debeReproducirse()).toBeTrue();
+  });
+
+  it('marcarComoReproducida persiste la clave kuvu.intro.seen = "1"', () => {
+    stubMatchMedia(false);
+    createService().marcarComoReproducida();
+    expect(localStorage.getItem(INTRO_SEEN_KEY)).toBe('1');
+  });
+
+  it('el recordado sobrevive a una instancia nueva del servicio', () => {
+    stubMatchMedia(false);
+    new IntroStateService().marcarComoReproducida();
+    expect(new IntroStateService().debeReproducirse()).toBeFalse();
+  });
+
+  describe('con storage que lanza', () => {
+    beforeEach(() => {
+      stubMatchMedia(false);
+      spyOn(Storage.prototype, 'getItem').and.throwError('SecurityError');
+      spyOn(Storage.prototype, 'setItem').and.throwError('QuotaExceededError');
+    });
+
+    it('debeReproducirse no lanza y devuelve true en la primera vez', () => {
+      const service = createService();
+      expect(() => service.debeReproducirse()).not.toThrow();
+      expect(service.debeReproducirse()).toBeTrue();
+    });
+
+    it('marcarComoReproducida no lanza y usa el fallback en memoria', () => {
+      const service = createService();
+      expect(() => service.marcarComoReproducida()).not.toThrow();
+      expect(Storage.prototype.setItem).toHaveBeenCalledWith(INTRO_SEEN_KEY, '1');
+      expect(service.debeReproducirse()).toBeFalse();
+    });
   });
 });
