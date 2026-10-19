@@ -88,7 +88,8 @@ los enlaces de HP-01, "Ingresar" y el selector de tema.
 - CA-08.1 Al abrir: el botón tiene `aria-expanded="true"`, el body no hace scroll y el foco
   pasa al primer elemento del panel.
 - CA-08.2 Se cierra con: la tecla Escape, el botón de cerrar, o al elegir un enlace. Al
-  cerrar, el scroll del body se restablece y el foco vuelve al botón de menú.
+  cerrar, el scroll del body se restablece. Con Escape o con el botón, el foco vuelve al botón
+  de menú; al elegir un enlace la página navega y el foco no vuelve al botón.
 - CA-08.3 Al navegar a otra ruta el menú queda cerrado.
 - CA-08.4 Los ítems entran con un escalonado; con `prefers-reduced-motion: reduce` aparecen
   sin animación.
@@ -349,12 +350,12 @@ página activa, menú móvil, footer, formulario de contacto (validaciones y men
 | Footer | HP-09 | 5 |
 | `/servicios` | HP-10 | 4 |
 | `/contacto` | HP-11, 11b, 11c | 10 |
-| `/legal` | HP-12..HP-15 | 12 |
+| `/legal` | HP-12..HP-15 | 13 |
 | Lenguaje visual y movimiento | HP-16 | 4 |
 | SEO | HP-17, HP-18 | 5 |
 | FAQ ampliado | HP-19 | 3 |
 | Calidad | HP-20 | 2 |
-| **Total** | **22** | **68** |
+| **Total** | **22** | **69** |
 
 ---
 

@@ -91,3 +91,28 @@ real. Registrada en `spec.md` (HP-13, CA-09.3, CA-12.3, HP-14) y `propose.md` (D
 
 Resultado: **304 tests, 304 SUCCESS, 0 FAILED**; `ng build` initial total **421.02 kB**.
 
+### A4. Correcciones del primer verify (FAIL)
+
+El usuario eligió corregir todos los hallazgos de `verify-report.md`:
+
+- **H1 (CA-12.2, CA-07.3):** el router hace el scroll a anclas con `window.scrollTo`, que
+  ignora `scroll-padding-top`. `app.config.ts` registra al arrancar
+  (`provideAppInitializer`) un offset del `ViewportScroller` que mide la altura real de
+  `app-site-header` en cada scroll, más 16 px (`app/scroll-offset.ts`; 88 px si el header no
+  tiene altura, 0 en páginas sin header público). Spec nuevo: `app/scroll-offset.spec.ts`.
+- **H2:** comentarios del código nuevo a inglés (`app.routes.ts`, `home.component.scss`,
+  `content/site.ts`, `page-meta.service.ts`, `styles.scss`).
+- **H3:** las transiciones de altura de `.nav-container` y del subrayado
+  `.nav-item::after` pasan al bloque `prefers-reduced-motion: no-preference`.
+- **H4:** sin cambio de código. `spec.md` CA-08.2 describe el comportamiento real: con Escape
+  o con el botón el foco vuelve al botón de menú; al elegir un enlace la página navega y el
+  foco no vuelve. Para `document`: dejarlo explicado en `docs/home-profesional.md`.
+- **H5:** FAQ "¿KUVU usa cookies?" lista las 3 categorías de `/legal`; "¿Cómo me contacto?"
+  remite a la página de Contacto y al WhatsApp +57 322 319 2760, sin ubicarlo en el
+  encabezado.
+- **Extra aprobado por el usuario:** ícono de WhatsApp del header en `#1a7a43` (contraste AA
+  5.37 : 1), como el resto del sitio.
+- `spec.md`: total de criterios corregido a 69 (la fila de `/legal` suma 13).
+
+Resultado: **309 tests, 309 SUCCESS, 0 FAILED**; `ng build` initial total **421.41 kB**.
+

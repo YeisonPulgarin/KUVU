@@ -16,9 +16,9 @@ export const routes: Routes = [
       import('./components/login/login.component').then(m => m.LoginComponent)
   },
 
-  // ── Páginas públicas del sitio ──────────────────────────
-  // Sin `title` en la ruta: cada página publica title y meta con PageMetaService
-  // (content/pages.ts), así el título no diverge de og:title.
+  // ── Public site pages ───────────────────────────────────
+  // No route `title`: each page publishes its title and meta with PageMetaService
+  // (content/pages.ts), so the title never diverges from og:title.
   {
     path: 'servicios',
     loadComponent: () =>
@@ -85,7 +85,7 @@ export const routes: Routes = [
     canActivate: [adminGuard]
   },
 
-  // Cualquier URL sin ruta: página 404 pública.
+  // Any URL without a route: public 404 page.
   {
     path: '**',
     loadComponent: () =>

@@ -41,7 +41,6 @@ $ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 .nav-container {
   @apply flex items-center justify-between px-4 max-w-6xl mx-auto;
   height: 64px;
-  transition: height 0.25s $ease-out-expo;
 
   @media (width >= 768px) {
     height: 80px;
@@ -106,7 +105,6 @@ $ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
       background-color: var(--color-brand-600, #3e5c40);
       transform: scaleX(0);
       transform-origin: left;
-      transition: transform 0.3s $ease-out-expo;
     }
 
     &.is-active,
@@ -162,12 +160,12 @@ $ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 
     &.wa {
       @apply text-white;
-      background-color: #25d366;
-      border-color: #25d366;
+      background-color: #1a7a43;
+      border-color: #1a7a43;
 
       &:hover {
-        background-color: #1da851;
-        border-color: #1da851;
+        background-color: #146236;
+        border-color: #146236;
       }
     }
   }
@@ -258,6 +256,14 @@ $ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 
 // Motion only when the user has not asked for reduced motion.
 @media (prefers-reduced-motion: no-preference) {
+  .nav-container {
+    transition: height 0.25s $ease-out-expo;
+  }
+
+  .nav-links .nav-item::after {
+    transition: transform 0.3s $ease-out-expo;
+  }
+
   .mobile-menu {
     transition: opacity 0.25s $ease-out-expo, visibility 0s linear 0.25s;
 

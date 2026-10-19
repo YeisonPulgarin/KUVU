@@ -45,7 +45,7 @@ export const faqGroups: readonly FaqGroup[] = [
     items: [
       {
         q: '¿Cómo me contacto con KUVU?',
-        a: 'Desde la página de Contacto completas un formulario y se abre WhatsApp con tu mensaje listo para enviar. También puedes escribirnos directo por WhatsApp desde el encabezado o el pie de página.'
+        a: 'Desde la página de Contacto completas un formulario y se abre WhatsApp con tu mensaje listo para enviar. También puedes escribirnos directo por WhatsApp al +57 322 319 2760.'
       },
       {
         q: '¿Cómo tratan mis datos personales?',
@@ -57,7 +57,7 @@ export const faqGroups: readonly FaqGroup[] = [
       },
       {
         q: '¿KUVU usa cookies?',
-        a: 'No usa cookies de analítica, publicidad ni de terceros. Solo guarda en tu navegador tu preferencia de tema y los datos de la sesión iniciada; el detalle está en la política de cookies de la página Legal.'
+        a: 'No usa cookies de analítica, publicidad ni de terceros. Solo guarda en tu navegador tu preferencia de tema, los datos de la sesión iniciada y la empresa preseleccionada al acceder; el detalle está en la política de cookies de la página Legal.'
       }
     ]
   }

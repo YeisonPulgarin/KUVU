@@ -65,8 +65,8 @@ export class PageMetaService {
   }
 
   /**
-   * Publica un único `BreadcrumbList` (schema.org) en `<head>`. Las URLs son absolutas sobre
-   * el origen en el que corre la app. Si ya hay uno, lo reemplaza.
+   * Publishes a single `BreadcrumbList` (schema.org) in `<head>`, with absolute URLs on the
+   * origin the app runs on. Replaces the previous one, if any.
    */
   setBreadcrumb(items: readonly NavItem[]): void {
     this.setJsonLd(BREADCRUMB_SCRIPT_ID, {
