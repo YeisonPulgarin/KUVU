@@ -50,9 +50,11 @@ la marca y los textos no.
 
 ## Decisiones del orquestador (el usuario las delegó; puede objetarlas)
 
-- **D1. Datos del responsable del tratamiento.** Van marcadores bien visibles: razón social,
-  NIT, domicilio, correo y fecha de vigencia. Encima, un aviso de que son textos base y no
-  asesoría legal.
+- **D1. Datos del responsable.** KUVU es una empresa ficticia de un proyecto académico: se
+  publican solo datos que no pueden pertenecer a un tercero real (razón social, domicilio de
+  ciudad, el WhatsApp ya publicado, área de atención, vigencia). NIT, dirección y correo se
+  omiten (ver `spec.md` HP-13). El sitio aclara que es un proyecto académico de la
+  Universidad Cooperativa de Colombia y que los textos no son asesoría legal.
 - **D2. Contacto sin datos inventados.** Se usa el número de WhatsApp que ya está en
   `content/site.ts`. El correo y las redes no existen en el repo, así que van como marcadores
   y las redes no se muestran mientras no haya datos reales.

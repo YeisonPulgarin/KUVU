@@ -105,8 +105,9 @@ año en curso.
 
 - CA-09.1 La columna Legal tiene 4 enlaces a `/legal#{ancla}`, uno por documento de HP-12.
 - CA-09.2 La columna Contacto enlaza al WhatsApp de `content/site.ts`.
-- CA-09.3 El correo se muestra como marcador visible mientras no exista un dato real (D2);
-  no se muestra ningún correo inventado.
+- CA-09.3 No se muestra correo (KUVU no tiene uno, ver HP-13): ni línea vacía ni `mailto:`.
+  El footer dice que KUVU es un proyecto académico desarrollado en la Universidad
+  Cooperativa de Colombia.
 - CA-09.4 No se muestran íconos ni enlaces de redes sociales mientras no haya URLs reales
   (D2). No hay enlaces con `href="#"`.
 - CA-09.5 En móvil las columnas se apilan sin scroll horizontal.
@@ -161,7 +162,7 @@ responder su solicitud conforme a la Política de tratamiento de datos, con un e
 - CA-11b.2 El texto de la casilla enlaza a la política de tratamiento de datos.
 
 ### HP-11c Otros canales en `/contacto`
-La página muestra el enlace directo a WhatsApp y el correo (marcador, D2), y un bloque "Qué
+La página muestra el enlace directo a WhatsApp y el teléfono (sin correo, ver HP-13), y un bloque "Qué
 pasa cuando envías" con 3 pasos (se arma el mensaje, se abre WhatsApp, el equipo responde).
 
 - CA-11c.1 Los 3 pasos están presentes y numerados.
@@ -184,25 +185,34 @@ ancla estable:
 - CA-12.1 El índice tiene 4 enlaces y cada uno lleva a su sección.
 - CA-12.2 Entrar a `/legal#cookies` (o cualquier ancla de la tabla) deja visible esa
   sección sin que el header fijo la tape.
-- CA-12.3 La página muestra la fecha de vigencia / última actualización (marcador, D1).
+- CA-12.3 La página muestra la fecha de vigencia / última actualización.
 - CA-12.4 Al inicio de la página hay un aviso visible: los textos son una base de referencia
   y no constituyen asesoría legal.
 
-### HP-13 Marcadores del responsable (D1)
-Los datos del responsable que no existen en el repo se muestran como marcadores visibles y
-reconocibles (p. ej. `[RAZÓN SOCIAL]`, `[NIT]`, `[DOMICILIO]`, `[CORREO DE CONTACTO]`,
-`[TELÉFONO]`, `[FECHA DE VIGENCIA]`), con un estilo que los distingue del texto.
+### HP-13 Datos del responsable: empresa ficticia (D1)
+KUVU es una empresa ficticia de un proyecto académico (decisión del usuario, que reemplaza a
+los marcadores). Se publican solo datos que no pueden pertenecer a un tercero real:
+razón social `KUVU`, domicilio `Bogotá D.C., Colombia`, teléfono `+57 322 319 2760` (el
+WhatsApp ya publicado), área de atención `Equipo KUVU — Protección de datos personales` y
+vigencia `18 de octubre de 2026`. NIT, dirección física y correo **no se inventan** (podrían
+coincidir con una persona o empresa real) y quedan omitidos: la frase o línea que los
+mencionaría no se renderiza. Donde el correo era el canal (consultas y reclamos, términos,
+contacto) se usan el formulario de `/contacto` y el WhatsApp. El aviso de `/legal` y el footer
+dicen que KUVU es un proyecto académico desarrollado en la Universidad Cooperativa de
+Colombia.
 
-- CA-13.1 Los marcadores salen de un único lugar del contenido: completar un dato una vez lo
-  actualiza en `/legal`, footer y `/contacto`.
-- CA-13.2 Ningún dato del responsable está inventado.
+- CA-13.1 Los datos salen de un único lugar del contenido (`content/responsible.ts`):
+  cambiarlos una vez los actualiza en `/legal`, footer y `/contacto`.
+- CA-13.2 No se publican NIT, dirección ni correo, y ningún texto queda incompleto por
+  omitirlos (sin "NIT:" vacío ni frases cortadas).
+- CA-13.3 El sitio no muestra marcadores (`[…]`) en ninguna página.
 
 ### HP-14 Contenido de la política de tratamiento de datos
 Cubre, como mínimo, los elementos que exigen la Ley 1581 de 2012 y el Decreto 1377 de 2013
 (art. 13):
 
 1. Identificación del responsable: nombre o razón social, NIT, domicilio, dirección,
-   correo y teléfono (marcadores).
+   correo y teléfono (los que existen; ver HP-13).
 2. Marco normativo: Ley 1581 de 2012 y Decreto 1377 de 2013 (compilado en el Decreto 1074
    de 2015).
 3. Definiciones básicas: titular, dato personal, dato sensible, tratamiento, responsable,
@@ -225,15 +235,15 @@ Cubre, como mínimo, los elementos que exigen la Ley 1581 de 2012 y el Decreto 1
    de usuarios por la inmobiliaria).
 8. Datos sensibles y de menores: carácter facultativo de responder sobre datos sensibles;
    KUVU no solicita datos de menores.
-9. Área o persona responsable de atender consultas y reclamos (marcador) y canal (correo
-   marcador).
+9. Área responsable de atender consultas y reclamos y canales (formulario de `/contacto` y
+   WhatsApp).
 10. Procedimiento: consultas atendidas en máximo 10 días hábiles (prorrogables 5);
     reclamos en máximo 15 días hábiles (prorrogables 8), con lo que debe contener el reclamo.
 11. Seguridad de la información: acceso por rol y separación de datos por empresa, descritos
     sin prometer más de lo que el sistema hace.
 12. Transferencias/transmisiones: KUVU no vende ni cede datos a terceros; mención de los
     proveedores de infraestructura como encargados (genérico, sin nombres inventados).
-13. Vigencia de la política y de las bases de datos (marcador de fecha).
+13. Vigencia de la política y de las bases de datos.
 
 - CA-14.1 Cada uno de los 13 puntos está presente como subtítulo o párrafo identificable.
 - CA-14.2 Se citan textualmente "Ley 1581 de 2012" y "Decreto 1377 de 2013".
@@ -247,7 +257,7 @@ Cubre, como mínimo, los elementos que exigen la Ley 1581 de 2012 y el Decreto 1
   inmobiliaria (no hay registro abierto); responsabilidades del usuario (credenciales,
   uso lícito, veracidad de datos que carga); propiedad intelectual de KUVU; disponibilidad
   del servicio sin garantía de continuidad absoluta; enlaces a terceros (WhatsApp);
-  modificaciones de los términos; ley aplicable colombiana; contacto (marcador).
+  modificaciones de los términos; ley aplicable colombiana; contacto (formulario y WhatsApp).
 - **Cookies y almacenamiento local**: explica que KUVU no usa cookies de analítica, publicidad
   ni de terceros; enumera lo que guarda en el navegador y para qué: preferencia de tema,
   sesión iniciada (empresa y usuario) y empresa preseleccionada al acceder (la intro vista se
@@ -296,7 +306,7 @@ card y `<link rel="canonical">` con su URL absoluta.
 - `index.html` tiene title, description, Open Graph y Twitter card por defecto específicos
   de KUVU (no "Gestión de arriendos" genérico), que son los que leen los crawlers sociales.
 - La home publica JSON-LD `Organization` (nombre, URL, logo) y `WebSite`, sin datos
-  inventados (sin teléfono/dirección mientras sean marcadores).
+  inventados (sin dirección física).
 
 - CA-18.1 La home tiene exactamente un `Organization` y un `WebSite`; al salir de la home se
   retiran.
@@ -323,7 +333,7 @@ quién puede ingresar (acceso por empresa y rol, sin registro abierto), si KUVU 
 ### HP-20 Tests
 Todo comportamiento nuevo tiene tests Karma/Jasmine (`test-after`, RNF-15): navegación y
 página activa, menú móvil, footer, formulario de contacto (validaciones y mensaje armado),
-`/legal` (índice, anclas, marcadores, contenido mínimo), 404, meta/JSON-LD, contenido.
+`/legal` (índice, anclas, datos del responsable, contenido mínimo), 404, meta/JSON-LD, contenido.
 
 - CA-20.1 `npx ng test --watch=false --browsers=ChromeHeadless` pasa completo.
 - CA-20.2 `ng build` compila sin errores.

@@ -57,3 +57,37 @@ actualizados (+3 tests).
 - Suite: **298 tests, 298 SUCCESS, 0 FAILED** (295 → 298).
 - `ng build`: initial total **421.42 kB** (presupuesto 500 kB).
 
+### A3. Empresa ficticia: sin marcadores
+
+Decisión del usuario: KUVU es una empresa ficticia (proyecto académico) y se prefieren datos
+inventados a marcadores, con el criterio de no inventar nada que pueda pertenecer a un tercero
+real. Registrada en `spec.md` (HP-13, CA-09.3, CA-12.3, HP-14) y `propose.md` (D1).
+
+- `content/responsible.ts`: `legalName` = `KUVU`, `domicile` = `Bogotá D.C., Colombia`.
+  `taxId`, `address` y `email` pasan a campos **opcionales** del modelo `Responsible` y no se
+  definen.
+- Un segmento de campo de `RichText` acepta `prefix`/`suffix`: si el campo no existe, se omite
+  la frase completa. `/legal` no renderiza ítems que quedan vacíos (`isEmptyRichText`).
+- El mecanismo de marcadores se elimina (`placeholderLabel`, `responsibleText`, `<mark>` y
+  sus estilos): ya no había datos pendientes y mantenerlo no era trivial.
+- Footer y `/contacto` muestran la línea de correo solo si existe; `/contacto` suma
+  "WhatsApp y teléfono: +57 322 319 2760".
+- Textos de `/legal` cambiados:
+  - Aviso inicial: "KUVU es un proyecto académico desarrollado en la Universidad Cooperativa
+    de Colombia. Estos textos son una base de referencia preparada a partir de la Ley 1581 de
+    2012 y el Decreto 1377 de 2013. No constituyen asesoría legal: una empresa real debe
+    revisarlos con un abogado antes de adoptarlos."
+  - Identificación: "… es KUVU, con domicilio en Bogotá D.C., Colombia." + "Teléfono y
+    WhatsApp: +57 322 319 2760" + "Formulario: página de contacto" (sin NIT, dirección ni
+    correo).
+  - Área y canales: consultas y reclamos por el formulario de la página de contacto o el
+    WhatsApp, indicando que es una consulta o reclamo sobre datos personales.
+  - Aviso de privacidad: "KUVU, con domicilio en Bogotá D.C., Colombia, es responsable…".
+  - Términos de uso (contacto): "escríbenos desde la página de contacto o por WhatsApp al
+    +57 322 319 2760."
+- Footer: nueva línea "KUVU es un proyecto académico desarrollado en la Universidad
+  Cooperativa de Colombia." sobre el copyright. `academicNote` en `content/site.ts` es la
+  fuente única del texto.
+
+Resultado: **304 tests, 304 SUCCESS, 0 FAILED**; `ng build` initial total **421.02 kB**.
+

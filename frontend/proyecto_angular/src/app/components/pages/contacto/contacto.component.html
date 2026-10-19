@@ -140,7 +140,10 @@
             <li>
               <a class="channel-wa" [href]="whatsappLink" target="_blank" rel="noopener">Escríbenos por WhatsApp</a>
             </li>
-            <li class="channel-email">Correo: <app-rich-text [text]="email"></app-rich-text></li>
+            @if (hasEmail) {
+              <li class="channel-email"><app-rich-text [text]="email"></app-rich-text></li>
+            }
+            <li class="channel-phone">WhatsApp y teléfono: {{ phone }}</li>
           </ul>
         </div>
 

@@ -101,11 +101,6 @@ $ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   @apply text-sm;
   color: var(--color-home-text, #1f2920);
   overflow-wrap: anywhere;
-
-  .footer-label {
-    margin-right: 0.25rem;
-    color: var(--color-home-muted, #4c5a4e);
-  }
 }
 
 .footer-cta {
@@ -121,6 +116,12 @@ $ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 .footer-bottom {
   border-top: 1px solid var(--color-home-border, #cddccd);
   padding-block: 1.25rem 2rem;
+}
+
+.footer-academic {
+  margin: 0 0 0.5rem;
+  font-size: 0.8125rem;
+  color: var(--color-home-muted, #4c5a4e);
 }
 
 .footer-copy {

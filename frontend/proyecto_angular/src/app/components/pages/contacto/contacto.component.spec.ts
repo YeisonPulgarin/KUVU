@@ -180,7 +180,9 @@ describe('ContactoComponent', () => {
 
   it('should show the other channels and the three numbered steps', () => {
     expect(root.querySelector('.channel-wa')?.getAttribute('href')).toContain('wa.me/573223192760');
-    expect(root.querySelector('.channel-email mark.placeholder')?.textContent).toBe('[CORREO DE CONTACTO]');
+    expect(root.querySelector('.channel-email')).toBeNull();
+    expect(root.querySelector('mark')).toBeNull();
+    expect(root.querySelector('.channel-phone')?.textContent).toContain('+57 322 319 2760');
     const steps = Array.from(root.querySelectorAll('.steps .step'));
     expect(steps.length).toBe(contactSteps.length);
     expect(steps.map((s) => s.querySelector('.step-number')?.textContent?.trim())).toEqual(['1', '2', '3']);

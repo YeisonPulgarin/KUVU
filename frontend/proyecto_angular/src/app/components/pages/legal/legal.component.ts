@@ -5,6 +5,8 @@ import { RichTextComponent } from '../../public/rich-text/rich-text.component';
 import { PageMetaService } from '../../../services/page-meta.service';
 // Imported directly (not from the content barrel) so the texts stay in this lazy chunk.
 import { legalDocuments, legalLastUpdated, legalNotice } from '../../../content/legal';
+import { isEmptyRichText } from '../../../content/responsible';
+import type { RichText } from '../../../content/types';
 import { pageMeta } from '../../../content/pages';
 import { breadcrumbFor } from '../../../content/site';
 
@@ -25,6 +27,11 @@ export class LegalComponent implements OnInit {
 
   ngOnInit(): void {
     this.meta.setPage(pageMeta.legal);
+  }
+
+  /** List items without content (a line about an absent field) are not rendered. */
+  visibleItems(items: readonly RichText[]): readonly RichText[] {
+    return items.filter((item) => !isEmptyRichText(item));
   }
 
   /** Two-digit number of a document in the index ("01", "02"…). */

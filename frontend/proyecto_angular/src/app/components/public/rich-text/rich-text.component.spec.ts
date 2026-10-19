@@ -1,8 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { RichTextComponent } from './rich-text.component';
-import { responsible } from '../../../content/responsible';
-import type { Responsible, RichText } from '../../../content/types';
+import type { RichText } from '../../../content/types';
 
 describe('RichTextComponent', () => {
   let fixture: ComponentFixture<RichTextComponent>;
@@ -28,23 +27,21 @@ describe('RichTextComponent', () => {
     expect(root.children.length).toBe(0);
   });
 
-  it('should render a pending responsible field as a visible placeholder mark', () => {
-    renderText(['Responsable: ', { field: 'legalName' }, '.']);
-    const mark = root.querySelector('mark.placeholder');
-    expect(mark?.textContent).toBe('[RAZÓN SOCIAL]');
-    expect(root.textContent).toBe('Responsable: [RAZÓN SOCIAL].');
+  it('should render a present responsible field with its prefix and suffix', () => {
+    renderText(['Responsable: ', { field: 'legalName', suffix: ' (Colombia)' }, '.']);
+    expect(root.textContent).toBe('Responsable: KUVU (Colombia).');
   });
 
-  it('should render the real value, without a mark, once the field is filled', () => {
-    const data = responsible as { -readonly [K in keyof Responsible]: Responsible[K] };
-    data.email = 'datos@example.com';
-    try {
-      renderText(['Correo: ', { field: 'email' }]);
-      expect(root.querySelector('mark')).toBeNull();
-      expect(root.textContent).toBe('Correo: datos@example.com');
-    } finally {
-      data.email = null;
-    }
+  it('should leave out an absent field together with its surrounding phrase', () => {
+    renderText(['KUVU', { field: 'taxId', prefix: ', identificado con NIT ' }, ', en Bogotá.']);
+    expect(root.textContent).toBe('KUVU, en Bogotá.');
+    expect(root.textContent).not.toContain('NIT');
+  });
+
+  it('should never render placeholder marks', () => {
+    renderText(['Correo', { field: 'email', prefix: ': ' }]);
+    expect(root.querySelector('mark')).toBeNull();
+    expect(root.textContent).toBe('Correo');
   });
 
   it('should render internal links with their fragment', () => {

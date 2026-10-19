@@ -1,19 +1,20 @@
 import { legalAnchors, legalTitles } from './legal-index';
+import { academicNote } from './site';
 import type { LegalDocument, RichText } from './types';
 
 /*
  * Full texts of `/legal`. Not exported from the content barrel: only the lazy `/legal` page
  * imports this module, so the texts never reach the initial bundle.
  *
- * They are a reference base aligned with Ley 1581 de 2012 and
- * Decreto 1377 de 2013; they are not legal advice and must be reviewed by a lawyer with the
- * real data of the responsible party (see `responsible.ts`).
+ * They are a reference base aligned with Ley 1581 de 2012 and Decreto 1377 de 2013 for a
+ * fictitious company of an academic project (see `responsible.ts`); they are not legal advice.
  */
 
 export const legalNotice: RichText = [
+  `${academicNote} `,
   'Estos textos son una base de referencia preparada a partir de la Ley 1581 de 2012 y el ',
-  'Decreto 1377 de 2013. No constituyen asesoría legal: deben revisarse con un abogado y ',
-  'completarse con los datos reales del responsable antes de considerarse definitivos.'
+  'Decreto 1377 de 2013. No constituyen asesoría legal: una empresa real debe revisarlos con ',
+  'un abogado antes de adoptarlos.'
 ];
 
 export const legalLastUpdated: RichText = ['Última actualización: ', { field: 'effectiveDate' }, '.'];
@@ -29,17 +30,20 @@ const dataPolicy: LegalDocument = {
           'El responsable del tratamiento de los datos personales recolectados a través del ',
           'sitio y de la plataforma KUVU es ',
           { field: 'legalName' },
-          ', identificado con NIT ',
-          { field: 'taxId' },
+          { field: 'taxId', prefix: ', identificado con NIT ' },
           ', con domicilio en ',
           { field: 'domicile' },
           '.'
         ]
       ],
       items: [
-        ['Dirección: ', { field: 'address' }],
-        ['Correo electrónico: ', { field: 'email' }],
-        ['Teléfono: ', { field: 'phone' }]
+        [{ field: 'address', prefix: 'Dirección: ' }],
+        [{ field: 'email', prefix: 'Correo electrónico: ' }],
+        [{ field: 'phone', prefix: 'Teléfono y WhatsApp: ' }],
+        [
+          'Formulario: ',
+          { link: '/contacto', label: 'página de contacto' }
+        ]
       ]
     },
     {
@@ -136,11 +140,12 @@ const dataPolicy: LegalDocument = {
         [
           'Las consultas y reclamos sobre datos personales los atiende ',
           { field: 'attentionArea' },
-          ', a través del correo ',
-          { field: 'email' },
-          ' o del teléfono ',
+          ', a través del formulario de la ',
+          { link: '/contacto', label: 'página de contacto' },
+          ', del WhatsApp ',
           { field: 'phone' },
-          '.'
+          { field: 'email', prefix: ' o del correo ' },
+          '. En el mensaje indica que se trata de una consulta o un reclamo sobre datos personales.'
         ]
       ]
     },
@@ -210,12 +215,10 @@ const privacyNotice: LegalDocument = {
       paragraphs: [
         [
           { field: 'legalName' },
-          ', identificado con NIT ',
-          { field: 'taxId' },
+          { field: 'taxId', prefix: ', identificado con NIT ' },
           ', con domicilio en ',
           { field: 'domicile' },
-          ' y correo ',
-          { field: 'email' },
+          { field: 'email', prefix: ' y correo ' },
           ', es responsable del tratamiento de los datos personales que se recolectan en este ',
           'sitio y en la plataforma KUVU.'
         ],
@@ -311,8 +314,11 @@ const terms: LegalDocument = {
       paragraphs: [
         [
           'Estos términos se rigen por las leyes de la República de Colombia. Para cualquier ',
-          'consulta, escríbenos a ',
-          { field: 'email' },
+          'consulta, escríbenos desde la ',
+          { link: '/contacto', label: 'página de contacto' },
+          ' o por WhatsApp al ',
+          { field: 'phone' },
+          { field: 'email', prefix: ' o al correo ' },
           '.'
         ]
       ]

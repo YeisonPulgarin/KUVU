@@ -5,6 +5,10 @@ export const siteInfo: SiteInfo = {
   tagline: 'Administración inmobiliaria para empresas que crecen'
 };
 
+/** Honest note shown in the footer and in `/legal`: KUVU is an academic project. */
+export const academicNote =
+  'KUVU es un proyecto académico desarrollado en la Universidad Cooperativa de Colombia.';
+
 /**
  * Every public page of the site with its own route. It is the source for the site navigation
  * and for the breadcrumb, so labels and paths never diverge between them.

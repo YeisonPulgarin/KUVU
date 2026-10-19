@@ -103,25 +103,31 @@ export interface PageMeta {
 
 /**
  * Data of the party responsible for personal data processing (Ley 1581 de 2012).
- * `null` means the real value is still pending and is rendered as a visible placeholder.
+ * KUVU is a fictitious company of an academic project: it has no tax id, physical address
+ * or email domain, so those fields are optional and, when absent, the phrase or line that
+ * mentions them is not rendered at all.
  */
 export interface Responsible {
-  readonly legalName: string | null;
-  readonly taxId: string | null;
-  readonly domicile: string | null;
-  readonly address: string | null;
-  readonly email: string | null;
-  readonly phone: string | null;
-  readonly attentionArea: string | null;
-  readonly effectiveDate: string | null;
+  readonly legalName: string;
+  readonly domicile: string;
+  readonly phone: string;
+  readonly attentionArea: string;
+  readonly effectiveDate: string;
+  readonly taxId?: string;
+  readonly address?: string;
+  readonly email?: string;
 }
 
 export type ResponsibleField = keyof Responsible;
 
-/** One piece of rich text: plain text, a responsible-party field, or an internal link. */
+/**
+ * One piece of rich text: plain text, a responsible-party field, or an internal link.
+ * A field segment renders `prefix + value + suffix`; if the field is absent, the whole
+ * segment (prefix and suffix included) is left out.
+ */
 export type RichSegment =
   | string
-  | { readonly field: ResponsibleField }
+  | { readonly field: ResponsibleField; readonly prefix?: string; readonly suffix?: string }
   | { readonly link: string; readonly fragment?: string; readonly label: string };
 
 export type RichText = readonly RichSegment[];

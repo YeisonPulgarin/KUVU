@@ -21,6 +21,7 @@ import {
   contactSubjects
 } from '../../../content/contact';
 import { pageMeta } from '../../../content/pages';
+import { responsible } from '../../../content/responsible';
 import {
   breadcrumbFor,
   buildWhatsAppLink,
@@ -65,7 +66,9 @@ export class ContactoComponent implements OnInit {
   readonly steps = contactSteps;
   readonly consent = contactConsent;
   readonly whatsappLink = contactWhatsAppLink;
-  readonly email: RichText = [{ field: 'email' }];
+  readonly email: RichText = [{ field: 'email', prefix: 'Correo: ' }];
+  readonly hasEmail = Boolean(responsible.email);
+  readonly phone = responsible.phone;
 
   readonly form = inject(FormBuilder).nonNullable.group(
     {

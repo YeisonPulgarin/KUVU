@@ -50,7 +50,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.meta.setPage(pageMeta.home);
     const url = this.meta.absolute('/');
-    // Only data the site actually has: no phone or address while they are placeholders.
+    // Only data the site actually has: the fictitious company has no address to publish.
     this.meta.setJsonLd(HOME_JSONLD_ID, {
       '@context': 'https://schema.org',
       '@graph': [

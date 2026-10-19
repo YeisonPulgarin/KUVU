@@ -40,7 +40,7 @@
                 }
                 @if (block.items) {
                   <ul>
-                    @for (item of block.items; track $index) {
+                    @for (item of visibleItems(block.items); track $index) {
                       <li><app-rich-text [text]="item"></app-rich-text></li>
                     }
                   </ul>

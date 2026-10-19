@@ -66,10 +66,16 @@ describe('SiteFooterComponent', () => {
     expect(col.querySelector('a[href="/contacto"]')).toBeTruthy();
   });
 
-  it('should show the email as a visible placeholder and never as an invented mailto', () => {
-    const email = root.querySelector('.footer-email') as HTMLElement;
-    expect(email.querySelector('mark.placeholder')?.textContent).toBe('[CORREO DE CONTACTO]');
+  it('should not show an email line nor any mailto while KUVU has no email', () => {
+    expect(root.querySelector('.footer-email')).toBeNull();
     expect(root.querySelector('a[href^="mailto:"]')).toBeNull();
+    expect(root.querySelector('mark')).toBeNull();
+  });
+
+  it('should say that KUVU is an academic project', () => {
+    expect(root.querySelector('.footer-academic')?.textContent?.trim()).toBe(
+      'KUVU es un proyecto académico desarrollado en la Universidad Cooperativa de Colombia.'
+    );
   });
 
   it('should not render social links nor empty "#" links', () => {

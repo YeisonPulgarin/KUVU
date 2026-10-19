@@ -33,6 +33,9 @@ describe('LegalComponent', () => {
   it('should warn at the top that the texts are a base and not legal advice', () => {
     const notice = root.querySelector('.legal-notice') as HTMLElement;
     expect(notice.textContent).toContain('No constituyen asesoría legal');
+    expect(notice.textContent).toContain(
+      'KUVU es un proyecto académico desarrollado en la Universidad Cooperativa de Colombia.'
+    );
     const intro = root.querySelector('.legal-intro') as HTMLElement;
     expect(intro.firstElementChild).toBe(notice);
   });
@@ -43,12 +46,30 @@ describe('LegalComponent', () => {
     expect(updated.querySelector('mark')).toBeNull();
   });
 
-  it('should show the filled phone and attention area without placeholder marks', () => {
+  it('should identify KUVU with its domicile, phone and attention area', () => {
     const text = (root.querySelector('#tratamiento-datos') as HTMLElement).textContent ?? '';
+    expect(text).toContain('es KUVU, con domicilio en Bogotá D.C., Colombia.');
     expect(text).toContain('+57 322 319 2760');
     expect(text).toContain('Equipo KUVU — Protección de datos personales');
-    const marks = Array.from(root.querySelectorAll('#tratamiento-datos mark')).map((m) => m.textContent);
-    expect(marks).not.toContain('[TELÉFONO]');
+  });
+
+  it('should not show a tax id, an address or an email, nor empty lines for them', () => {
+    const text = root.textContent ?? '';
+    expect(text).not.toContain('NIT');
+    expect(text).not.toContain('Dirección:');
+    expect(text).not.toContain('Correo electrónico:');
+    const items = Array.from(root.querySelectorAll('#tratamiento-datos li'));
+    items.forEach((li) => expect(li.textContent?.trim().length).toBeGreaterThan(0));
+  });
+
+  it('should render no placeholder marks anywhere', () => {
+    expect(root.querySelector('mark')).toBeNull();
+    expect(root.textContent).not.toMatch(/\[[A-ZÁÉÍÓÚ ]+\]/);
+  });
+
+  it('should send data rights requests to the contact form', () => {
+    expect(root.querySelector('#tratamiento-datos a[href="/contacto"]')).toBeTruthy();
+    expect(root.querySelector('#terminos-uso a[href="/contacto"]')).toBeTruthy();
   });
 
   it('should index the four documents with links to their anchors', () => {
@@ -76,13 +97,6 @@ describe('LegalComponent', () => {
   it('should render every block heading of the data policy', () => {
     const headings = Array.from(root.querySelectorAll('#tratamiento-datos h3')).map((h) => h.textContent?.trim());
     expect<(string | undefined)[]>(headings).toEqual(legalDocuments[0].blocks.map((b) => b.heading));
-  });
-
-  it('should show the responsible data as visible placeholders', () => {
-    const marks = Array.from(root.querySelectorAll('#tratamiento-datos mark.placeholder')).map((m) => m.textContent);
-    expect(marks).toContain('[RAZÓN SOCIAL]');
-    expect(marks).toContain('[NIT]');
-    expect(marks).toContain('[DOMICILIO]');
   });
 
   it('should link the privacy notice to the data policy anchor', () => {

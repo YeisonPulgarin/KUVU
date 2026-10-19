@@ -13,9 +13,10 @@ import {
   legalIndex,
   logo,
   pageMeta,
-  placeholderLabel,
   responsible,
-  responsibleText,
+  isEmptyRichText,
+  resolveRichText,
+  academicNote,
   origin,
   securityHighlights,
   services,
@@ -315,30 +316,31 @@ describe('content modules', () => {
   describe('responsible party', () => {
     const fields = Object.keys(responsible) as ResponsibleField[];
 
-    it('should keep pending, as null, the data the owner has not given yet', () => {
-      (['legalName', 'taxId', 'domicile', 'address', 'email'] as ResponsibleField[]).forEach((name) =>
-        expect(responsible[name]).withContext(name).toBeNull()
-      );
-    });
-
-    it('should only fill data derivable from what the site already publishes', () => {
+    it('should name the fictitious company with data that cannot belong to a third party', () => {
+      expect(responsible.legalName).toBe('KUVU');
+      expect(responsible.domicile).toBe('Bogotá D.C., Colombia');
       expect(responsible.phone).toBe('+57 322 319 2760');
-      expect(responsible.phone?.replace(/\D/g, '')).toBe(contact.whatsappNumber);
+      expect(responsible.phone.replace(/\D/g, '')).toBe(contact.whatsappNumber);
       expect(responsible.attentionArea).toBe('Equipo KUVU — Protección de datos personales');
       expect(responsible.effectiveDate).toBe('18 de octubre de 2026');
     });
 
-    it('should have a placeholder label for every field', () => {
-      expect(Object.keys(placeholderLabel).sort()).toEqual([...fields].sort());
-      fields.forEach((name) => expect(placeholderLabel[name].trim().length).toBeGreaterThan(0));
+    it('should not invent a tax id, a physical address or an email', () => {
+      expect(fields).not.toContain('taxId');
+      expect(fields).not.toContain('address');
+      expect(fields).not.toContain('email');
+      expect(responsible.taxId).toBeUndefined();
+      expect(responsible.address).toBeUndefined();
+      expect(responsible.email).toBeUndefined();
     });
 
-    it('should render a pending field as its bracketed placeholder', () => {
-      expect(responsibleText('legalName')).toBe('[RAZÓN SOCIAL]');
-      expect(responsibleText('taxId')).toBe('[NIT]');
-      expect(responsibleText('email')).toBe('[CORREO DE CONTACTO]');
-      expect(responsibleText('address')).toBe('[DIRECCIÓN]');
-      expect(responsibleText('effectiveDate')).toBe('18 de octubre de 2026');
+    it('should leave out an absent field with its whole phrase', () => {
+      const text = resolveRichText(['KUVU', { field: 'taxId', prefix: ', NIT ' }, '.'])
+        .map((s) => s.text)
+        .join('');
+      expect(text).toBe('KUVU.');
+      expect(isEmptyRichText([{ field: 'email', prefix: 'Correo: ' }])).toBeTrue();
+      expect(isEmptyRichText([{ field: 'phone', prefix: 'Tel: ' }])).toBeFalse();
     });
   });
 
@@ -374,8 +376,15 @@ describe('content modules', () => {
       expect(richTextToPlain(legalNotice)).toContain('No constituyen asesoría legal');
     });
 
-    it('should show the effective date through the responsible placeholder', () => {
+    it('should show the effective date from the responsible data', () => {
       expect(legalLastUpdated).toContain(jasmine.objectContaining({ field: 'effectiveDate' }));
+    });
+
+    it('should say honestly that KUVU is an academic project', () => {
+      expect(academicNote).toBe(
+        'KUVU es un proyecto académico desarrollado en la Universidad Cooperativa de Colombia.'
+      );
+      expect(richTextToPlain(legalNotice)).toContain(academicNote);
     });
 
     it('should cover the thirteen minimum points of the data policy', () => {
@@ -406,13 +415,36 @@ describe('content modules', () => {
       expect(text).toContain('Superintendencia de Industria y Comercio');
     });
 
-    it('should identify the responsible party only through placeholders', () => {
+    it('should identify the responsible party from the responsible data', () => {
       const identification = docById('tratamiento-datos').blocks[0];
       const segments = [...identification.paragraphs, ...(identification.items ?? [])].flat();
-      const required: ResponsibleField[] = ['legalName', 'taxId', 'domicile', 'address', 'email', 'phone'];
-      required.forEach((name) =>
-        expect(segments).toContain(jasmine.objectContaining({ field: name }))
-      );
+      const used: ResponsibleField[] = ['legalName', 'domicile', 'phone'];
+      used.forEach((name) => expect(segments).toContain(jasmine.objectContaining({ field: name })));
+    });
+
+    it('should offer the contact form and WhatsApp as channels to exercise data rights', () => {
+      const area = docById('tratamiento-datos').blocks.find(
+        (b) => b.heading === 'Área responsable y canales de atención'
+      )!;
+      const segments = area.paragraphs.flat();
+      expect(segments).toContain(jasmine.objectContaining({ link: '/contacto' }));
+      expect(segments).toContain(jasmine.objectContaining({ field: 'phone' }));
+    });
+
+    it('should leave no incomplete sentence once absent fields are omitted', () => {
+      const rendered = allRichTexts()
+        .filter((text) => text.some((segment) => typeof segment !== 'string' && 'field' in segment))
+        .filter((text) => !isEmptyRichText(text))
+        .map((text) =>
+          resolveRichText(text)
+            .map((s) => s.text)
+            .join('')
+        );
+      rendered.forEach((line) => {
+        expect(line).not.toMatch(/:\s*$/);
+        expect(line).not.toMatch(/\b(a|en|del|con|NIT|correo)\s*[.,]/i);
+        expect(line).not.toMatch(/\s{2,}|\s[.,]/);
+      });
     });
 
     it('should separate the data KUVU handles on behalf of each real estate company', () => {
@@ -448,7 +480,13 @@ describe('content modules', () => {
     });
 
     it('should only use internal links and known responsible fields', () => {
-      const known = Object.keys(responsible);
+      // Fields of the Responsible model, present or optional.
+      const known: string[] = [
+        ...Object.keys(responsible),
+        'taxId',
+        'address',
+        'email'
+      ];
       allRichTexts()
         .flat()
         .forEach((segment) => {
