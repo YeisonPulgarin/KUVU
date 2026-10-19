@@ -1,0 +1,166 @@
+<app-public-page [pageTitle]="page.title" [lead]="page.lead" [breadcrumb]="breadcrumb">
+  <section class="section" aria-labelledby="contacto-form-title">
+    <div class="container contact-grid">
+
+      <div class="contact-form-col">
+        <span class="section-eyebrow" aria-hidden="true">01</span>
+        <h2 class="section-title" id="contacto-form-title">Escribinos</h2>
+
+        <form class="contact-form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+          <div class="field">
+            <label for="contact-name">{{ labels.name }}</label>
+            <input
+              id="contact-name"
+              type="text"
+              formControlName="name"
+              autocomplete="name"
+              required
+              [attr.aria-invalid]="showError('name')"
+              [attr.aria-describedby]="showError('name') ? 'contact-name-error' : null"
+            />
+            @if (showError('name')) {
+              <p class="field-error" id="contact-name-error">{{ errors.nameRequired }}</p>
+            }
+          </div>
+
+          <div class="field">
+            <label for="contact-company">{{ labels.company }}</label>
+            <input id="contact-company" type="text" formControlName="company" autocomplete="organization" />
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="contact-email">{{ labels.email }}</label>
+              <input
+                id="contact-email"
+                type="email"
+                formControlName="email"
+                autocomplete="email"
+                [attr.aria-invalid]="showError('email') || showReachError()"
+                [attr.aria-describedby]="reachDescribedBy('email')"
+              />
+              @if (showError('email')) {
+                <p class="field-error" id="contact-email-error">{{ errors.emailInvalid }}</p>
+              }
+            </div>
+
+            <div class="field">
+              <label for="contact-phone">{{ labels.phone }}</label>
+              <input
+                id="contact-phone"
+                type="tel"
+                formControlName="phone"
+                autocomplete="tel"
+                [attr.aria-invalid]="showError('phone') || showReachError()"
+                [attr.aria-describedby]="reachDescribedBy('phone')"
+              />
+              @if (showError('phone')) {
+                <p class="field-error" id="contact-phone-error">{{ errors.phoneInvalid }}</p>
+              }
+            </div>
+          </div>
+          @if (showReachError()) {
+            <p class="field-error" id="contact-reach-error">{{ errors.emailOrPhoneRequired }}</p>
+          } @else {
+            <p class="field-hint">Con uno de los dos alcanza para responderte.</p>
+          }
+
+          <div class="field">
+            <label for="contact-subject">{{ labels.subject }}</label>
+            <select
+              id="contact-subject"
+              formControlName="subject"
+              required
+              [attr.aria-invalid]="showError('subject')"
+              [attr.aria-describedby]="showError('subject') ? 'contact-subject-error' : null"
+            >
+              <option value="" disabled>Elegí un asunto</option>
+              @for (subject of subjects; track subject.value) {
+                <option [value]="subject.value">{{ subject.label }}</option>
+              }
+            </select>
+            @if (showError('subject')) {
+              <p class="field-error" id="contact-subject-error">{{ errors.subjectRequired }}</p>
+            }
+          </div>
+
+          <div class="field">
+            <label for="contact-message">{{ labels.message }}</label>
+            <textarea
+              id="contact-message"
+              rows="5"
+              formControlName="message"
+              required
+              [attr.aria-invalid]="showError('message')"
+              [attr.aria-describedby]="showError('message') ? 'contact-message-error' : null"
+            ></textarea>
+            @if (showError('message')) {
+              <p class="field-error" id="contact-message-error">{{ errors.messageRequired }}</p>
+            }
+          </div>
+
+          <div class="field field--consent">
+            <input
+              id="contact-consent"
+              type="checkbox"
+              formControlName="consent"
+              required
+              [attr.aria-invalid]="showError('consent')"
+              [attr.aria-describedby]="showError('consent') ? 'contact-consent-error' : null"
+            />
+            <label for="contact-consent"><app-rich-text [text]="consent"></app-rich-text></label>
+            @if (showError('consent')) {
+              <p class="field-error" id="contact-consent-error">{{ errors.consentRequired }}</p>
+            }
+          </div>
+
+          <button type="submit" class="btn-submit">{{ page.submitLabel }}</button>
+
+          <div class="form-status" aria-live="polite">
+            @if (state() === 'sent') {
+              <p class="status status--ok">
+                {{ page.successMessage }}
+                <a class="status-link" [href]="fallbackLink()" target="_blank" rel="noopener">Abrir WhatsApp de nuevo</a>
+              </p>
+            } @else if (state() === 'blocked') {
+              <p class="status status--warn">
+                {{ page.popupBlockedMessage }}
+                <a class="status-link" [href]="fallbackLink()" target="_blank" rel="noopener">Abrir WhatsApp</a>
+              </p>
+            }
+          </div>
+        </form>
+      </div>
+
+      <aside class="contact-aside" aria-labelledby="contacto-canales">
+        <div class="aside-block" data-reveal>
+          <span class="section-eyebrow" aria-hidden="true">02</span>
+          <h2 class="aside-title" id="contacto-canales">{{ page.directChannelsTitle }}</h2>
+          <ul class="channel-list">
+            <li>
+              <a class="channel-wa" [href]="whatsappLink" target="_blank" rel="noopener">Escríbenos por WhatsApp</a>
+            </li>
+            <li class="channel-email">Correo: <app-rich-text [text]="email"></app-rich-text></li>
+          </ul>
+        </div>
+
+        <div class="aside-block" data-reveal>
+          <span class="section-eyebrow" aria-hidden="true">03</span>
+          <h2 class="aside-title">{{ page.stepsTitle }}</h2>
+          <ol class="steps">
+            @for (step of steps; track step.title; let i = $index) {
+              <li class="step">
+                <span class="step-number" aria-hidden="true">{{ i + 1 }}</span>
+                <div>
+                  <h3>{{ step.title }}</h3>
+                  <p>{{ step.description }}</p>
+                </div>
+              </li>
+            }
+          </ol>
+        </div>
+      </aside>
+
+    </div>
+  </section>
+</app-public-page>

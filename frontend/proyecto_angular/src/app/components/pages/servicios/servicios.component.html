@@ -1,0 +1,54 @@
+<app-public-page
+  pageTitle="Servicios"
+  lead="Todo lo que tu inmobiliaria necesita administrar, en un solo lugar y para todas tus compañías."
+  [breadcrumb]="breadcrumb"
+>
+  <section class="section" aria-labelledby="servicios-lista">
+    <div class="container">
+      <span class="section-eyebrow" aria-hidden="true">01</span>
+      <h2 class="section-title" id="servicios-lista">Qué administra KUVU</h2>
+      <div class="service-grid">
+        @for (service of services; track service.title) {
+          <article class="service-card hover-lift" data-reveal>
+            <app-service-icon class="service-icon" [icon]="service.icon"></app-service-icon>
+            <h3>{{ service.title }}</h3>
+            <p>{{ service.description }}</p>
+          </article>
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--alt" aria-labelledby="servicios-beneficios">
+    <div class="container">
+      <span class="section-eyebrow" aria-hidden="true">02</span>
+      <h2 class="section-title" id="servicios-beneficios">Beneficios por rol</h2>
+      <p class="section-lead">KUVU se adapta a la decisión de quien lidera y al día a día de quienes operan.</p>
+      <div class="roles-grid">
+        @for (role of benefitsByRole; track role.role) {
+          <article class="role-card hover-lift" data-reveal>
+            <p class="role-role">{{ role.role }}</p>
+            <h3 class="role-title">{{ role.title }}</h3>
+            <p class="role-description">{{ role.description }}</p>
+            <ul class="role-points">
+              @for (point of role.points; track point) {
+                <li>{{ point }}</li>
+              }
+            </ul>
+          </article>
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--cta" aria-labelledby="servicios-contacto">
+    <div class="container cta-inner" data-reveal>
+      <span class="section-eyebrow" aria-hidden="true">03</span>
+      <h2 class="section-title" id="servicios-contacto">¿Querés ver cómo encaja en tu inmobiliaria?</h2>
+      <p class="section-lead">Contanos cómo trabajás hoy y te mostramos cómo se vería en KUVU.</p>
+      <a routerLink="/contacto" class="btn-secondary link-arrow">
+        Contactar <span class="link-arrow-icon" aria-hidden="true">→</span>
+      </a>
+    </div>
+  </section>
+</app-public-page>

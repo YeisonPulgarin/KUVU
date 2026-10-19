@@ -1,0 +1,56 @@
+<app-public-page
+  pageTitle="Legal"
+  lead="Cómo tratamos tus datos personales, las condiciones de uso de KUVU y lo que guardamos en tu navegador."
+  [breadcrumb]="breadcrumb"
+>
+  <section class="section">
+    <div class="container legal-layout">
+
+      <div class="legal-intro">
+        <p class="legal-notice" role="note"><app-rich-text [text]="notice"></app-rich-text></p>
+        <p class="legal-updated"><app-rich-text [text]="lastUpdated"></app-rich-text></p>
+
+        <nav class="legal-index" aria-labelledby="legal-index-title">
+          <h2 class="legal-index-title" id="legal-index-title">Contenido</h2>
+          <ol>
+            @for (doc of documents; track doc.id; let i = $index) {
+              <li>
+                <a routerLink="/legal" [fragment]="doc.id" class="legal-index-link">
+                  <span class="legal-index-number" aria-hidden="true">{{ number(i) }}</span>
+                  {{ doc.title }}
+                </a>
+              </li>
+            }
+          </ol>
+        </nav>
+      </div>
+
+      <div class="legal-docs">
+        @for (doc of documents; track doc.id; let i = $index) {
+          <article class="legal-doc" [id]="doc.id" [attr.aria-labelledby]="doc.id + '-title'">
+            <span class="section-eyebrow" aria-hidden="true">{{ number(i) }}</span>
+            <h2 class="legal-doc-title" [id]="doc.id + '-title'">{{ doc.title }}</h2>
+            @for (block of doc.blocks; track $index) {
+              <div class="legal-block">
+                @if (block.heading) {
+                  <h3>{{ block.heading }}</h3>
+                }
+                @for (paragraph of block.paragraphs; track $index) {
+                  <p><app-rich-text [text]="paragraph"></app-rich-text></p>
+                }
+                @if (block.items) {
+                  <ul>
+                    @for (item of block.items; track $index) {
+                      <li><app-rich-text [text]="item"></app-rich-text></li>
+                    }
+                  </ul>
+                }
+              </div>
+            }
+          </article>
+        }
+      </div>
+
+    </div>
+  </section>
+</app-public-page>

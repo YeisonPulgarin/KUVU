@@ -1,0 +1,137 @@
+@reference "../../../../styles.css";
+
+.container {
+  @apply max-w-6xl mx-auto px-4;
+
+  @media (width >= 768px) {
+    @apply px-6;
+  }
+}
+
+.section {
+  padding-block: 4.5rem;
+  background-color: var(--color-home-bg, #f6f7f4);
+
+  @media (width >= 768px) {
+    padding-block: 6rem;
+  }
+
+  &--alt {
+    background-color: var(--color-home-surface, #ffffff);
+    border-block: 1px solid var(--color-home-border, #cddccd);
+  }
+}
+
+.section-title {
+  margin: 0 0 1rem;
+  font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--color-home-text, #1f2920);
+}
+
+.section-lead {
+  margin: 0 0 2.5rem;
+  max-width: 40rem;
+  color: var(--color-home-muted, #4c5a4e);
+}
+
+.service-grid,
+.roles-grid {
+  display: grid;
+  gap: 1.25rem;
+  margin-top: 2rem;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.service-grid {
+  @media (width >= 640px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @media (width >= 1024px) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.roles-grid {
+  @media (width >= 768px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.service-card,
+.role-card {
+  padding: 1.75rem;
+  border-radius: 16px;
+  background-color: var(--color-home-surface, #ffffff);
+  border: 1px solid var(--color-home-border, #cddccd);
+
+  h3 {
+    margin: 0 0 0.5rem;
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--color-home-text, #1f2920);
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: var(--color-home-muted, #4c5a4e);
+  }
+}
+
+.role-card {
+  background-color: var(--color-home-bg, #f6f7f4);
+
+  .role-role {
+    margin-bottom: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-brand-600, #3e5c40);
+  }
+
+  .role-description {
+    margin-bottom: 1rem;
+  }
+}
+
+.service-icon {
+  width: 44px;
+  height: 44px;
+  padding: 10px;
+  margin-bottom: 1rem;
+  border-radius: 12px;
+  color: var(--color-brand-600, #3e5c40);
+  background-color: var(--color-home-surface-alt, #eef1ec);
+}
+
+.role-points {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-left: 1.1rem;
+  font-size: 0.9375rem;
+  color: var(--color-home-text, #1f2920);
+}
+
+.cta-inner {
+  text-align: center;
+
+  .section-lead {
+    margin-inline: auto;
+    margin-bottom: 2rem;
+  }
+}
+
+.btn-secondary {
+  justify-content: center;
+  min-height: 44px;
+  padding: 0.75rem 1.5rem;
+  border-radius: 9999px;
+  border: 1.5px solid var(--color-brand-600, #3e5c40);
+  background-color: transparent;
+}

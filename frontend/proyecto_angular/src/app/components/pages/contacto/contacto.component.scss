@@ -1,0 +1,242 @@
+@reference "../../../../styles.css";
+
+.container {
+  @apply max-w-6xl mx-auto px-4;
+
+  @media (width >= 768px) {
+    @apply px-6;
+  }
+}
+
+.section {
+  padding-block: 4rem;
+
+  @media (width >= 768px) {
+    padding-block: 5.5rem;
+  }
+}
+
+.contact-grid {
+  display: grid;
+  gap: 3rem;
+  grid-template-columns: minmax(0, 1fr);
+
+  @media (width >= 1024px) {
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    gap: 4rem;
+  }
+}
+
+.section-title,
+.aside-title {
+  margin: 0 0 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--color-home-text, #1f2920);
+}
+
+.section-title {
+  font-size: clamp(1.75rem, 3.5vw, 2.25rem);
+}
+
+.aside-title {
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+
+  label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-home-text, #1f2920);
+  }
+
+  input,
+  select,
+  textarea {
+    width: 100%;
+    min-height: 44px;
+    padding: 0.625rem 0.875rem;
+    font-size: 1rem;
+    border-radius: 12px;
+    color: var(--color-home-text, #1f2920);
+    background-color: var(--color-home-surface, #ffffff);
+    border: 1px solid var(--color-home-border, #cddccd);
+
+    &[aria-invalid='true'] {
+      border-color: #b42318;
+    }
+  }
+
+  textarea {
+    resize: vertical;
+  }
+
+  &--consent {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: start;
+    column-gap: 0.75rem;
+
+    input {
+      width: 20px;
+      min-height: 20px;
+      height: 20px;
+      margin-top: 2px;
+      accent-color: var(--color-brand-700, #2f4a2f);
+    }
+
+    label {
+      font-weight: 400;
+      line-height: 1.5;
+    }
+
+    .field-error {
+      grid-column: 1 / -1;
+    }
+  }
+}
+
+.field-row {
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: minmax(0, 1fr);
+
+  @media (width >= 640px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.field-error {
+  margin: 0;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #b42318;
+}
+
+.field-hint {
+  margin: -0.75rem 0 0;
+  font-size: 0.8125rem;
+  color: var(--color-home-muted, #4c5a4e);
+}
+
+:host-context(.dark) .field-error {
+  color: #fda29b;
+}
+
+.btn-submit {
+  align-self: flex-start;
+  min-height: 44px;
+  padding: 0.75rem 1.75rem;
+  border: 0;
+  border-radius: 9999px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #ffffff;
+  background-color: #1a7a43;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #146236;
+  }
+}
+
+.status {
+  margin: 0;
+  padding: 1rem 1.25rem;
+  border-radius: 12px;
+  font-size: 0.9375rem;
+
+  &--ok {
+    color: var(--color-home-text, #1f2920);
+    background-color: var(--color-home-surface-alt, #eef1ec);
+  }
+
+  &--warn {
+    color: #5c3b00;
+    background-color: #fde7b0;
+  }
+}
+
+.status-link {
+  display: inline-block;
+  margin-left: 0.25rem;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.contact-aside {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+.aside-block {
+  padding: 1.75rem;
+  border-radius: 16px;
+  background-color: var(--color-home-surface, #ffffff);
+  border: 1px solid var(--color-home-border, #cddccd);
+}
+
+.channel-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  font-size: 0.9375rem;
+  overflow-wrap: anywhere;
+}
+
+.channel-wa {
+  font-weight: 600;
+  color: var(--color-brand-600, #3e5c40);
+  text-decoration: underline;
+}
+
+.steps {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.step {
+  display: grid;
+  grid-template-columns: 2rem minmax(0, 1fr);
+  gap: 0.875rem;
+
+  h3 {
+    margin: 0 0 0.25rem;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-home-text, #1f2920);
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.875rem;
+    color: var(--color-home-muted, #4c5a4e);
+  }
+}
+
+.step-number {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #ffffff;
+  background-color: var(--color-brand-700, #2f4a2f);
+}

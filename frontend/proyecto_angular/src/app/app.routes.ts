@@ -16,18 +16,33 @@ export const routes: Routes = [
       import('./components/login/login.component').then(m => m.LoginComponent)
   },
 
-  // ── Páginas públicas del sitio de marketing ──────────────
+  // ── Páginas públicas del sitio ──────────────────────────
+  // Sin `title` en la ruta: cada página publica title y meta con PageMetaService
+  // (content/pages.ts), así el título no diverge de og:title.
+  {
+    path: 'servicios',
+    loadComponent: () =>
+      import('./components/pages/servicios/servicios.component').then(m => m.ServiciosComponent)
+  },
   {
     path: 'nosotros',
-    title: 'Nosotros · KUVU',
     loadComponent: () =>
       import('./components/pages/nosotros/nosotros.component').then(m => m.NosotrosComponent)
   },
   {
     path: 'preguntas-frecuentes',
-    title: 'Preguntas frecuentes · KUVU',
     loadComponent: () =>
       import('./components/pages/preguntas-frecuentes/preguntas-frecuentes.component').then(m => m.PreguntasFrecuentesComponent)
+  },
+  {
+    path: 'contacto',
+    loadComponent: () =>
+      import('./components/pages/contacto/contacto.component').then(m => m.ContactoComponent)
+  },
+  {
+    path: 'legal',
+    loadComponent: () =>
+      import('./components/pages/legal/legal.component').then(m => m.LegalComponent)
   },
 
   // ── Rutas accesibles para TODOS los usuarios autenticados ──
@@ -70,5 +85,10 @@ export const routes: Routes = [
     canActivate: [adminGuard]
   },
 
-  { path: '**', redirectTo: '/login' }
+  // Cualquier URL sin ruta: página 404 pública.
+  {
+    path: '**',
+    loadComponent: () =>
+      import('./components/pages/not-found/not-found.component').then(m => m.NotFoundComponent)
+  }
 ];
