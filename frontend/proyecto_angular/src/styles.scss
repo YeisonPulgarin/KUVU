@@ -39,3 +39,69 @@ $ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
     transform: none;
   }
 }
+
+/* ============================================================
+   SITIO PÚBLICO — utilidades compartidas por todas sus páginas
+   ============================================================ */
+
+// Anchors (`/legal#cookies`) land below the sticky header.
+html {
+  scroll-padding-top: 88px;
+}
+
+// Numbered label over a section title ("01", "02"…). Decorative: aria-hidden in templates.
+.section-eyebrow {
+  display: block;
+  margin: 0 0 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-brand-600, #3e5c40);
+}
+
+// CTA link with an arrow that moves on hover/focus.
+.link-arrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  font-weight: 600;
+  color: var(--color-brand-600, #3e5c40);
+
+  .link-arrow-icon {
+    display: inline-block;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .link-arrow .link-arrow-icon {
+    transition: transform 0.3s $ease-out-expo;
+  }
+
+  .link-arrow:hover .link-arrow-icon,
+  .link-arrow:focus-visible .link-arrow-icon {
+    transform: translateX(4px);
+  }
+
+  // Cards of the public site lift slightly on hover.
+  .hover-lift {
+    transition:
+      transform 0.3s $ease-out-expo,
+      box-shadow 0.3s $ease-out-expo;
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px -18px rgb(0 0 0 / 0.45);
+  }
+}
+
+// Route changes use the View Transitions API; with reduced motion they happen instantly.
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}

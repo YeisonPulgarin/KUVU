@@ -1,0 +1,25 @@
+:host {
+  display: inline;
+}
+
+.placeholder {
+  padding: 0 0.25em;
+  border-radius: 4px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #5c3b00;
+  background-color: #fde7b0;
+  outline: 1px dashed #b7791f;
+}
+
+:host-context(.dark) .placeholder {
+  color: #fde7b0;
+  background-color: #4a3410;
+  outline-color: #d69e2e;
+}
+
+.rich-link {
+  color: var(--color-brand-600, #3e5c40);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}

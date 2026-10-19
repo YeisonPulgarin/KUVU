@@ -1,0 +1,21 @@
+<div class="page-layout">
+  <app-site-header></app-site-header>
+
+  <main id="contenido">
+    <section class="page-hero">
+      <div class="container">
+        @if (breadcrumb(); as items) {
+          <app-breadcrumb [items]="items"></app-breadcrumb>
+        }
+        <h1 class="page-title">{{ pageTitle() }}</h1>
+        @if (lead()) {
+          <p class="page-lead">{{ lead() }}</p>
+        }
+      </div>
+    </section>
+
+    <ng-content></ng-content>
+  </main>
+
+  <app-site-footer></app-site-footer>
+</div>

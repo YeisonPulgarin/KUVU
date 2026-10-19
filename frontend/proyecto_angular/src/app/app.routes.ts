@@ -1,13 +1,20 @@
 import { Routes } from '@angular/router';
 import { authGuard, adminGuard } from './guards/auth.guard';
 import { HomeComponent } from './components/home/home.component';
-import { LandingComponent } from './components/landing/landing.component';
-import { LoginComponent } from './components/login/login.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
-  { path: 'acceder', component: LandingComponent },
-  { path: 'login', component: LoginComponent },
+  // Access flow, lazy: the public home does not pay for it in the initial bundle.
+  {
+    path: 'acceder',
+    loadComponent: () =>
+      import('./components/landing/landing.component').then(m => m.LandingComponent)
+  },
+  {
+    path: 'login',
+    loadComponent: () =>
+      import('./components/login/login.component').then(m => m.LoginComponent)
+  },
 
   // ── Páginas públicas del sitio de marketing ──────────────
   {

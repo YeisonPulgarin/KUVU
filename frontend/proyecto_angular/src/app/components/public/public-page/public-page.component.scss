@@ -1,0 +1,48 @@
+@reference "../../../../styles.css";
+
+.page-layout {
+  @apply font-sans min-h-screen;
+  // `clip`, not `hidden`: `hidden` turns the wrapper into a scroll container and the sticky
+  // header would stop sticking.
+  overflow-x: clip;
+  background-color: var(--color-home-bg, #f6f7f4);
+  color: var(--color-home-text, #1f2920);
+}
+
+.container {
+  @apply max-w-6xl mx-auto px-4;
+
+  @media (width >= 768px) {
+    @apply px-6;
+  }
+}
+
+.page-hero {
+  @apply text-center;
+  background-color: var(--color-home-surface, #ffffff);
+  border-bottom: 1px solid var(--color-home-border, #cddccd);
+  padding-top: 4.5rem;
+  padding-bottom: 4.5rem;
+
+  @media (width >= 768px) {
+    padding-top: 6.5rem;
+    padding-bottom: 6.5rem;
+  }
+
+  .page-title {
+    @apply m-0 mb-4;
+    font-size: clamp(2.25rem, 5vw, 3.5rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--color-home-text, #1f2920);
+  }
+
+  .page-lead {
+    @apply m-0 text-base max-w-2xl mx-auto;
+    color: var(--color-home-muted, #4c5a4e);
+
+    @media (width >= 768px) {
+      @apply text-lg;
+    }
+  }
+}

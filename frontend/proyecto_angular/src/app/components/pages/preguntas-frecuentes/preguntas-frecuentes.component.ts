@@ -6,6 +6,7 @@ import { BreadcrumbComponent } from '../../public/breadcrumb/breadcrumb.componen
 import { SiteFooterComponent } from '../../public/site-footer/site-footer.component';
 import { RevealDirective } from '../../../directives/reveal.directive';
 import { PageMetaService } from '../../../services/page-meta.service';
+import { pageMeta as metaByPage } from '../../../content/pages';
 import { faqGroups } from '../../../content';
 import { breadcrumbFor, pageNavLinks } from '../../../content/site';
 
@@ -30,9 +31,6 @@ export class PreguntasFrecuentesComponent implements OnInit {
   readonly navLinks = pageNavLinks;
 
   ngOnInit(): void {
-    this.pageMeta.setPage(
-      'Preguntas frecuentes | KUVU',
-      'Respuestas a las preguntas más frecuentes sobre KUVU: qué es, cómo funciona, cómo se manejan los datos y si hay soporte.'
-    );
+    this.pageMeta.setPage(metaByPage.preguntasFrecuentes);
   }
 }

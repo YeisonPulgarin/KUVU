@@ -1,7 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
+import { provideRouter } from '@angular/router';
 import { SiteFooterComponent } from './site-footer.component';
 import { logo } from '../../../content/logo';
+import { siteNavLinks } from '../../../content/site';
+import { legalAnchors } from '../../../content/legal-index';
 
 describe('SiteFooterComponent', () => {
   let fixture: ComponentFixture<SiteFooterComponent>;
@@ -12,7 +14,8 @@ describe('SiteFooterComponent', () => {
     document.documentElement.classList.remove('dark');
 
     await TestBed.configureTestingModule({
-      imports: [SiteFooterComponent, RouterTestingModule]
+      imports: [SiteFooterComponent],
+      providers: [provideRouter([])]
     }).compileComponents();
 
     fixture = TestBed.createComponent(SiteFooterComponent);
@@ -20,53 +23,59 @@ describe('SiteFooterComponent', () => {
     root = fixture.nativeElement as HTMLElement;
   });
 
-  it('should render the brand name and tagline', () => {
-    const name = root.querySelector('.footer-name');
-    const tagline = root.querySelector('.footer-tagline');
-    expect(name?.textContent).toContain('KUVU');
-    expect(tagline?.textContent).toContain('Administración inmobiliaria');
-  });
+  const column = (heading: string): HTMLElement => {
+    const found = Array.from(root.querySelectorAll('.footer-col')).find(
+      (col) => col.querySelector('.footer-heading')?.textContent?.trim() === heading
+    );
+    expect(found).withContext(heading).toBeTruthy();
+    return found as HTMLElement;
+  };
 
-  it('should render the KUVU web and responsive logos', () => {
-    const full = root.querySelector('.footer-logo--full') as HTMLElement;
-    const responsive = root.querySelector('.footer-logo--responsive') as HTMLElement;
-    expect(full.tagName).toBe('IMG');
-    expect(full.getAttribute('src')).toBe(logo.web);
-    expect(responsive.getAttribute('src')).toBe(logo.responsive);
-    expect(full.getAttribute('alt')).toBe('KUVU');
+  it('should render the brand block with logos, name and tagline', () => {
+    expect(root.querySelector('.footer-name')?.textContent).toContain('KUVU');
+    expect(root.querySelector('.footer-tagline')?.textContent).toContain('Administración inmobiliaria');
+    expect(root.querySelector('.footer-logo--full')?.getAttribute('src')).toBe(logo.web);
+    expect(root.querySelector('.footer-logo--responsive')?.getAttribute('src')).toBe(logo.responsive);
   });
 
   it('should keep both footer logos unchanged when the theme is dark', () => {
     fixture.componentInstance.theme.toggle();
     fixture.detectChanges();
-    const full = root.querySelector('.footer-logo--full');
-    const responsive = root.querySelector('.footer-logo--responsive');
-    expect(full?.getAttribute('src')).toBe(logo.web);
-    expect(responsive?.getAttribute('src')).toBe(logo.responsive);
+    expect(root.querySelector('.footer-logo--full')?.getAttribute('src')).toBe(logo.web);
   });
 
-  it('should render the public navigation links', () => {
-    const links = Array.from(root.querySelectorAll('.footer-link')) as HTMLElement[];
-    const hrefs = links.map((l) => l.getAttribute('href'));
-    const labels = links.map((l) => l.textContent?.trim());
-
-    expect(hrefs).toContain('/');
-    expect(hrefs).toContain('/nosotros');
-    expect(hrefs).toContain('/preguntas-frecuentes');
-    expect(hrefs).toContain('/acceder');
-
-    expect(labels).toContain('Inicio');
-    expect(labels).toContain('Nosotros');
-    expect(labels).toContain('Preguntas frecuentes');
-    expect(labels).toContain('Acceso');
+  it('should list the site navigation in the Sitio column, plus Acceso', () => {
+    const hrefs = Array.from(column('Sitio').querySelectorAll('a')).map((a) => a.getAttribute('href'));
+    expect(hrefs).toEqual([...siteNavLinks.map((l) => l.href), '/acceder']);
   });
 
-  it('should render the WhatsApp contact link', () => {
-    const wa = root.querySelector('.footer-cta') as HTMLElement;
-    expect(wa).toBeTruthy();
+  it('should link the four legal documents to their anchors in /legal', () => {
+    const links = Array.from(column('Legal').querySelectorAll('a'));
+    expect(links.length).toBe(4);
+    expect(links.map((a) => a.getAttribute('href'))).toEqual(
+      Object.values(legalAnchors).map((anchor) => `/legal#${anchor}`)
+    );
+  });
+
+  it('should offer WhatsApp and the contact form in the Contacto column', () => {
+    const col = column('Contacto');
+    const wa = col.querySelector('.footer-cta') as HTMLAnchorElement;
     expect(wa.getAttribute('href')).toContain('wa.me/573223192760');
     expect(wa.getAttribute('target')).toBe('_blank');
     expect(wa.getAttribute('rel')).toContain('noopener');
+    expect(col.querySelector('a[href="/contacto"]')).toBeTruthy();
+  });
+
+  it('should show the email as a visible placeholder and never as an invented mailto', () => {
+    const email = root.querySelector('.footer-email') as HTMLElement;
+    expect(email.querySelector('mark.placeholder')?.textContent).toBe('[CORREO DE CONTACTO]');
+    expect(root.querySelector('a[href^="mailto:"]')).toBeNull();
+  });
+
+  it('should not render social links nor empty "#" links', () => {
+    expect(root.querySelector('a[href="#"]')).toBeNull();
+    const external = Array.from(root.querySelectorAll('a[href^="http"]')).map((a) => a.getAttribute('href'));
+    external.forEach((href) => expect(href).toContain('wa.me'));
   });
 
   it('should render the copyright with the current year and brand', () => {

@@ -279,17 +279,11 @@ describe('HomeComponent', () => {
   });
 
   describe('navbar navigation links', () => {
-    it('should point to the anchored sections in desktop nav', () => {
+    it('should show the single site navigation, as routes and not as anchors', () => {
       const nav = asElement(root.querySelector('.nav-links'));
       const links = Array.from(nav.querySelectorAll('.nav-item')) as HTMLElement[];
       const hrefs = links.map((l) => l.getAttribute('href'));
-      expect(hrefs).toContain('#inicio');
-      expect(hrefs).toContain('#que-es');
-      expect(hrefs).toContain('#como-funciona');
-      expect(hrefs).toContain('#servicios');
-      expect(hrefs).toContain('#beneficios');
-      expect(hrefs).toContain('#seguridad');
-      expect(hrefs).toContain('#companias');
+      expect(hrefs).toEqual(['/', '/servicios', '/nosotros', '/preguntas-frecuentes', '/contacto']);
     });
 
     it('should keep the mobile drawer access action routed to /acceder with "Ingresar"', () => {

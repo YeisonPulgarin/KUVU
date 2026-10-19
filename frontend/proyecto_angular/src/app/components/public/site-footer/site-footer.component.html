@@ -4,42 +4,56 @@
     <!-- Marca -->
     <div class="footer-brand">
       <div class="footer-logo">
-        <img
-          [src]="logo.web"
-          [alt]="brandName"
-          class="footer-logo--full"
-        />
-        <img
-          [src]="logo.responsive"
-          [alt]="brandName"
-          class="footer-logo--responsive"
-        />
+        <img [src]="logo.web" [alt]="brandName" class="footer-logo--full" />
+        <img [src]="logo.responsive" [alt]="brandName" class="footer-logo--responsive" />
       </div>
       <p class="footer-name">{{ brandName }}.</p>
       <p class="footer-tagline">{{ tagline }}</p>
     </div>
 
-    <!-- Navegación -->
-    <nav class="footer-nav" aria-label="Pie de página">
-      <a routerLink="/" class="footer-link">Inicio</a>
-      <a routerLink="/nosotros" class="footer-link">Nosotros</a>
-      <a routerLink="/preguntas-frecuentes" class="footer-link">Preguntas frecuentes</a>
-      <a routerLink="/acceder" class="footer-link">Acceso</a>
+    <!-- Sitio -->
+    <nav class="footer-col" aria-labelledby="footer-sitio">
+      <h2 class="footer-heading" id="footer-sitio">Sitio</h2>
+      <ul class="footer-list">
+        @for (link of navLinks; track link.href) {
+          <li><a [routerLink]="link.href" class="footer-link">{{ link.label }}</a></li>
+        }
+        <li><a routerLink="/acceder" class="footer-link">Acceso</a></li>
+      </ul>
+    </nav>
+
+    <!-- Legal -->
+    <nav class="footer-col" aria-labelledby="footer-legal">
+      <h2 class="footer-heading" id="footer-legal">Legal</h2>
+      <ul class="footer-list">
+        @for (link of legalLinks; track link.fragment) {
+          <li>
+            <a [routerLink]="link.href" [fragment]="link.fragment" class="footer-link footer-link--legal">{{ link.label }}</a>
+          </li>
+        }
+      </ul>
     </nav>
 
     <!-- Contacto -->
-    <div class="footer-contact">
-      <a
-        class="footer-cta"
-        [href]="whatsappLink"
-        target="_blank"
-        rel="noopener"
-      >
-        Escríbenos por WhatsApp
-      </a>
+    <div class="footer-col footer-contact">
+      <h2 class="footer-heading">Contacto</h2>
+      <ul class="footer-list">
+        <li>
+          <a class="footer-cta" [href]="whatsappLink" target="_blank" rel="noopener">
+            Escríbenos por WhatsApp
+          </a>
+        </li>
+        <li class="footer-email">
+          <span class="footer-label">Correo:</span>
+          <app-rich-text [text]="email"></app-rich-text>
+        </li>
+        <li><a routerLink="/contacto" class="footer-link">Formulario de contacto</a></li>
+      </ul>
     </div>
 
-    <!-- Copyright -->
-    <p class="footer-copy">© {{ year }} {{ brandName }} · YCW</p>
+  </div>
+
+  <div class="container footer-bottom">
+    <p class="footer-copy">© {{ year }} {{ brandName }} · YCW. Todos los derechos reservados.</p>
   </div>
 </footer>

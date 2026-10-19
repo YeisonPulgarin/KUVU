@@ -8,6 +8,7 @@ import { SiteFooterComponent } from '../../public/site-footer/site-footer.compon
 import { RevealDirective } from '../../../directives/reveal.directive';
 import { ResponsiveImageComponent } from '../../public/responsive-image/responsive-image.component';
 import { PageMetaService } from '../../../services/page-meta.service';
+import { pageMeta as metaByPage } from '../../../content/pages';
 import { aboutOrigin, aboutSections, team } from '../../../content';
 import { contactWhatsAppLink, pageNavLinks, siteInfo } from '../../../content/site';
 
@@ -37,9 +38,6 @@ export class NosotrosComponent implements OnInit {
   readonly whatsappLink = contactWhatsAppLink;
 
   ngOnInit(): void {
-    this.pageMeta.setPage(
-      'Nosotros | KUVU',
-      'Conocé quién es KUVU, cómo opera, con quién trabaja y el origen del proyecto.'
-    );
+    this.pageMeta.setPage(metaByPage.nosotros);
   }
 }
