@@ -137,15 +137,23 @@ input `breadcrumb`) que envuelven `/servicios`, `/nosotros`, `/preguntas-frecuen
   (`scrollY > 24`), registrado en `afterNextRender` y retirado en `DestroyRef`. El host recibe
   `[class.is-compact]`. El estado compacto reduce el padding y aplica fondo semiopaco +
   `backdrop-filter: blur(...)`.
-- Las anclas (`/legal#cookies`) no quedan tapadas: `html { scroll-padding-top: <alto del
-  header compacto> }` en `styles.scss` (CA-12.2).
+- Las anclas (`/legal#cookies`) no quedan tapadas (CA-12.2): el router hace el scroll a
+  anclas con `window.scrollTo`, que ignora `scroll-padding-top`, así que `app.config.ts`
+  registra con `provideAppInitializer` un offset del `ViewportScroller`
+  (`setOffset(() => headerScrollOffset(document))`). `app/scroll-offset.ts` mide la altura
+  real de `app-site-header` en cada scroll y suma 16 px; usa 88 px si el header no tiene
+  altura y 0 en páginas sin header público. El `scroll-padding-top: 88px` de `styles.scss`
+  cubre solo la navegación nativa a fragmento.
 
 ### Menú móvil (HP-08)
 - Panel `position: fixed; inset: 0` con los enlaces, "Ingresar" y tema.
+- El panel aplica por debajo de 1024 px; desde 1024 px la navegación va en línea.
 - Abrir: `isMenuOpen` (signal) → `document.body.style.overflow = 'hidden'` y foco al primer
   enlace (`viewChild` + `focus()` tras render). Cerrar (Escape vía `@HostListener
   ('document:keydown.escape')`, botón, clic en enlace, o `NavigationEnd` del router):
-  restaura `overflow` y devuelve el foco al botón de menú.
+  restaura `overflow`. El foco vuelve al botón de menú solo al cerrar con Escape o con el
+  botón (CA-08.2); al elegir un enlace la página navega y `NavigationEnd` cierra con
+  `closeMenu(false)`, sin devolver el foco.
 - Cada ítem lleva `--i` (índice) y entra con `transition-delay: calc(var(--i) * 40ms)`
   dentro de `@media (prefers-reduced-motion: no-preference)`.
 - No se implementa focus trap completo: el panel cubre la pantalla y se cierra con Escape;
@@ -230,7 +238,8 @@ rutas; `pageMeta` en `content/pages.ts` ya da la fuente única y testeable.
 
 - Índice `<ol>` con `routerLink="/legal"` + `fragment` por documento; secciones
   `<section [id]="doc.id">` con `<h2>`. Con `anchorScrolling` el router lleva al ancla al
-  entrar desde el footer o el índice, y `scroll-padding-top` compensa el header.
+  entrar desde el footer o el índice, y el offset del `ViewportScroller`
+  (`app/scroll-offset.ts`, sección 4) compensa el header.
 - El aviso de "texto base, no asesoría legal" y la fecha de vigencia (`responsible.effectiveDate`
   vía `app-rich-text`) van arriba del índice (CA-12.3, CA-12.4).
 - El contenido de los 4 documentos (HP-14, HP-15) se redacta en `content/legal.ts` siguiendo

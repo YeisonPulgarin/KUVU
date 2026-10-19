@@ -21,26 +21,54 @@ por la propia SPA (sin API), y la app autenticada hoy consume datos mock (los m�
 
 ### Clúster público (marketing)
 
-- `src/app/content/` — contenido institucional en módulos TS tipados (site, services,
-  companies, howItWorks, benefits, security, origin, about, faq, logo), fuente única del texto.
-- `src/app/components/public/site-header/` y `site-footer/` — chrome compartido (logo, nav,
-  CTA "Ingresar", WhatsApp, toggle de tema; footer con marca y navegación). El logo tiene 2
-  variantes (web y responsive) y se alterna por viewport con el breakpoint `768px`; el tema no
-  interviene en su selección.
+Sitio multipágina con una sola navegación: `/`, `/servicios`, `/nosotros`,
+`/preguntas-frecuentes`, `/contacto`, `/legal` y una 404 pública (detalle en
+`docs/home-profesional.md`).
+
+- `src/app/content/` — contenido institucional en módulos TS tipados (site, pages,
+  responsible, legal-index, legal, contact, services, companies, howItWorks, benefits,
+  security, origin, about, faq, team, logo), fuente única del texto. `site.ts` declara
+  `sitePages` y `siteNavLinks` (la navegación única) y `pages.ts` los meta de cada página.
+  El barrel `content/index.ts` no reexporta `legal.ts` ni `contact.ts`: solo `/legal` y
+  `/contacto` los importan, así quedan en su chunk lazy.
+- `src/app/components/public/site-header/` y `site-footer/` — chrome compartido. El header
+  lee `siteNavLinks`, es `sticky`, se compacta pasados 24 px de scroll y por debajo de
+  1024 px muestra un menú a pantalla completa (bloquea el scroll del fondo, cierra con Escape,
+  botón, enlace o navegación). El footer tiene columnas marca / Sitio / Legal / Contacto, la
+  nota académica y el copyright. El logo tiene 2 variantes (web y responsive) y se alterna por
+  viewport con el breakpoint `768px`; el tema no interviene en su selección.
+- `src/app/components/public/public-page/` — `app-public-page`: layout de las páginas internas
+  (header, hero con breadcrumb, título y lead, `<ng-content>`, footer). Lo usan todas las
+  páginas públicas salvo la home.
+- `src/app/components/public/rich-text/` — `app-rich-text`: renderiza `RichText` (texto, datos
+  de `content/responsible.ts` y enlaces internos) solo por interpolación; un dato ausente se
+  omite con su frase.
+- `src/app/components/public/service-icon/` — `app-service-icon`: SVG de cada servicio,
+  compartido por la home y `/servicios`.
 - `frontend/proyecto_angular/public/logo-rediseno/` — los 2 PNG del logo (`Logo_Kuvu.png` web,
   `Logo_Responsive.png` símbolo), con rutas centralizadas en `content/logo.ts`; el favicon de
   `src/index.html` apunta al símbolo como PNG.
-- `src/app/components/pages/nosotros/` y `preguntas-frecuentes/` — las páginas secundarias,
-  lazy en `app.routes.ts`, con la misma columna de chrome.
-- `src/app/components/home/` — la home: hero + secciones que leen de `content/`, header y
-  footer compartidos.
+- `src/app/components/pages/` — las páginas internas, lazy en `app.routes.ts`: `servicios`,
+  `nosotros`, `preguntas-frecuentes`, `contacto` (formulario que abre WhatsApp, sin backend ni
+  almacenamiento), `legal` (4 documentos con índice y anclas) y `not-found` (404 con
+  `noindex`).
+- `src/app/components/home/` — la home como escaparate: hero + resúmenes que derivan a cada
+  página, header y footer compartidos, JSON-LD `Organization` + `WebSite`.
 - `src/app/services/theme.service.ts` — tema claro/oscuro persistido en `kuvu-theme`.
-- `src/app/services/page-meta.service.ts` — `title` y `meta description` por página, y el
-  JSON-LD `BreadcrumbList` (`setBreadcrumb`/`clearBreadcrumb`, script único en `<head>`).
-- `src/app/components/public/breadcrumb/` — `app-breadcrumb`: "Inicio › {Página}" en el
-  `.page-hero` de `/nosotros` y `/preguntas-frecuentes`. Los ítems salen de
-  `breadcrumbFor(href)` (`content/site.ts`, sobre `pageNavLinks`). El componente publica el
-  JSON-LD al montarse y lo retira al destruirse.
+- `src/app/services/page-meta.service.ts` — `setPage(meta)`: title, description, Open Graph,
+  Twitter card, un único canonical y `robots: noindex` cuando corresponde, todo actualizado en
+  su lugar. `setJsonLd(id, data)`/`clearJsonLd(id)`: un `<script type="application/ld+json">`
+  por id, escrito con `textContent`; `setBreadcrumb`/`clearBreadcrumb` (`BreadcrumbList`) se
+  apoyan en él.
+- `src/app/scroll-offset.ts` — `headerScrollOffset(doc)`: altura real de `app-site-header` +
+  16 px (88 px si no tiene altura, 0 sin header público). `app.config.ts` lo registra con
+  `provideAppInitializer` como offset del `ViewportScroller`, junto a
+  `withInMemoryScrolling({ scrollPositionRestoration: 'top', anchorScrolling: 'enabled' })`:
+  las anclas (`/legal#cookies`) quedan debajo del header sticky. El router hace ese scroll con
+  `window.scrollTo`, que ignora `scroll-padding-top`.
+- `src/app/components/public/breadcrumb/` — `app-breadcrumb`: "Inicio › {Página}" en el hero
+  de `app-public-page`. Los ítems salen de `breadcrumbFor(href)` (`content/site.ts`, sobre
+  `sitePages`). El componente publica el JSON-LD al montarse y lo retira al destruirse.
 - `src/app/directives/reveal.directive.ts` — reveals `[data-reveal]` con
   `IntersectionObserver` y respeto de `prefers-reduced-motion`.
 - `frontend/proyecto_angular/public/Imagenes_web/` — imágenes del sitio público en variantes
@@ -77,34 +105,54 @@ por la propia SPA (sin API), y la app autenticada hoy consume datos mock (los m�
 
 ```
 Visitante → SPA →
-  '/'            → HomeComponent (hero + secciones de content/, banda #equipo → app-responsive-image)
-  '/nosotros'    → NosotrosComponent (lazy) → PageMetaService (title + description)
-  '/preguntas-frecuentes' → PreguntasFrecuentesComponent (lazy) → PageMetaService
+  '/'                     → HomeComponent (eager; resúmenes + JSON-LD Organization/WebSite)
+  '/servicios'            → ServiciosComponent (lazy)
+  '/nosotros'             → NosotrosComponent (lazy)
+  '/preguntas-frecuentes' → PreguntasFrecuentesComponent (lazy)
+  '/contacto'             → ContactoComponent (lazy) → wa.me en pestaña nueva
+  '/legal'                → LegalComponent (lazy; #tratamiento-datos, #aviso-privacidad,
+                                                  #terminos-uso, #cookies)
+  '**'                    → NotFoundComponent (lazy, noindex)
+  cada página → PageMetaService.setPage(pageMeta[página]) en ngOnInit
 ```
 
-Todas renderizan `SiteHeader` + `SiteFooter`; los reveals se disparan por IntersectionObserver.
-Las dos páginas secundarias muestran `app-breadcrumb` arriba del `h1`, que mientras está montado
-mantiene un único `BreadcrumbList` en `<head>` con URLs absolutas sobre `location.origin`.
+Todas renderizan `SiteHeader` + `SiteFooter` (las internas a través de `app-public-page`); los
+reveals se disparan por IntersectionObserver. Las páginas internas muestran `app-breadcrumb`
+arriba del `h1`, que mientras está montado mantiene un único `BreadcrumbList` en `<head>` con
+URLs absolutas sobre `location.origin`. Al cambiar de página el scroll vuelve arriba; un
+fragmento lleva a su sección con el offset de `scroll-offset.ts`.
 
 ### Acceso autenticado
 
 ```
-Usuario → '/acceder' (selección de empresa) → '/login' (correo + documento)
+Usuario → '/acceder' (selección de empresa, lazy) → '/login' (correo + documento, lazy)
   → dashboard / contratos / pagos / mantenimiento (/ locales, /usuarios si admin)
 ```
 
 Las rutas de gestión pasan por `authGuard` (cualquier rol) y, locales/usuarios, por
-`adminGuard` (idRol === 1). El wildcard `**` redirige a `/login`.
+`adminGuard` (idRol === 1). Los guards y el login navegan a `/login` de forma explícita; el
+comodín `**` muestra la 404 pública y no forma parte del flujo de acceso.
 
 ## Decisiones estructurales
 
 - **Contenido del sitio en módulos TS tipados** (`content/*.ts`) en lugar de texto embebido.
   Tradeoff: un cambio de copy toca código, pero el texto queda testeable y reutilizable entre
   la home y las páginas (el FAQ corto es subconjunto del completo).
-- **Chrome compartido del sitio** (header/footer/theme/reveal) para las tres páginas públicas.
-  Tradeoff: el header soporta dos modos de nav (anclas en home, rutas en páginas) vía input.
-- **Rutas del sitio público lazy** (`loadComponent`). Tradeoff: un poco de latencia al
-  navegar; no se paga el bundle de las páginas en la home.
+- **Chrome compartido del sitio** (header/footer/theme/reveal) con una sola navegación por
+  rutas (`siteNavLinks`), sin anclas ni input en el header, y `app-public-page` como layout
+  de las páginas internas. Tradeoff: la home no usa el layout (no lleva breadcrumb) y monta
+  header y footer por su cuenta.
+- **Meta por página en `content/pages.ts`** aplicados con `setPage` en `ngOnInit`, sin `title`
+  de ruta. Tradeoff: cada página debe llamar al servicio, a cambio de una fuente única
+  testeable (títulos y descripciones únicos) donde `title` y `og:title` no divergen.
+- **Offset de anclas medido en runtime** (`scroll-offset.ts` + `ViewportScroller.setOffset`)
+  en lugar de un valor fijo: el header sticky cambia de altura al compactarse y por
+  breakpoint. Tradeoff: una medición del DOM por cada scroll a ancla.
+- **Contacto sin backend**: el formulario arma el mensaje y abre WhatsApp; no hay endpoint,
+  almacenamiento ni logs de los datos. Tradeoff: depende de que el visitante use WhatsApp.
+- **Rutas del sitio público lazy** (`loadComponent`), también `/acceder`, `/login` y la 404;
+  solo la home es eager. Tradeoff: un poco de latencia al navegar; no se paga el bundle de
+  las páginas en la home.
 - **Tema oscuro por clase `.dark`** (no `prefers-color-scheme`): el toggle es manual y se
   persiste en `localStorage`; `index.html` aplica la clase antes del bootstrap para evitar el
   flash.
@@ -146,15 +194,23 @@ Las rutas de gestión pasan por `authGuard` (cualquier rol) y, locales/usuarios,
 
 ## Límites y no-goals
 
-- El sitio público no consume backend; no hay contacto/captación (solo WhatsApp), ni blog,
-  legal, precios ni multilingüismo por ahora.
+- El sitio público no consume backend: el contacto es un formulario que abre WhatsApp, sin
+  envío a servidor ni correo. No hay blog, precios, multilingüismo, banner de cookies ni
+  SSR/prerender.
+- KUVU es una empresa ficticia de un proyecto académico de la Universidad Cooperativa de
+  Colombia: `/legal` omite NIT, dirección y correo, y sus textos son una base de referencia
+  sin validez jurídica.
+- Sin prerender, los crawlers sociales solo leen los meta por defecto de `index.html`, cuyo
+  `og:image` es relativo mientras no haya dominio de producción.
+- No hay configuración de hosting en el repo: los headers de seguridad (CSP con hash o nonce
+  para el script inline de tema, `nosniff`, `Referrer-Policy`, `frame-ancestors`) se definen
+  al elegirlo.
 - La app autenticada usa datos mock en `DataService`; la conexión a la API REST es trabajo
   pendiente.
 - La seguridad del contenido es solo descriptiva: no se publican mecanismos internos.
 - Deuda registrada: `pagos.component.ts` usa `document.write` (work item de seguridad
-  dedicado); la columna de chrome de las páginas secundarias está duplicada hasta una tercera
-  página del mismo tipo.
+  dedicado).
 - El JSON-LD del breadcrumb usa el origen donde corre la app: sin dominio de producción, las
   URLs son locales. No hay SSR, así que el JSON-LD existe después del render en el cliente.
-- Deuda registrada: actualizar `@angular/*` a ≥ 21.2.24 (aviso de DoS solo en SSR, no
-  alcanzable hoy; prioridad alta si se agrega SSR).
+- Deuda registrada: actualizar `@angular/*` a ≥ 21.2.24, incluido `@angular/router`
+  (GHSA-ff3f-86qr-9cv3, DoS solo en SSR, no alcanzable hoy; prioridad alta si se agrega SSR).

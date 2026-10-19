@@ -9,6 +9,14 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com) y este proyecto 
 
 ### Added
 
+- El sitio público es multipágina con una sola navegación en todas las páginas: Inicio, Servicios, Nosotros, Preguntas frecuentes y Contacto; Legal se enlaza desde el pie de página.
+- Nueva página **Servicios** (`/servicios`) con el detalle de cada servicio y los beneficios para dueños, gerentes y equipos operativos.
+- Nueva página **Contacto** (`/contacto`): un formulario arma el mensaje y abre WhatsApp con los datos prellenados. Pide autorizar el tratamiento de datos antes de enviar y no guarda ni envía los datos a ningún servidor.
+- Nueva página **Legal** (`/legal`) con índice y cuatro documentos: política de tratamiento de datos personales (Ley 1581 de 2012 y Decreto 1377 de 2013), aviso de privacidad, términos de uso y política de cookies y almacenamiento local. Aclara que KUVU es un proyecto académico de la Universidad Cooperativa de Colombia y que los textos no son asesoría legal.
+- Nueva página 404 pública, con enlace al inicio, para las direcciones que no existen.
+- El pie de página se organiza en columnas (marca, sitio, legal y contacto) e incluye la nota de proyecto académico.
+- Cada página pública tiene título y descripción propios, vista previa para redes (Open Graph y Twitter card) y URL canónica; la home publica datos estructurados `Organization` y `WebSite`.
+- Las preguntas frecuentes suman un grupo "Contacto y datos" (cómo contactar, cookies, tratamiento de datos y soporte).
 - La página de inicio muestra la foto del equipo YCW Systems (Wilson Solano, Carlos Arciniegas y Yeison Pulgarin) en una banda a ancho completo, "El equipo detrás de KUVU", entre "Compañías que confían" y "El origen de KUVU", con un botón hacia Nosotros. En móvil la foto se ve completa con el texto debajo.
 - La página **Nosotros** muestra la foto completa del equipo con sus nombres al pie.
 - Las imágenes del sitio se sirven en WebP con respaldo JPEG y en el tamaño adecuado a cada pantalla, con carga diferida; un script (`scripts/generate-image-variants.py`) genera las variantes de nuevas imágenes de `public/Imagenes_web/`.
@@ -28,6 +36,11 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com) y este proyecto 
 
 ### Changed
 
+- El encabezado del sitio público queda fijo arriba y se compacta con fondo desenfocado al hacer scroll; resalta la página activa. Por debajo de 1024 px el menú ocupa toda la pantalla, bloquea el scroll del fondo y se cierra con Escape.
+- La página de inicio funciona como escaparate: resume los servicios y deriva a cada página; los beneficios por rol se muestran en Servicios. "Ingresar" sigue siendo la acción principal y "Contactar" aparece como secundaria.
+- Las secciones del sitio llevan una etiqueta numerada ("01", "02"…), los enlaces de acción una flecha que se desplaza en hover y las tarjetas un hover más marcado; todo se desactiva con movimiento reducido.
+- Todos los textos del sitio público usan tuteo colombiano.
+- Una dirección desconocida muestra la página 404 del sitio en lugar de redirigir a `/login`.
 - La pantalla de credenciales (`/login`) se rediseñó como PANTALLA 2 del flujo de acceso: título
   "Inicia sesión", botón `Iniciar sesión →` y `← Cambiar de inmobiliaria`, sobre un overlay navy
   acorde a la estética de la referencia. "Recordarme" y "¿Olvidaste tu contraseña?" son enlaces
