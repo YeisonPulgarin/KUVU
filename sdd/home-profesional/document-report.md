@@ -56,8 +56,8 @@ desvios: ver abajo
 
 ## Desvíos entre `design.md` y el código (para el orquestador)
 
-No se corrigieron en `design.md` porque el pedido de esta fase cubre solo O1 y O2; el código y
-`docs/home-profesional.md` describen lo implementado.
+Los tres quedan corregidos en `design.md` por el orquestador, en un commit aparte posterior a
+esta fase; el código y `docs/home-profesional.md` describen lo implementado.
 
 - **§2 `responsible.ts` y marcadores:** el design describe campos `string | null`,
   `placeholderLabel` y `<mark class="placeholder">`. El código (A3) define NIT, dirección y

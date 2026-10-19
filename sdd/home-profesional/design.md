@@ -16,6 +16,8 @@ Rutas relativas a `frontend/proyecto_angular/src/app/` salvo que se indique otra
 app.config.ts ── provideRouter(routes, withComponentInputBinding(), withViewTransitions(),
                                 withInMemoryScrolling({ scrollPositionRestoration: 'top',
                                                         anchorScrolling: 'enabled' }))
+              provideAppInitializer → ViewportScroller.setOffset(headerScrollOffset)
+                                      (app/scroll-offset.ts: altura del header + 16 px)
 app.routes.ts
   ''                     → HomeComponent (eager, como hoy)
   'servicios'            → pages/servicios        (lazy)   NUEVO
@@ -48,7 +50,7 @@ Todo texto nuevo vive en módulos tipados (RNF-14); los componentes solo leen. T
 | Módulo | Qué contiene | Estado |
 |---|---|---|
 | `site.ts` | `siteInfo`; **`sitePages`** (todas las páginas con `label`/`href`, incluida `/legal`); **`siteNavLinks`** = las 5 de HP-01 (subconjunto ordenado de `sitePages`); `contact` (WhatsApp); `buildWhatsAppLink`; `breadcrumbFor(href)` resuelto sobre `sitePages` | modificado: `navLinks` (anclas) y `pageNavLinks` se eliminan y se reemplazan por `siteNavLinks` |
-| `responsible.ts` | **`responsible`**: razón social, NIT, domicilio, dirección, correo, teléfono, área de atención, fecha de vigencia. Cada campo es `string \| null`; `null` = dato pendiente. `placeholderLabel` por campo (`'RAZÓN SOCIAL'`, …) | nuevo — fuente única de D1/CA-13.1 |
+| `responsible.ts` | **`responsible`** de la empresa ficticia KUVU: razón social, domicilio, teléfono (el WhatsApp publicado), área de atención y vigencia. NIT, dirección y correo son campos opcionales del modelo y no se definen (HP-13). `resolveRichText` e `isEmptyRichText` aplican esos datos a un `RichText` | nuevo — fuente única de D1/CA-13.1 |
 | `legal.ts` | `legalNotice` (aviso "no es asesoría legal"); **`legalDocuments`**: 4 documentos `{ id, title, blocks[] }` con `id` = ancla de HP-12; cada bloque `{ heading?, paragraphs: RichText[], items?: RichText[] }` | nuevo |
 | `contact.ts` | `contactSubjects` (4 asuntos de HP-11), `contactSteps` (3 pasos), `consentText` (texto de la casilla con su enlace), etiquetas y mensajes de error del formulario | nuevo |
 | `pages.ts` | **`pageMeta`**: `Record<PageKey, PageMeta>` con `title`, `description`, `path`, `noindex?` para home, servicios, nosotros, preguntas-frecuentes, contacto, legal, not-found | nuevo — permite testear unicidad (CA-17.2) |
@@ -63,7 +65,7 @@ textos legales en el chunk compartido del bundle inicial (+10 kB, por encima del
 de 500 kB); separados, quedan en el chunk de su página (RNF-04). Un test verifica que el
 barrel no los reexporta.
 
-### Texto con marcadores (`RichText`)
+### Texto con datos del responsable (`RichText`)
 
 Los textos legales necesitan intercalar datos del responsable y enlaces internos sin usar
 `innerHTML`. Un `RichText` es un arreglo de segmentos:
@@ -71,23 +73,25 @@ Los textos legales necesitan intercalar datos del responsable y enlaces internos
 ```ts
 type RichSegment =
   | string                                            // texto plano
-  | { field: keyof Responsible }                      // dato del responsable
-  | { link: string; label: string };                  // enlace interno (routerLink + fragment)
+  | { field: keyof Responsible; prefix?: string; suffix?: string } // dato del responsable
+  | { link: string; fragment?: string; label: string }; // enlace interno (routerLink + fragment)
 ```
 
 Lo renderiza un componente presentacional nuevo, `public/rich-text/` (`app-rich-text`): texto
-como interpolación, `field` como el valor de `responsible[field]` o, si es `null`, como
-`<mark class="placeholder">[RAZÓN SOCIAL]</mark>`; `link` como `<a routerLink fragment>`.
-Así un dato real completado en `responsible.ts` aparece en `/legal`, footer y `/contacto` a la
-vez (CA-13.1), y nada se interpreta como HTML.
+como interpolación, `field` como `prefix + valor + suffix` y, si el campo no existe, el
+segmento completo se omite (así no queda "NIT: " vacío ni una frase cortada); `link` como
+`<a routerLink fragment>`. `/legal` no renderiza los ítems de lista que quedan vacíos. Un dato
+cambiado en `responsible.ts` aparece en `/legal`, footer y `/contacto` a la vez (CA-13.1), y
+nada se interpreta como HTML.
 
 Alternativas descartadas: (a) HTML en strings + `[innerHTML]` — pasa por el sanitizer pero
 mezcla marcado con contenido y abre la puerta a XSS si un dato real trae `<`; (b) plantillas
-con `{razonSocial}` y reemplazo por regex — los marcadores pierden el estilo `<mark>` o
-requieren `innerHTML` de nuevo.
+con `{razonSocial}` y reemplazo por regex — omitir la frase de un dato ausente obliga a
+parsear el texto o a usar `innerHTML` de nuevo.
 
-El correo del footer y de `/contacto` usa el mismo `responsible.email` (D2): si es `null`, se
-muestra el marcador y **no** se renderiza un `mailto:`.
+El correo del footer y de `/contacto` usa el mismo `responsible.email` (D2): como no existe,
+la línea de correo no se renderiza y no hay `mailto:`; los canales son el formulario de
+`/contacto` y el WhatsApp.
 
 ---
 
@@ -202,7 +206,7 @@ setBreadcrumb(items) / clearBreadcrumb()    // se reimplementan sobre setJsonLd
   `og:locale = es_CO`, `twitter:card = summary_large_image`.
 - Home: `setJsonLd('kuvu-home-jsonld', { '@context', '@graph': [Organization, WebSite] })`
   con nombre, URL y logo (`/logo-rediseno/Logo_Kuvu.png`); sin teléfono ni dirección
-  mientras sean marcadores. Se retira en `ngOnDestroy` (CA-18.1). Se escribe con
+  (la empresa ficticia no publica dirección). Se retira en `ngOnDestroy` (CA-18.1). Se escribe con
   `textContent` (CA-18.2).
 - `index.html`: title "KUVU · Administración inmobiliaria multiempresa", description, `og:*`
   y `twitter:*` estáticos — los únicos que leen los crawlers sociales (SPA sin prerender).
@@ -225,7 +229,8 @@ rutas; `pageMeta` en `content/pages.ts` ya da la fuente única y testeable.
 - `buildContactMessage(values): string` es una función pura (en
   `components/pages/contacto/contact-message.ts`) que arma el texto omitiendo los opcionales
   vacíos (CA-11.3/11.4). El enlace sale de `buildWhatsAppLink(contact.whatsappNumber, …)`.
-- Envío: `window.open(url, '_blank', 'noopener')`. Si devuelve `null` (bloqueador de
+- Envío: `window.open(url, '_blank')` y `opener = null` a mano (con el feature `noopener`,
+  `window.open` devuelve siempre `null` y no se puede detectar el bloqueo). Si devuelve `null` (bloqueador de
   pop-ups) la confirmación incluye el enlace directo como alternativa. La confirmación vive en
   una región `aria-live="polite"` (CA-11.6).
 - No hay `HttpClient`, `localStorage` ni `console.*` en el flujo (CA-11.5). Política de
@@ -253,9 +258,9 @@ rutas; `pageMeta` en `content/pages.ts` ya da la fuente única y testeable.
 | Área | Tests |
 |---|---|
 | `content.spec.ts` | `siteNavLinks` = 5 rutas en orden; `breadcrumbFor` sobre `sitePages`; `pageMeta` sin titles/descriptions repetidos; `legalDocuments` con las 4 anclas; HP-14 (normas, plazos, 13 puntos por `heading`); cookies con 3 categorías; `responsible` sin valores inventados (todos `null`); FAQ ≥ 3 nuevas |
-| `rich-text` | texto, marcador cuando `null`, valor cuando hay dato, enlace con fragment; sin `innerHTML` |
+| `rich-text` | texto, valor con prefix/suffix, campo ausente omitido con su frase, enlace con fragment; sin `innerHTML` |
 | `site-header` | 5 enlaces sin `#`; `aria-current` en la ruta activa (incluye `/` exacto); compacto tras scroll; menú: abre/cierra con Escape, botón, navegación; `overflow` del body; foco |
-| `site-footer` | 4 enlaces legales con fragment; WhatsApp; marcador de correo sin `mailto:`; sin `href="#"` |
+| `site-footer` | 4 enlaces legales con fragment; WhatsApp; sin línea de correo ni `mailto:`; nota académica; sin `href="#"` |
 | `contacto` + `contact-message` | validaciones (CA-11.1/11.2), casilla requerida, mensaje armado con y sin opcionales, `window.open` espiado, fallback con `null`, región `aria-live` |
 | `legal`, `servicios`, `not-found` | estructura, enlaces, `noindex` en 404 |
 | `page-meta.service` | `setPage` actualiza sin duplicar; canonical único; robots on/off; `setJsonLd`/`clearJsonLd` |
@@ -278,11 +283,11 @@ actualizan a `siteNavLinks`.
   el contenido de `/legal` es estático en el template, el ancla existe en ese momento. Se
   verifica con test y a mano.
 - **`backdrop-filter`** sin soporte → el fondo semiopaco sigue legible (degradación limpia).
-- **Contraste** del eyebrow y de `<mark>` en tema claro y oscuro: verificar ≥ 4.5 : 1 en
+- **Contraste** del eyebrow y del aviso de `/legal` en tema claro y oscuro: verificar ≥ 4.5 : 1 en
   `verify`.
 - **Merge con `feat/acceso-orden-e-intro`**: ambas ramas tocan `sdd/sdd.config.md`; el
   código del sitio público no se pisa.
-- **Validez legal**: el diseño garantiza estructura y marcadores, no suficiencia jurídica
+- **Validez legal**: el diseño garantiza estructura y datos sin inventar de terceros, no suficiencia jurídica
   (no-objetivo).
 
 ## 10. Slices sugeridos para `tasks`
