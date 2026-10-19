@@ -35,10 +35,15 @@ describe('NosotrosComponent', () => {
       expect(root.querySelector('app-site-footer')).toBeTruthy();
     });
 
-    it('should pass the page navigation links to the header', () => {
+    it('should show the single site navigation in the header', () => {
       const links = Array.from(root.querySelectorAll('.nav-links .nav-item')) as HTMLElement[];
       const hrefs = links.map((l) => l.getAttribute('href'));
-      expect(hrefs).toEqual(['/', '/nosotros', '/preguntas-frecuentes']);
+      expect(hrefs).toEqual(['/', '/servicios', '/nosotros', '/preguntas-frecuentes', '/contacto']);
+    });
+
+    it('should use the shared public page layout', () => {
+      expect(root.querySelector('app-public-page main')).toBeTruthy();
+      expect(root.querySelector('h1.page-title')?.textContent?.trim()).toBe('Nosotros');
     });
   });
 
@@ -68,7 +73,7 @@ describe('NosotrosComponent', () => {
 
   describe('team photo', () => {
     it('should render the full team photo between the about sections and the origin', () => {
-      const sections = Array.from(root.querySelectorAll('.page-layout > section')).map(
+      const sections = Array.from(root.querySelectorAll('main > section')).map(
         (s) => s.className
       );
       const team = sections.indexOf('team');
@@ -107,6 +112,18 @@ describe('NosotrosComponent', () => {
     it('should label the WhatsApp link for assistive tech', () => {
       const cta = asElement(root.querySelector('.btn-whatsapp'));
       expect(cta.getAttribute('aria-label')).toContain('WhatsApp');
+    });
+  });
+
+  describe('editorial numbering', () => {
+    it('should number the sections correlatively from 01, hidden from assistive tech', () => {
+      const eyebrows = Array.from(root.querySelectorAll('main .section-eyebrow'));
+      expect(eyebrows.map((e) => e.textContent?.trim())).toEqual(['01', '02', '03', '04', '05']);
+      eyebrows.forEach((e) => expect(e.getAttribute('aria-hidden')).toBe('true'));
+    });
+
+    it('should offer the contact form as a secondary link', () => {
+      expect(root.querySelector('.cta-contact a.link-arrow')?.getAttribute('href')).toBe('/contacto');
     });
   });
 

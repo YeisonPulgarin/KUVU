@@ -12,7 +12,6 @@ import {
   legalAnchors,
   legalIndex,
   logo,
-  navLinks,
   pageMeta,
   placeholderLabel,
   responsible,
@@ -63,12 +62,10 @@ describe('content modules', () => {
       expect(siteInfo.tagline.length).toBeGreaterThan(10);
     });
 
-    it('should define nav links with anchor and page targets', () => {
-      expect(navLinks.length).toBeGreaterThanOrEqual(4);
-      navLinks.forEach((link) => {
-        expect(link.label.trim().length).toBeGreaterThan(0);
-        expect(link.href.startsWith('#')).toBeTrue();
-      });
+    it('should not export the old anchor or page navigation lists', () => {
+      const exported = Object.keys(contentBarrel);
+      expect(exported).not.toContain('navLinks');
+      expect(exported).not.toContain('pageNavLinks');
     });
 
     it('should carry the contact WhatsApp number and a pre-filled message', () => {

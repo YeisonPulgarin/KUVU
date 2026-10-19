@@ -6,7 +6,6 @@ import {
   Signal,
   afterNextRender,
   inject,
-  input,
   signal,
   viewChild
 } from '@angular/core';
@@ -37,8 +36,8 @@ export class SiteHeaderComponent {
   readonly whatsappLink = contactWhatsAppLink;
   readonly brandName = siteInfo.name;
 
-  // TODO: remove the input once every public page uses the single navigation (slice home).
-  readonly navLinks = input<readonly NavItem[]>(siteNavLinks);
+  /** Single site navigation, the same on every public page. */
+  readonly navLinks: readonly NavItem[] = siteNavLinks;
 
   readonly isMenuOpen = signal(false);
   readonly isCompact = signal(false);

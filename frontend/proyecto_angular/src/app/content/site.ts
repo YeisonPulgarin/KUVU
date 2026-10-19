@@ -5,22 +5,6 @@ export const siteInfo: SiteInfo = {
   tagline: 'Administración inmobiliaria para empresas que crecen'
 };
 
-export const navLinks: readonly NavItem[] = [
-  { label: 'Inicio', href: '#inicio' },
-  { label: 'Qué es KUVU', href: '#que-es' },
-  { label: 'Cómo funciona', href: '#como-funciona' },
-  { label: 'Servicios', href: '#servicios' },
-  { label: 'Beneficios', href: '#beneficios' },
-  { label: 'Seguridad', href: '#seguridad' },
-  { label: 'Compañías', href: '#companias' }
-];
-
-export const pageNavLinks: readonly NavItem[] = [
-  { label: 'Inicio', href: '/' },
-  { label: 'Nosotros', href: '/nosotros' },
-  { label: 'Preguntas frecuentes', href: '/preguntas-frecuentes' }
-];
-
 /**
  * Every public page of the site with its own route. It is the source for the site navigation
  * and for the breadcrumb, so labels and paths never diverge between them.

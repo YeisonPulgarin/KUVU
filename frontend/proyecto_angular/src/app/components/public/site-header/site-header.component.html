@@ -11,7 +11,7 @@
 
     <!-- Desktop navigation -->
     <nav class="nav-links" aria-label="Navegación principal">
-      @for (link of navLinks(); track link.href) {
+      @for (link of navLinks; track link.href) {
         <a
           [routerLink]="link.href"
           routerLinkActive="is-active"
@@ -96,7 +96,7 @@
     aria-label="Menú móvil"
   >
     <ul class="mobile-list">
-      @for (link of navLinks(); track link.href; let i = $index) {
+      @for (link of navLinks; track link.href; let i = $index) {
         <li class="mobile-entry" [style.--i]="i">
           <a
             [routerLink]="link.href"
@@ -109,7 +109,7 @@
         </li>
       }
     </ul>
-    <div class="mobile-actions mobile-entry" [style.--i]="navLinks().length">
+    <div class="mobile-actions mobile-entry" [style.--i]="navLinks.length">
       <a routerLink="/acceder" class="btn-primary" (click)="closeMenu(false)">Ingresar</a>
       <button
         type="button"

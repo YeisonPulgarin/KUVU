@@ -8,7 +8,10 @@ $ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 
 // ─── Home layout ─────────────────────────────────────────────
 .home-layout {
-  @apply font-sans min-h-screen overflow-x-hidden;
+  @apply font-sans min-h-screen;
+  // `clip`, not `hidden`: with `hidden` the wrapper is a scroll container and the sticky
+  // header stops sticking.
+  overflow-x: clip;
   background-color: var(--color-home-bg);
   color: var(--color-home-text);
 }
@@ -158,7 +161,7 @@ $ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
       background-color: var(--color-brand-100);
       color: var(--color-brand-600);
 
-      svg { @apply w-[20px] h-[20px]; }
+      padding: 12px;
     }
 
     .service-body {
@@ -237,50 +240,6 @@ $ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
       p {
         @apply m-0 text-sm leading-relaxed;
         color: var(--color-home-muted);
-      }
-    }
-  }
-}
-
-// ─── Beneficios por rol (split 2 cols con jerarquía clara) ────
-.roles {
-  background-color: var(--color-home-bg);
-
-  .roles-grid {
-    @apply grid grid-cols-1 gap-8;
-
-    @media (width >= 768px) {
-      @apply grid-cols-2 gap-8;
-    }
-  }
-
-  .role-card {
-    @apply p-8 flex flex-col;
-    background-color: var(--color-home-surface);
-    border: 1px solid var(--color-home-border);
-    border-radius: var(--radius-card);
-
-    .role-role {
-      @apply m-0 mb-1 text-sm font-bold uppercase tracking-wide;
-      color: var(--color-brand-600);
-    }
-
-    .role-title {
-      @apply m-0 mb-2 text-2xl font-extrabold;
-      color: var(--color-home-text);
-    }
-
-    .role-description {
-      @apply m-0 text-sm leading-relaxed;
-      color: var(--color-home-muted);
-    }
-
-    .role-points {
-      @apply m-0 mt-5 pl-5 flex flex-col gap-2 text-sm;
-      color: var(--color-home-text);
-
-      li::marker {
-        color: var(--color-brand-500);
       }
     }
   }
@@ -426,14 +385,14 @@ $ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   .hero-brand,
   .hero-title,
   .hero-subtitle,
-  .hero-cta {
+  .hero-actions {
     opacity: 0;
     animation: rise-in 0.6s $ease-out-expo forwards;
   }
 
   .hero-title   { animation-delay: 0.12s; }
   .hero-subtitle { animation-delay: 0.24s; }
-  .hero-cta     { animation-delay: 0.36s; }
+  .hero-actions { animation-delay: 0.36s; }
 
   @keyframes rise-in {
     from {
@@ -452,8 +411,33 @@ $ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   .hero-brand,
   .hero-title,
   .hero-subtitle,
-  .hero-cta {
+  .hero-actions {
     opacity: 1;
     transform: none;
+  }
+}
+// ─── Home como escaparate: acciones y enlaces a las páginas ────
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem 1.75rem;
+}
+
+.services-link {
+  margin-top: 1.5rem;
+}
+
+.cta-final-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+
+  .cta-secondary {
+    color: #ffffff;
+    text-decoration: underline;
+    text-underline-offset: 3px;
   }
 }

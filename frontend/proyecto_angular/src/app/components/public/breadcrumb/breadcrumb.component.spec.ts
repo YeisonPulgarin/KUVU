@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { BreadcrumbComponent } from './breadcrumb.component';
 import { PageMetaService } from '../../../services/page-meta.service';
-import { breadcrumbFor, pageNavLinks } from '../../../content/site';
+import { breadcrumbFor, sitePages } from '../../../content/site';
 
 describe('BreadcrumbComponent', () => {
   let fixture: ComponentFixture<BreadcrumbComponent>;
@@ -67,8 +67,8 @@ describe('BreadcrumbComponent', () => {
 });
 
 describe('breadcrumbFor', () => {
-  it('should return Inicio and the requested page, taken from pageNavLinks', () => {
-    expect(breadcrumbFor('/nosotros')).toEqual([pageNavLinks[0], { label: 'Nosotros', href: '/nosotros' }]);
+  it('should return Inicio and the requested page, taken from sitePages', () => {
+    expect(breadcrumbFor('/nosotros')).toEqual([sitePages[0], { label: 'Nosotros', href: '/nosotros' }]);
     expect(breadcrumbFor('/preguntas-frecuentes').map((item) => item.label)).toEqual([
       'Inicio',
       'Preguntas frecuentes'

@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { HomeComponent } from './home.component';
+import { HOME_JSONLD_ID, HomeComponent } from './home.component';
+import { pageMeta } from '../../content/pages';
 
 function asElement(node: unknown): HTMLElement {
   return node as HTMLElement;
@@ -179,14 +180,9 @@ describe('HomeComponent', () => {
       expect(section.textContent).toContain('Centralizá la información');
     });
 
-    it('should render the benefits section split by role', () => {
-      const section = asElement(root.querySelector('#beneficios'));
-      expect(section).toBeTruthy();
-
-      const cards = Array.from(section.querySelectorAll('.role-card')) as HTMLElement[];
-      expect(cards.length).toBe(2);
-      expect(section.textContent).toContain('Dueño o gerente');
-      expect(section.textContent).toContain('Equipo operativo');
+    it('should leave benefits by role to /servicios', () => {
+      expect(root.querySelector('#beneficios')).toBeNull();
+      expect(root.querySelector('.role-card')).toBeNull();
     });
 
     it('should render the security highlights without internal mechanisms', () => {
@@ -223,7 +219,7 @@ describe('HomeComponent', () => {
     });
 
     it('should keep the new sections in the expected order, with the team band before the origin', () => {
-      const expected = ['como-funciona', 'beneficios', 'seguridad', 'equipo', 'origen', 'faq'];
+      const expected = ['como-funciona', 'seguridad', 'equipo', 'origen', 'faq'];
       const ids = Array.from(root.querySelectorAll('.home-layout section'))
         .map((el) => el.id)
         .filter((id) => expected.includes(id));
@@ -346,7 +342,76 @@ describe('HomeComponent', () => {
 
     it('should not render a breadcrumb or breadcrumb structured data on the home', () => {
       expect(document.querySelector('nav[aria-label="Ruta de navegación"]')).toBeNull();
-      expect(document.querySelector('script[type="application/ld+json"]')).toBeNull();
+      const types = Array.from(document.querySelectorAll('script[type="application/ld+json"]')).map(
+        (script) => JSON.parse(script.textContent ?? '{}')['@type']
+      );
+      expect(types).not.toContain('BreadcrumbList');
+    });
+  });
+
+  // home-profesional, slice home (HP-03, HP-16, HP-17, HP-18).
+  describe('home as a showcase', () => {
+    it('should link to every internal page of the site', () => {
+      const main = Array.from(root.querySelectorAll('.home-layout > section a')).map((a) =>
+        a.getAttribute('href')
+      );
+      ['/servicios', '/nosotros', '/preguntas-frecuentes', '/contacto'].forEach((href) =>
+        expect(main).withContext(href).toContain(href)
+      );
+    });
+
+    it('should summarise the services with a link to /servicios', () => {
+      const section = asElement(root.querySelector('#servicios'));
+      expect(section.querySelector('a.services-link')?.getAttribute('href')).toBe('/servicios');
+      expect(section.querySelectorAll('.service-row app-service-icon svg').length).toBe(5);
+    });
+
+    it('should keep "Ingresar" as the only primary CTA in the page content', () => {
+      const primaries = Array.from(root.querySelectorAll('.home-layout > section .btn-primary'));
+      primaries.forEach((cta) => expect(cta.getAttribute('href')).toBe('/acceder'));
+      const contact = asElement(root.querySelector('.cta-final .cta-secondary'));
+      expect(contact.getAttribute('href')).toBe('/contacto');
+      expect(contact.classList).not.toContain('btn-primary');
+    });
+
+    it('should number its sections correlatively from 01, hidden from assistive tech', () => {
+      const eyebrows = Array.from(root.querySelectorAll('.home-layout .section-eyebrow'));
+      expect(eyebrows.map((e) => e.textContent?.trim())).toEqual(['01', '02', '03', '04', '05', '06', '07']);
+      eyebrows.forEach((e) => expect(e.getAttribute('aria-hidden')).toBe('true'));
+    });
+
+    it('should hide the arrows of the CTA links from assistive tech', () => {
+      const arrows = Array.from(root.querySelectorAll('.link-arrow .link-arrow-icon'));
+      expect(arrows.length).toBeGreaterThanOrEqual(4);
+      arrows.forEach((a) => expect(a.getAttribute('aria-hidden')).toBe('true'));
+    });
+  });
+
+  describe('home SEO', () => {
+    const homeJsonLd = () => document.getElementById(HOME_JSONLD_ID);
+
+    it('should publish the home meta', () => {
+      expect(document.title).toBe(pageMeta.home.title);
+      expect(document.querySelector('meta[property="og:url"]')?.getAttribute('content')).toBe(
+        `${location.origin}/`
+      );
+    });
+
+    it('should publish exactly one Organization and one WebSite, as text', () => {
+      const script = homeJsonLd();
+      expect(script?.getAttribute('type')).toBe('application/ld+json');
+      expect(script?.children.length).toBe(0);
+      const graph = JSON.parse(script?.textContent ?? '{}')['@graph'] as { '@type': string }[];
+      expect(graph.map((node) => node['@type'])).toEqual(['Organization', 'WebSite']);
+      const org = graph[0] as unknown as Record<string, unknown>;
+      expect(org['name']).toBe('KUVU');
+      expect(org['telephone']).toBeUndefined();
+      expect(org['address']).toBeUndefined();
+    });
+
+    it('should remove its structured data when leaving the home', () => {
+      fixture.destroy();
+      expect(homeJsonLd()).toBeNull();
     });
   });
 });
