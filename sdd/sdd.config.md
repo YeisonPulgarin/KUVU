@@ -17,11 +17,13 @@
 
 | Orden | Slice | Qué cubre | Obligatorio |
 |---|---|---|---|
-| 1 | `contenido` | Módulos de contenido del sitio público (`content/*.ts`) + tests de forma | Sí |
-| 2 | `chrome` | ThemeService, RevealDirective, SiteHeader/SiteFooter, PageMetaService, home refactorizada | Sí |
-| 3 | `home-expandida` | Secciones nuevas de la home (cómo funciona, beneficios, seguridad, origen, FAQ) | Sí |
-| 4 | `paginas` | Páginas `/nosotros` y `/preguntas-frecuentes` + rutas lazy | Sí |
-| — | `cierre` | Config de tests en `sdd.config.md` + docs/CHANGELOG/README (al último slice) | Sí |
+| 1 | `contenido` | Módulos de contenido del sitio público (`content/*.ts`) + tests de contenido | Sí, si el cambio toca textos o datos del sitio |
+| 2 | `chrome` | Chrome compartido del sitio: `PageMetaService`, `app.config.ts`, `index.html`, `styles.scss`, header, footer, `app-public-page`, `app-rich-text`, `app-service-icon` | Sí, si el cambio toca piezas compartidas |
+| 3 | `paginas` | Páginas públicas internas (`components/pages/*`) + rutas lazy (`app.routes.ts`) | Sí, si el cambio agrega o modifica páginas |
+| 4 | `home` | Home (`components/home/`) y migración de páginas existentes al chrome compartido | Sí, si el cambio toca la home |
+| — | `cierre` | Config SDD (`sdd.config.md`, `sdd-init.md`) al último slice | Sí |
+
+Orden por dependencia: `home` va después de `paginas` cuando la home enlaza páginas nuevas.
 
 ## Modalidad de tests
 
