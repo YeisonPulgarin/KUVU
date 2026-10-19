@@ -224,7 +224,7 @@ const privacyNotice: LegalDocument = {
           'operar el servicio que contrata cada inmobiliaria y brindar soporte.'
         ],
         [
-          'Como titular, podés conocer, actualizar, rectificar y suprimir tus datos, solicitar ',
+          'Como titular, puedes conocer, actualizar, rectificar y suprimir tus datos, solicitar ',
           'prueba de la autorización, revocarla y presentar quejas ante la Superintendencia de ',
           'Industria y Comercio.'
         ],
@@ -311,7 +311,7 @@ const terms: LegalDocument = {
       paragraphs: [
         [
           'Estos términos se rigen por las leyes de la República de Colombia. Para cualquier ',
-          'consulta, escribinos a ',
+          'consulta, escríbenos a ',
           { field: 'email' },
           '.'
         ]
@@ -362,7 +362,7 @@ const cookies: LegalDocument = {
       heading: 'Cómo borrarlo',
       paragraphs: [
         [
-          'Podés borrar esta información desde la configuración de privacidad de tu navegador, ',
+          'Puedes borrar esta información desde la configuración de privacidad de tu navegador, ',
           'en la opción de datos de sitios. Cerrar sesión en la plataforma elimina los datos de ',
           'la sesión iniciada.'
         ]

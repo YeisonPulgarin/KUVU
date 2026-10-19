@@ -4,7 +4,7 @@
 
       <div class="contact-form-col">
         <span class="section-eyebrow" aria-hidden="true">01</span>
-        <h2 class="section-title" id="contacto-form-title">Escribinos</h2>
+        <h2 class="section-title" id="contacto-form-title">Escríbenos</h2>
 
         <form class="contact-form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
           <div class="field">
@@ -74,7 +74,7 @@
               [attr.aria-invalid]="showError('subject')"
               [attr.aria-describedby]="showError('subject') ? 'contact-subject-error' : null"
             >
-              <option value="" disabled>Elegí un asunto</option>
+              <option value="" disabled>Elige un asunto</option>
               @for (subject of subjects; track subject.value) {
                 <option [value]="subject.value">{{ subject.label }}</option>
               }

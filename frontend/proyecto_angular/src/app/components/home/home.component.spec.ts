@@ -77,7 +77,7 @@ describe('HomeComponent', () => {
       expect(title.textContent).toContain('Administración inmobiliaria');
 
       const subtitle = asElement(root.querySelector('.hero-subtitle'));
-      expect(subtitle.textContent).toContain('Gestioná locales, contratos, pagos y mantenimientos');
+      expect(subtitle.textContent).toContain('Gestiona locales, contratos, pagos y mantenimientos');
     });
 
     it('should not use an em-dash or en-dash in the hero title', () => {
@@ -176,8 +176,8 @@ describe('HomeComponent', () => {
       const steps = Array.from(section.querySelectorAll('.step')) as HTMLElement[];
       expect(steps.length).toBe(4);
       expect(steps[0].querySelector('.step-number')?.textContent?.trim()).toBe('1');
-      expect(section.textContent).toContain('Creá tu empresa y tu equipo');
-      expect(section.textContent).toContain('Centralizá la información');
+      expect(section.textContent).toContain('Crea tu empresa y tu equipo');
+      expect(section.textContent).toContain('Centraliza la información');
     });
 
     it('should leave benefits by role to /servicios', () => {
@@ -257,7 +257,7 @@ describe('HomeComponent', () => {
     it('should link to /nosotros with a descriptive accessible label', () => {
       const link = asElement(band.querySelector('a.team-band-link'));
       expect(link.getAttribute('href')).toBe('/nosotros');
-      expect(link.textContent?.trim()).toBe('Conocé al equipo');
+      expect(link.textContent?.trim()).toBe('Conoce al equipo');
       expect(link.getAttribute('aria-label')).toContain('Nosotros');
     });
 

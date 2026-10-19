@@ -16,7 +16,7 @@ export const pageMeta: Readonly<Record<PageKey, PageMeta>> = {
   },
   nosotros: {
     title: 'Nosotros | KUVU',
-    description: 'Conocé quién es KUVU, cómo opera, con quién trabaja y el origen del proyecto.',
+    description: 'Conoce quién es KUVU, cómo opera, con quién trabaja y el origen del proyecto.',
     path: '/nosotros'
   },
   preguntasFrecuentes: {
@@ -28,7 +28,7 @@ export const pageMeta: Readonly<Record<PageKey, PageMeta>> = {
   contacto: {
     title: 'Contacto | KUVU',
     description:
-      'Escribile al equipo KUVU: completá el formulario y te respondemos por WhatsApp.',
+      'Escríbele al equipo KUVU: completa el formulario y te respondemos por WhatsApp.',
     path: '/contacto'
   },
   legal: {
@@ -39,7 +39,7 @@ export const pageMeta: Readonly<Record<PageKey, PageMeta>> = {
   },
   notFound: {
     title: 'Página no encontrada | KUVU',
-    description: 'La página que buscás no existe o cambió de dirección. Volvé al inicio de KUVU.',
+    description: 'La página que buscas no existe o cambió de dirección. Vuelve al inicio de KUVU.',
     path: '/404',
     noindex: true
   }

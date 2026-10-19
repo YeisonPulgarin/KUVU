@@ -13,7 +13,7 @@ import { siteNavLinks } from '../../../content/site';
   template: `
     <app-public-page
       pageTitle="Página no encontrada"
-      lead="La dirección que buscás no existe o ya no está disponible."
+      lead="La dirección que buscas no existe o ya no está disponible."
     >
       <section class="section">
         <div class="container not-found">

@@ -7,12 +7,12 @@ import type { ContactStep, ContactSubject, RichText } from './types';
 
 export const contactPage = {
   title: 'Contacto',
-  lead: 'Contanos qué necesitás y te respondemos por WhatsApp.',
+  lead: 'Cuéntanos qué necesitas y te respondemos por WhatsApp.',
   submitLabel: 'Enviar y abrir WhatsApp',
   successMessage:
-    'Abrimos WhatsApp con tu mensaje listo. Envialo desde ahí y te respondemos a la brevedad.',
+    'Abrimos WhatsApp con tu mensaje listo. Envíalo desde ahí y te respondemos a la brevedad.',
   popupBlockedMessage:
-    'Tu navegador no abrió WhatsApp. Podés escribirnos directamente desde este enlace:',
+    'Tu navegador no abrió WhatsApp. Puedes escribirnos directamente desde este enlace:',
   directChannelsTitle: 'Otros canales',
   stepsTitle: 'Qué pasa cuando envías'
 } as const;
@@ -31,7 +31,7 @@ export const contactSteps: readonly ContactStep[] = [
   },
   {
     title: 'Se abre WhatsApp',
-    description: 'WhatsApp se abre en una pestaña nueva con el mensaje escrito; solo tenés que enviarlo.'
+    description: 'WhatsApp se abre en una pestaña nueva con el mensaje escrito; solo tienes que enviarlo.'
   },
   {
     title: 'El equipo te responde',
@@ -55,11 +55,11 @@ export const contactFieldLabels = {
 } as const;
 
 export const contactErrors = {
-  nameRequired: 'Escribí tu nombre.',
-  emailOrPhoneRequired: 'Dejanos un correo o un teléfono para responderte.',
+  nameRequired: 'Escribe tu nombre.',
+  emailOrPhoneRequired: 'Déjanos un correo o un teléfono para responderte.',
   emailInvalid: 'El correo no tiene un formato válido.',
   phoneInvalid: 'El teléfono solo puede tener números, espacios y el signo +.',
-  subjectRequired: 'Elegí un asunto.',
-  messageRequired: 'Escribí tu mensaje.',
+  subjectRequired: 'Elige un asunto.',
+  messageRequired: 'Escribe tu mensaje.',
   consentRequired: 'Necesitamos tu autorización para tratar tus datos.'
 } as const;

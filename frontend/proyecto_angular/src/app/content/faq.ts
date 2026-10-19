@@ -36,7 +36,7 @@ export const faqGroups: readonly FaqGroup[] = [
       },
       {
         q: '¿Tengo soporte si necesito ayuda?',
-        a: 'Sí. Contás con acompañamiento del equipo KUVU para la puesta en marcha y para el uso diario del sistema.'
+        a: 'Sí. Cuentas con acompañamiento del equipo KUVU para la puesta en marcha y para el uso diario del sistema.'
       }
     ]
   },
@@ -45,7 +45,7 @@ export const faqGroups: readonly FaqGroup[] = [
     items: [
       {
         q: '¿Cómo me contacto con KUVU?',
-        a: 'Desde la página de Contacto completás un formulario y se abre WhatsApp con tu mensaje listo para enviar. También podés escribirnos directo por WhatsApp desde el encabezado o el pie de página.'
+        a: 'Desde la página de Contacto completas un formulario y se abre WhatsApp con tu mensaje listo para enviar. También puedes escribirnos directo por WhatsApp desde el encabezado o el pie de página.'
       },
       {
         q: '¿Cómo tratan mis datos personales?',

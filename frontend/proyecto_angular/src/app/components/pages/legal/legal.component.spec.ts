@@ -37,8 +37,18 @@ describe('LegalComponent', () => {
     expect(intro.firstElementChild).toBe(notice);
   });
 
-  it('should show the effective date as a placeholder while it is pending', () => {
-    expect(root.querySelector('.legal-updated mark.placeholder')?.textContent).toBe('[FECHA DE VIGENCIA]');
+  it('should show the effective date', () => {
+    const updated = root.querySelector('.legal-updated') as HTMLElement;
+    expect(updated.textContent).toContain('Última actualización: 18 de octubre de 2026');
+    expect(updated.querySelector('mark')).toBeNull();
+  });
+
+  it('should show the filled phone and attention area without placeholder marks', () => {
+    const text = (root.querySelector('#tratamiento-datos') as HTMLElement).textContent ?? '';
+    expect(text).toContain('+57 322 319 2760');
+    expect(text).toContain('Equipo KUVU — Protección de datos personales');
+    const marks = Array.from(root.querySelectorAll('#tratamiento-datos mark')).map((m) => m.textContent);
+    expect(marks).not.toContain('[TELÉFONO]');
   });
 
   it('should index the four documents with links to their anchors', () => {

@@ -1,8 +1,8 @@
 # Spec — home-profesional
 
 Fuentes: `sdd/home-profesional/propose.md` (alcance y decisiones D1–D6) y `explore.md`.
-Alcance: sitio público. Todo texto nuevo está en español y usa el mismo registro que el
-contenido actual (voseo: "Conocé", "Escribinos").
+Alcance: sitio público. Todo texto visible está en español con tuteo colombiano
+("Conoce", "Escríbenos", "puedes"); no se usa voseo.
 
 Convención: `HP-xx` = requisito; `CA-xx.n` = criterio de aceptación verificable de ese
 requisito. "Página pública" = `/`, `/servicios`, `/nosotros`, `/preguntas-frecuentes`,

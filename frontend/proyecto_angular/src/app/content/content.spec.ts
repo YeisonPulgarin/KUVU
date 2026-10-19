@@ -171,7 +171,7 @@ describe('content modules', () => {
   describe('team', () => {
     it('should present the team section with its title and link label', () => {
       expect(team.title).toBe('El equipo detrás de KUVU');
-      expect(team.linkLabel).toBe('Conocé al equipo');
+      expect(team.linkLabel).toBe('Conoce al equipo');
       expect(team.lead.trim().length).toBeGreaterThan(0);
     });
 
@@ -315,8 +315,17 @@ describe('content modules', () => {
   describe('responsible party', () => {
     const fields = Object.keys(responsible) as ResponsibleField[];
 
-    it('should not invent any data: every field is pending', () => {
-      fields.forEach((name) => expect(responsible[name]).toBeNull());
+    it('should keep pending, as null, the data the owner has not given yet', () => {
+      (['legalName', 'taxId', 'domicile', 'address', 'email'] as ResponsibleField[]).forEach((name) =>
+        expect(responsible[name]).withContext(name).toBeNull()
+      );
+    });
+
+    it('should only fill data derivable from what the site already publishes', () => {
+      expect(responsible.phone).toBe('+57 322 319 2760');
+      expect(responsible.phone?.replace(/\D/g, '')).toBe(contact.whatsappNumber);
+      expect(responsible.attentionArea).toBe('Equipo KUVU — Protección de datos personales');
+      expect(responsible.effectiveDate).toBe('18 de octubre de 2026');
     });
 
     it('should have a placeholder label for every field', () => {
@@ -328,7 +337,8 @@ describe('content modules', () => {
       expect(responsibleText('legalName')).toBe('[RAZÓN SOCIAL]');
       expect(responsibleText('taxId')).toBe('[NIT]');
       expect(responsibleText('email')).toBe('[CORREO DE CONTACTO]');
-      expect(responsibleText('effectiveDate')).toBe('[FECHA DE VIGENCIA]');
+      expect(responsibleText('address')).toBe('[DIRECCIÓN]');
+      expect(responsibleText('effectiveDate')).toBe('18 de octubre de 2026');
     });
   });
 
@@ -504,4 +514,24 @@ describe('content modules', () => {
       expect(homeFaqItems().length).toBe(4);
     });
   });
+
+  describe('register', () => {
+    it('should address the reader with Colombian tuteo, never voseo', () => {
+      const text = JSON.stringify([
+        contentBarrel,
+        legalDocuments,
+        legalNotice,
+        contactConsent,
+        contactErrors,
+        contactSteps,
+        contactSubjects
+      ]);
+      const voseo =
+        /(?<!\p{L})(conocé|querés|podés|tenés|sabés|necesitás|buscás|encontrás|usás|trabajás|contás|completás|escribí|elegí|creá|registrá|operá|centralizá|gestioná|ingresá|resolvé|volvé|tomás|configurás|asignás|cargás|contanos|escribinos|escribile|dejanos|envialo|contactanos|vos)(?!\p{L})/iu;
+      expect(text.match(voseo)).toBeNull();
+      // The detector itself catches accented forms.
+      expect('Conocé al equipo'.match(voseo)).not.toBeNull();
+    });
+  });
 });
+
