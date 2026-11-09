@@ -115,7 +115,10 @@ Sitio multipágina con una sola navegación: `/`, `/servicios`, `/nosotros`,
 - `src/app/intro-view-transition.ts` — `skipViewTransitionIntoIntro`: saltea el cross-fade de
   View Transitions al entrar a `/acceder` con la intro pendiente. Lo invoca
   `onRouteViewTransition` (`route-view-transition.ts`), registrado en el router.
-- `components/login/` (`/login`) — credenciales de la empresa seleccionada (correo + documento).
+- `components/login/` (`/login`) — credenciales de la empresa seleccionada (correo + documento +
+  contraseña). Detalle en `docs/auth-contrasenas.md`.
+- `components/cambiar-password/` (`/cambiar-contrasena`, lazy, `cambioPasswordGuard`) — cambio
+  obligatorio tras una contraseña temporal (sin sesión todavía) o cambio voluntario.
 - `components/dashboard|locales|contratos|pagos|mantenimiento|usuarios/` — módulos de gestión,
   lazy, protegidos por `authGuard`/`adminGuard`.
 - `services/auth.service.ts`, `data.service.ts`, `intro-state.service.ts` — sesión, datos
@@ -130,6 +133,13 @@ Sitio multipágina con una sola navegación: `/`, `/servicios`, `/nosotros`,
   contenido puros sin estado.
 - **Backend Express**: capa de rutas (`routes/{auth,empresas,usuarios,locales,contratos,pagos,mantenimiento}.js`)
   sobre `db.js` (mysql2). API REST JSON bajo `/api/*`, CORS habilitado para el frontend.
+  `auth/` concentra contraseñas (bcryptjs), política, credenciales con bloqueo por intentos,
+  autorización de administrador y logs JSON de autenticación; `scripts/` tiene tareas de
+  operación (`passwords:bootstrap`). La API no tiene sesión: las operaciones sensibles se
+  autorizan re-verificando las credenciales de quien las pide.
+- **Esquema de BD**: `db/init/01-02` son el dump base; los cambios de esquema van en scripts
+  idempotentes y solo aditivos (`03-…`) que corren en una instalación nueva y se aplican a mano
+  a una BD existente tras un respaldo en `db/backups/`.
 
 ## Flujos principales
 
@@ -161,16 +171,27 @@ suave si es un ancla de la misma página y no hay reduced motion.
 ### Acceso autenticado
 
 ```
-Usuario → '/acceder' (lazy; intro la primera vez en la pestaña → selección de empresa) → '/login' (correo + documento, lazy)
+Usuario → '/acceder' (lazy; intro la primera vez en la pestaña → selección de empresa)
+  → '/login' (correo + documento + contraseña, lazy) → POST /api/auth/login
+      401 → mensaje genérico (datos incorrectos o cuenta bloqueada 15 min tras 5 fallos)
+      200 + requiereCambioPassword → '/cambiar-contrasena' (sin sesión) → POST /api/auth/cambiar-password
   → dashboard / contratos / pagos / mantenimiento (/ locales, /usuarios si admin)
 ```
 
 Las rutas de gestión pasan por `authGuard` (cualquier rol) y, locales/usuarios, por
 `adminGuard` (idRol === 1). Los guards y el login navegan a `/login` de forma explícita; el
-comodín `**` muestra la 404 pública y no forma parte del flujo de acceso.
+comodín `**` muestra la 404 pública y no forma parte del flujo de acceso. `/cambiar-contrasena`
+pasa por `cambioPasswordGuard`: entra quien tiene un cambio pendiente (en memoria, nunca en
+`localStorage`) o una sesión.
 
 ## Decisiones estructurales
 
+- **Contraseñas con bcrypt y autorización por re-verificación**: la contraseña se guarda solo
+  como hash (`bcryptjs`, costo 12) y ninguna consulta de `usuarios` devuelve el hash. Sin sesión
+  en la API, crear usuarios y restablecer contraseñas exige las credenciales completas del
+  administrador en la petición. Tradeoff: el resto del CRUD sigue sin autenticación (no hay
+  token), y el administrador reescribe su contraseña en cada operación sensible. Detalle en
+  `docs/auth-contrasenas.md`.
 - **Contenido del sitio en módulos TS tipados** (`content/*.ts`) en lugar de texto embebido.
   Tradeoff: un cambio de copy toca código, pero el texto queda testeable y reutilizable entre
   la home y las páginas (el FAQ corto es subconjunto del completo).

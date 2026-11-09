@@ -9,6 +9,21 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com) y este proyecto 
 
 ### Added
 
+- El acceso a la app interna pide una **contraseña**, además del correo y el número de documento.
+  Las contraseñas se guardan cifradas con hash (bcrypt) y deben tener entre 8 y 64 caracteres,
+  mayúscula, minúscula, número y símbolo, no ser una contraseña común y no contener el correo ni
+  el documento. La pantalla muestra las reglas mientras se escribe.
+- Tras 5 intentos fallidos la cuenta se bloquea 15 minutos. El mensaje de error es el mismo para
+  cualquier dato incorrecto o cuenta bloqueada.
+- Nueva pantalla **Cambiar contraseña** (`/cambiar-contrasena`): obligatoria al ingresar con una
+  contraseña temporal y disponible desde el menú lateral para cambiarla cuando quieras.
+- En **Usuarios**, el administrador asigna una contraseña temporal al crear un usuario y puede
+  restablecer la de otro (confirmando con su propia contraseña). Una etiqueta marca a quien aún
+  tiene una temporal. "¿Olvidaste tu contraseña?" en el login explica este camino.
+- Migración `db/init/03-auth-columnas.sql` (solo agrega columnas) y el comando
+  `npm run passwords:bootstrap`, que da a cada usuario existente su número de documento como
+  contraseña temporal. Los eventos de acceso quedan en logs JSON sin datos personales.
+
 - La página de inicio tiene movimiento ligado al scroll: una barra fina arriba muestra cuánto
   de la página se recorrió; el título principal entra palabra por palabra, con un indicador que
   invita a bajar, y en escritorio el contenido del hero se aleja con parallax al salir; el
@@ -54,6 +69,14 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com) y este proyecto 
 
 ### Changed
 
+- **Cambio incompatible:** `POST /api/auth/login` exige `password` además de `correo`,
+  `documento` y `empresa_id`, y `POST /api/usuarios` exige `passwordTemporal` y las credenciales
+  del administrador (`admin`). Para migrar una base existente: respaldo, `03-auth-columnas.sql` y
+  `npm run passwords:bootstrap` (pasos en `docs/auth-contrasenas.md`); cada usuario entra la
+  primera vez con su documento como contraseña y define una nueva. El backend necesita
+  `npm install` para instalar `bcryptjs`.
+- `GET /api/usuarios` y `GET /api/usuarios/:id` devuelven columnas explícitas (más
+  `debe_cambiar_password`), nunca el hash ni el estado de bloqueo.
 - Las apariciones al hacer scroll del sitio público recorren más distancia con una curva más
   suave, y las filas y tarjetas se elevan también al recibir el foco del teclado; en pantallas
   táctiles la elevación ya no queda fija después de tocar.
