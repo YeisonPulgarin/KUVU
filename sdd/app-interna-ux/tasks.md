@@ -51,10 +51,11 @@ y, para que el slice esté documentado desde el primer commit, T-1 lo agrega tam
   Depende de T-7.
 - **T-9** — `shared/toast/` `ToastService` + `<app-toast-host>` + estilos + specs (D-7, CA7).
   Depende de T-5.
-- **T-10** — `shared/app-layout/` `<app-layout>` (sidebar + main + hosts) + spec (D-8).
+- **T-10** — `shared/app-layout/` `<app-layout>` (sidebar + main + hosts + breadcrumb
+  `{empresa} › {pagina}` y toast de error de carga) + spec (D-8, D-19, D-20, CA18).
   Depende de T-8, T-9.
 - **T-11** — `data.service.ts`: `eliminarContrato`, `eliminarMantenimiento`, `finalize` en
-  `cargarTodo`, `_empresaCargada`, `listo`. Spec con `HttpTestingController` (D-12, D-13).
+  `cargarTodo`, `_empresaCargada`, `listo`, `errorCarga` (D-20). Spec con `HttpTestingController` (D-12, D-13).
 
 ## Grupo B — Pantallas de gestión del admin (PR 2)
 
@@ -79,7 +80,7 @@ componente con dobles de `DataService`/`AuthService`/`ConfirmService`.
   íconos de método de pago con `<app-icon>`; pasarela con `<app-modal>`, `pagando` y toasts
   (R4.4, D-16); "Descargar reporte" con ícono. Spec: CA4, CA11.
 - **T-17** — `mantenimiento`: Iniciar (info), Completar (success), Cancelar solicitud
-  (warning, con confirmación), Eliminar (danger, admin); badges legibles; toast tras cambiar
+  (danger, con confirmación; enmienda 1), Eliminar (danger, admin); badges legibles; toast tras cambiar
   estado y en error; "Nuevo" siempre vacío (R4.2). Spec: CA4, CA9, mapeo de acciones.
 - **T-18** — `dashboard`: badges de tipo de pago con `badges.ts` (R4.1); íconos; badge de rol
   con contraste; fecha formateada; toast si falla la carga. Spec: CA3, rol.
@@ -160,3 +161,14 @@ Si alguno se mergea antes, se rebasea la pila.
   suma la convención "acciones semánticas + confirmación/toast propios, nunca diálogos
   nativos". Alternativa: dejarlo solo en `sdd-init.md` (lo decide `document`).
 - Documento del cambio: `docs/app-interna-ux.md`.
+
+## Enmienda 1 — observaciones de la docente
+
+- Breadcrumb (R8, D-19): entra en T-10 (grupo A) y cada pantalla pasa `pagina` al migrar a
+  `<app-layout>` (grupos B y C).
+- Retroalimentación (R9, D-20): `errorCarga` en T-11; toast de carga en T-10; toasts y
+  `aria-invalid` en cada pantalla (T-13…T-18), con specs de cada acción (CA19).
+- Botones de cancelar (R10, D-21): `.btn-secondary` y `.modal__close` en T-4/T-7 (grupo A);
+  "Cancelar solicitud" danger en T-17; inventario y medición de contraste en verify (CA20).
+- Forecast: + ~150 líneas (breadcrumb, `errorCarga`, specs). Total ≈ 3 850; sigue riesgo alto,
+  misma entrega en 4 PRs.

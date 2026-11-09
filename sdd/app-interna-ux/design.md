@@ -58,7 +58,7 @@ del parcial publica los tokens sin editar `styles.css` (que edita `sitio-publico
 - `.btn-solid--danger`/`--warning`: relleno `-solid` y texto blanco, solo dentro del diálogo
   de confirmación.
 - Mapeo de acciones (R1.3): Editar → `info`; Eliminar → `danger`; Iniciar → `info`;
-  Completar → `success`; Cancelar solicitud → `warning`.
+  Completar → `success`; Cancelar solicitud → `danger` (enmienda 1).
 - Estados comunes: `:hover` (tinte un paso más fuerte), `:active` (`scale(.97)`), `:disabled`,
   `:focus-visible` con anillo `color-mix` del `-fg` del rol (no el verde de KUVU), y
   `[aria-busy="true"]` con spinner CSS.
@@ -281,3 +281,34 @@ Las pantallas se testean con `DataService`, `AuthService` y `ConfirmService` dob
 - **Logs:** la política de `DEVELOPMENT_GUIDELINES.md` es de backend; en el frontend los
   errores inesperados se informan con toast y se mantiene `console.error` con contexto, sin
   datos personales.
+
+## Enmienda 1 — breadcrumb, retroalimentación y botones de cancelar
+
+### D-19 Breadcrumb propio en `<app-layout>` (R8)
+
+`<app-layout>` recibe `pagina = input.required<string>()` y pinta, al inicio de
+`main.main-content`, un `nav.app-breadcrumb[aria-label="Ruta"]` con `{empresa} › {pagina}`
+(empresa desde `AuthService.empresaActiva`, enlace a `/dashboard` salvo cuando
+`pagina === 'Inicio'`). Ícono `building` decorativo delante de la empresa.
+
+- Descartado: reusar `components/public/breadcrumb`: publica JSON-LD `BreadcrumbList` vía
+  `PageMetaService` (SEO del sitio público, sin sentido detrás del login) y usa los tokens de
+  marca de KUVU en vez de los de la empresa.
+
+### D-20 Retroalimentación (R9)
+
+Sobre D-6/D-7: éxito de crear/editar/eliminar/cambiar estado/pagar → `ToastService.exito`;
+errores de guardado se muestran en el modal (`.error-msg[role=alert]`) y además los de borrado
+y cambio de estado → `ToastService.error`; error de carga → toast desde `<app-layout>`
+observando un `errorCarga` de `DataService`. Validación: mensaje en el modal y
+`aria-invalid` en los campos que faltan. Cerrar sesión ya navega a `/login` (la señal es la
+navegación).
+
+### D-21 Botones de cancelar y cerrar (R10)
+
+Inventario: "Cancelar" de los modales de locales, contratos, mantenimiento, usuarios y de la
+pasarela; "Cancelar" del diálogo de confirmación; ✕ de todos los modales (`.modal__close`);
+"✕ Cancelar" de estado en mantenimiento. Los de descartar usan `.btn-secondary` (texto
+`#344054` sobre blanco, ≈ 10:1) y `.modal__close` pasa a texto `--sem-neutral-fg` (≈ 7:1)
+con hover `--sem-neutral-bg` (deja de ponerse rojo). "Cancelar solicitud" pasa a
+`.btn-action--danger` con ícono `ban` y confirmación `danger`.

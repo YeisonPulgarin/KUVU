@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
 import { Empresa } from '../models/empresa.model';
 import { Usuario } from '../models/index';
+import { textoSobreMarca } from '../components/shared/color-contrast';
 
 const API = 'http://localhost:3000/api';
 
@@ -113,6 +114,8 @@ export class AuthService {
     root.style.setProperty('--color-primario',    empresa.color_primario);
     root.style.setProperty('--color-secundario',  empresa.color_secundario ?? empresa.color_primario);
     root.style.setProperty('--color-texto',       empresa.color_texto ?? '#FFFFFF');
+    // Label color of the brand-filled surfaces (primary button, avatars), by luminance.
+    root.style.setProperty('--color-primario-contraste', textoSobreMarca(empresa.color_primario));
   }
 
   private resetearTema(): void {
@@ -120,5 +123,6 @@ export class AuthService {
     root.style.removeProperty('--color-primario');
     root.style.removeProperty('--color-secundario');
     root.style.removeProperty('--color-texto');
+    root.style.removeProperty('--color-primario-contraste');
   }
 }

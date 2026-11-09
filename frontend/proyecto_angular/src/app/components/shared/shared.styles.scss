@@ -2,6 +2,30 @@
 // ESTILOS COMPARTIDOS: modals, cards, tables, forms, badges, btns
 // ─────────────────────────────────────────────────────────────────
 
+// SEMANTIC TOKENS — fixed for every company (the brand colors only fill the main CTA).
+// Each role: -fg (text and icon), -bg (tint), -border and -solid (fill of the confirm
+// button, with a white label). Prefix `--sem-*` keeps them out of Tailwind's `--color-*`.
+:root {
+  --sem-danger-fg: #B42318;  --sem-danger-bg: #FEF3F2;  --sem-danger-border: #FECDCA;  --sem-danger-solid: #D92D20;
+  --sem-success-fg: #067647; --sem-success-bg: #ECFDF3; --sem-success-border: #ABEFC6; --sem-success-solid: #067647;
+  --sem-warning-fg: #B54708; --sem-warning-bg: #FFFAEB; --sem-warning-border: #FEDF89; --sem-warning-solid: #B54708;
+  --sem-info-fg: #175CD3;    --sem-info-bg: #EFF8FF;    --sem-info-border: #B2DDFF;    --sem-info-solid: #175CD3;
+  --sem-neutral-fg: #475467; --sem-neutral-bg: #F2F4F7; --sem-neutral-border: #D0D5DD; --sem-neutral-solid: #344054;
+
+  // Label over brand-filled surfaces; AuthService overrides it per company (by luminance).
+  --color-primario-contraste: #ffffff;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 // PAGE LAYOUT
 .page {
   padding: 1.75rem 2.25rem;
@@ -31,6 +55,47 @@
     }
   }
 }
+
+// BREADCRUMB of the signed-in app (<app-layout>): "{Empresa} › {Página}".
+.app-breadcrumb {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 1.25rem 2.25rem 0;
+  font-size: .8rem;
+  color: #475467;
+
+  ol {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .4rem;
+    list-style: none;
+  }
+
+  li { display: inline-flex; align-items: center; gap: .4rem; }
+
+  app-icon { --icon-size: .95rem; color: #667085; }
+
+  a {
+    color: #344054;
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-underline-offset: 3px;
+
+    &:hover { text-decoration-color: currentColor; }
+  }
+
+  [aria-current="page"] { color: #1a202c; font-weight: 700; }
+
+  &__sep { color: #98a2b3; }
+
+  @media (max-width: 767px) { padding: .5rem 1.1rem 0; }
+}
+
+// The breadcrumb already separates the screen from the top edge.
+.app-breadcrumb + .page,
+.app-breadcrumb + .dashboard { padding-top: .9rem; }
 
 // CARD
 .card {
@@ -122,37 +187,126 @@
   &--purple { background: #faf5ff; color: #6b46c1; }
 }
 
+// Semantic badges (state, priority, payment type) — see badges.ts.
+@each $rol in danger, success, warning, info, neutral {
+  .badge--#{$rol} {
+    background: var(--sem-#{$rol}-bg);
+    color: var(--sem-#{$rol}-fg);
+    box-shadow: inset 0 0 0 1px var(--sem-#{$rol}-border);
+  }
+}
+
 // BUTTONS
 .btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .45rem;
   background: linear-gradient(135deg, var(--color-primario, #2B4C8C), var(--color-secundario, #3A6FD8));
-  color: #fff;
+  color: var(--color-primario-contraste);
   border: none;
   padding: .6rem 1.3rem;
   border-radius: 9px;
   font-weight: 700;
   font-size: .84rem;
   cursor: pointer;
-  transition: opacity .15s, transform .15s, box-shadow .15s;
-  box-shadow: 0 2px 8px rgba(0,0,0,.2);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--color-primario, #2B4C8C) 35%, transparent);
   white-space: nowrap;
 
-  &:hover  { opacity: .92; transform: translateY(-1px); box-shadow: 0 6px 18px rgba(0,0,0,.22); }
-  &:active { transform: translateY(0); box-shadow: 0 2px 8px rgba(0,0,0,.18); }
-  &:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+  &:hover  { box-shadow: 0 6px 18px color-mix(in srgb, var(--color-primario, #2B4C8C) 40%, transparent); }
+  &:disabled { opacity: .55; cursor: not-allowed; box-shadow: none; }
 }
 
 .btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .45rem;
   background: #fff;
-  color: #4a5568;
-  border: 1.5px solid #e2e8f0;
+  color: #344054;
+  border: 1.5px solid var(--sem-neutral-border);
   padding: .58rem 1.2rem;
   border-radius: 9px;
   font-weight: 600;
   font-size: .84rem;
   cursor: pointer;
-  transition: all .15s;
 
-  &:hover { background: #f7fafc; border-color: #cbd5e0; }
+  &:hover { background: var(--sem-neutral-bg); }
+  &:disabled { opacity: .55; cursor: not-allowed; }
+}
+
+// Row and card actions: tinted with their semantic role at rest, not only on hover.
+.btn-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .35rem;
+  padding: .32rem .7rem;
+  border-radius: 8px;
+  font-size: .76rem;
+  font-weight: 600;
+  line-height: 1.3;
+  cursor: pointer;
+  border: 1px solid transparent;
+  white-space: nowrap;
+
+  &:disabled { opacity: .5; cursor: not-allowed; }
+
+  // Square icon-only variant: always carries an aria-label.
+  &--icon {
+    width: 36px; height: 36px;
+    padding: 0;
+    --icon-size: 1.05rem;
+  }
+}
+
+@each $rol in danger, success, warning, info, neutral {
+  .btn-action--#{$rol} {
+    background: var(--sem-#{$rol}-bg);
+    color: var(--sem-#{$rol}-fg);
+    border-color: var(--sem-#{$rol}-border);
+
+    &:hover:not(:disabled) {
+      background: color-mix(in srgb, var(--sem-#{$rol}-fg) 12%, var(--sem-#{$rol}-bg));
+    }
+    &:focus-visible { outline: 2px solid var(--sem-#{$rol}-fg); outline-offset: 2px; }
+  }
+
+  // Filled confirm button of the confirmation dialog.
+  .btn-solid--#{$rol} {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .45rem;
+    background: var(--sem-#{$rol}-solid);
+    color: #fff;
+    border: none;
+    padding: .6rem 1.3rem;
+    border-radius: 9px;
+    font-weight: 700;
+    font-size: .84rem;
+    cursor: pointer;
+
+    &:hover { background: color-mix(in srgb, var(--sem-#{$rol}-solid) 88%, #000); }
+    &:focus-visible { outline: 2px solid var(--sem-#{$rol}-solid); outline-offset: 2px; }
+  }
+}
+
+// Busy state: the label stays, a spinner takes the icon slot.
+[aria-busy="true"].btn-primary,
+[aria-busy="true"].btn-action,
+[aria-busy="true"][class*="btn-solid--"] {
+  cursor: progress;
+
+  &::before {
+    content: '';
+    width: .9em; height: .9em;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+  }
+
+  app-icon { display: none; }
 }
 
 .btn-sm {
@@ -260,7 +414,6 @@
   justify-content: center;
   z-index: 300;
   padding: 1rem;
-  animation: fadeIn .18s ease;
   backdrop-filter: blur(2px);
 }
 
@@ -272,7 +425,6 @@
   max-height: 92vh;
   overflow-y: auto;
   box-shadow: 0 25px 80px rgba(0,0,0,.35), 0 8px 32px rgba(0,0,0,.15);
-  animation: slideUp .22s cubic-bezier(.34,1.56,.64,1);
   border: 1px solid rgba(255,255,255,.8);
 
   &--lg { max-width: 680px; }
@@ -293,18 +445,18 @@
     }
   }
 
+  // Discard control: neutral, AA text, neutral hover (closing is not destructive).
   &__close {
-    background: #f7fafc;
-    border: none;
-    width: 30px; height: 30px;
+    background: transparent;
+    border: 1px solid transparent;
+    width: 34px; height: 34px;
     border-radius: 8px;
     display: flex; align-items: center; justify-content: center;
-    font-size: .95rem;
-    color: #718096;
+    color: var(--sem-neutral-fg);
     cursor: pointer;
-    transition: background .15s, color .15s;
+    --icon-size: 1.1rem;
 
-    &:hover { background: #fed7d7; color: #c53030; }
+    &:hover { background: var(--sem-neutral-bg); border-color: var(--sem-neutral-border); }
   }
 
   &__footer {
@@ -453,12 +605,155 @@
   }
 }
 
-// ANIMATIONS
-@keyframes fadeIn  { from { opacity: 0 } to { opacity: 1 } }
-@keyframes slideUp {
-  from { transform: translateY(16px) scale(.98); opacity: 0 }
-  to   { transform: translateY(0) scale(1); opacity: 1 }
+// MODAL (<app-modal>): the <dialog> is the panel; it reuses the .modal header and footer.
+dialog.app-modal {
+  margin: auto;
+  padding: 0;
+  border: none;
+  color: inherit;
+  max-width: min(520px, calc(100vw - 2rem));
+  max-height: 92vh;
+  overflow-y: auto;
+
+  &.modal--lg { max-width: min(680px, calc(100vw - 2rem)); }
+
+  &::backdrop {
+    background: rgba(10, 10, 20, .55);
+    backdrop-filter: blur(2px);
+  }
 }
+
+// CONFIRMATION DIALOG
+.confirm {
+  &__body {
+    display: flex;
+    gap: .9rem;
+    padding: 1.25rem 1.5rem;
+    color: #344054;
+    font-size: .88rem;
+    line-height: 1.5;
+  }
+
+  &__icon {
+    flex-shrink: 0;
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    --icon-size: 1.25rem;
+  }
+}
+
+@each $rol in danger, warning, neutral {
+  .confirm--#{$rol} .confirm__icon { background: var(--sem-#{$rol}-bg); color: var(--sem-#{$rol}-fg); }
+}
+
+// TOASTS (<app-toast-host>)
+.toast-region {
+  position: fixed;
+  z-index: 400;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: .6rem;
+  width: min(360px, calc(100vw - 2rem));
+  pointer-events: none;
+
+  @media (max-width: 767px) {
+    right: 1rem;
+    left: 1rem;
+    width: auto;
+    bottom: auto;
+    top: 4.5rem;
+  }
+}
+
+.toast {
+  pointer-events: auto;
+  display: flex;
+  align-items: flex-start;
+  gap: .65rem;
+  padding: .8rem .9rem;
+  border-radius: 12px;
+  background: #fff;
+  border: 1px solid;
+  box-shadow: 0 10px 30px rgba(16, 24, 40, .14);
+  font-size: .85rem;
+  color: #1a202c;
+  --icon-size: 1.15rem;
+
+  &__text { flex: 1; line-height: 1.4; padding-top: .05rem; }
+
+  &__close {
+    background: none;
+    border: none;
+    color: #667085;
+    cursor: pointer;
+    border-radius: 6px;
+    width: 28px; height: 28px;
+    display: inline-flex; align-items: center; justify-content: center;
+    --icon-size: .95rem;
+
+    &:hover { background: var(--sem-neutral-bg); }
+  }
+
+  &--exito { border-color: var(--sem-success-border); .toast__icon { color: var(--sem-success-fg); } }
+  &--error  { border-color: var(--sem-danger-border);  .toast__icon { color: var(--sem-danger-fg); } }
+}
+
+// MOTION — everything that moves lives here, gated by reduced motion (RNF-03) and timed
+// with the motion tokens of styles/_motion.scss.
+@keyframes app-fade-in  { from { opacity: 0; } to { opacity: 1; } }
+@keyframes app-fade-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes app-rise-in {
+  from { opacity: 0; transform: translateY(16px) scale(.98); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes app-sink-out {
+  from { opacity: 1; transform: none; }
+  to   { opacity: 0; transform: translateY(10px) scale(.98); }
+}
+@keyframes app-toast-in {
+  from { opacity: 0; transform: translateX(24px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes app-toast-out {
+  from { opacity: 1; transform: none; }
+  to   { opacity: 0; transform: translateX(24px); }
+}
+@keyframes app-spin { to { transform: rotate(360deg); } }
+
+@media (prefers-reduced-motion: no-preference) {
+  // Legacy overlay modal (screens not yet on <app-modal>).
+  .modal-overlay { animation: app-fade-in var(--dur-fast) ease; }
+  .modal-overlay .modal { animation: app-rise-in var(--dur-base) var(--ease-out-expo); }
+
+  dialog.app-modal[open] { animation: app-rise-in var(--dur-base) var(--ease-out-expo); }
+  dialog.app-modal[open]::backdrop { animation: app-fade-in var(--dur-fast) ease; }
+  dialog.app-modal[data-state="closing"] { animation: app-sink-out var(--dur-fast) var(--ease-in-out) forwards; }
+  dialog.app-modal[data-state="closing"]::backdrop { animation: app-fade-out var(--dur-fast) ease forwards; }
+
+  .toast { animation: app-toast-in var(--dur-base) var(--ease-out-expo); }
+  .toast[data-state="closing"] { animation: app-toast-out var(--dur-fast) var(--ease-in-out) forwards; }
+
+  .btn-primary, .btn-secondary, .btn-action, [class*="btn-solid--"], .btn-sm {
+    transition:
+      transform var(--dur-fast) var(--ease-out-expo),
+      box-shadow var(--dur-fast) ease,
+      background-color var(--dur-fast) ease,
+      border-color var(--dur-fast) ease;
+  }
+  .btn-primary:hover:not(:disabled) { transform: translateY(-1px); }
+  .btn-primary:active:not(:disabled),
+  .btn-secondary:active:not(:disabled),
+  .btn-action:active:not(:disabled),
+  [class*="btn-solid--"]:active:not(:disabled) { transform: scale(.97); }
+
+  [aria-busy="true"].btn-primary::before,
+  [aria-busy="true"].btn-action::before,
+  [aria-busy="true"][class*="btn-solid--"]::before { animation: app-spin .7s linear infinite; }
+}
+
 
 // RESPONSIVE
 @media (max-width: 767px) {
@@ -495,7 +790,11 @@
   // Touch targets mínimos en móvil
   .btn-primary,
   .btn-secondary,
-  .btn-sm {
+  .btn-sm,
+  .btn-action,
+  [class*="btn-solid--"] {
     min-height: 44px;
   }
+
+  .btn-action--icon { width: 44px; }
 }

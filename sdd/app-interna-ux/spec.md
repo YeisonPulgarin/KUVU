@@ -16,7 +16,7 @@ Referencias: `sdd/app-interna-ux/propose.md`, `sdd/app-interna-ux/explore.md`.
   Las demás acciones usan estilo secundario o semántico.
 - **R1.3** Las acciones de fila y tarjeta usan su semántica en reposo, no solo en hover:
   eliminar → peligro; editar → información/neutro; iniciar → información; completar → éxito;
-  cancelar solicitud → advertencia.
+  cancelar solicitud de mantenimiento → peligro (enmienda 1).
 - **R1.4** Toda acción muestra un ícono SVG que hereda el color del botón; ningún botón ni
   título de la app interna usa emoji como ícono. Los botones de solo ícono tienen nombre
   accesible.
@@ -50,8 +50,8 @@ Referencias: `sdd/app-interna-ux/propose.md`, `sdd/app-interna-ux/explore.md`.
 - **R3.1** Given una acción destructiva (eliminar, cancelar solicitud), when el usuario la
   pide, then se abre un diálogo de la app con título, texto que nombra el elemento afectado
   (p. ej. la dirección del local), botón "Cancelar" y botón de confirmación en color de
-  peligro (advertencia para cancelar solicitud). Cancelar, Escape o tocar fuera cierran sin
-  efecto.
+  peligro (también para cancelar una solicitud de mantenimiento, enmienda 1). Cancelar, Escape
+  o tocar fuera cierran sin efecto.
 - **R3.2** Cerrar sesión pide confirmación con el mismo diálogo en variante neutra.
 - **R3.3** Los resultados de crear, editar, eliminar, cambiar estado, pagar y los errores de
   carga se informan con toasts: éxito y error con su color semántico, ícono, texto y botón de
@@ -140,3 +140,31 @@ Referencias: `sdd/app-interna-ux/propose.md`, `sdd/app-interna-ux/explore.md`.
 - Animación de reordenamiento de filas al filtrar: las filas filtradas aparecen sin animar.
 - Navegadores sin soporte de las APIs de animación usadas: muestran el estado final sin
   animación.
+
+## Enmienda 1 — observaciones de la docente
+
+Se incorpora al alcance sin cambiar lo anterior salvo R1.3/R3.1 (cancelar solicitud pasa a
+peligro).
+
+- **R8 — Breadcrumb interno.** Cada pantalla interna muestra, arriba del título, un breadcrumb
+  `{Empresa} › {Pantalla}`. El primer ítem (nombre de la empresa) enlaza a `/dashboard`; en el
+  dashboard la ruta es `{Empresa} › Inicio` y la empresa no es enlace. Se expone como
+  `nav` con `aria-label="Ruta"`, lista ordenada, separadores ocultos al lector y el último
+  ítem con `aria-current="page"`.
+- **R9 — Retroalimentación de toda acción.** Toda acción da una señal visible:
+  crear, editar, eliminar, cambiar estado, pagar y cerrar sesión (toast de éxito o salida);
+  errores de guardado y de borrado (toast de error o mensaje en el modal); errores de carga
+  (toast); validaciones de formulario (mensaje en el modal con `role="alert"` y el campo
+  marcado `aria-invalid`).
+- **R10 — Botones de cancelar y cerrar unificados.**
+  - "Cancelar"/"Cerrar" que descartan un formulario, la pasarela o el diálogo de confirmación,
+    y el ✕ de los modales: estilo secundario neutro, texto ≥ 4.5:1 sobre su fondo, hover
+    neutro (no rojo).
+  - "Cancelar solicitud" de mantenimiento (cambio de estado destructivo): botón de peligro
+    con confirmación de peligro que nombra la solicitud.
+
+| CA | Verificación | R |
+|---|---|---|
+| CA18 | Cada pantalla interna renderiza el breadcrumb con `nav[aria-label="Ruta"]`, enlace de la empresa a `/dashboard` (salvo en el dashboard) y `aria-current="page"` en el último ítem | R8 |
+| CA19 | Specs de pantallas: cada acción (crear, editar, eliminar, cambiar estado, pagar, error de guardado, error de carga, validación) produce toast o mensaje visible | R9 |
+| CA20 | Inventario de botones cancelar/cerrar en verify: todos los de descartar usan `.btn-secondary` o `.modal__close` (contraste ≥ 4.5:1 medido, hover neutro); "Cancelar solicitud" usa `.btn-action--danger` y abre la confirmación de peligro (spec) | R10 |
