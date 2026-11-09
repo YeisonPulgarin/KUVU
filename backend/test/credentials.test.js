@@ -170,3 +170,35 @@ test('the login payload never carries the hash or the lock state', async (t) => 
 
   assert.doesNotMatch(json, /password_hash|\$2[aby]\$|intentos_fallidos|bloqueado_hasta|debe_cambiar/);
 });
+
+test('every rejection path runs exactly one bcrypt verification (no timing shortcut)', async (t) => {
+  const passwordModule = require('../auth/password');
+  const { db, user } = setup(t);
+  const verify = t.mock.method(passwordModule, 'verifyPassword');
+
+  const casos = [
+    () => verificarCredenciales(db, creds({ correo: 'nadie@kuvu.co' })),
+    () => verificarCredenciales(db, creds({ documento: '000' })),
+    () => verificarCredenciales(db, creds({ password: 'Mala#Clave1' })),
+    async () => {
+      user.bloqueado_hasta = new Date(T0 + 60_000);
+      const r = await verificarCredenciales(db, creds());
+      user.bloqueado_hasta = null;
+      return r;
+    },
+    async () => {
+      user.password_hash = null;
+      const r = await verificarCredenciales(db, creds());
+      user.password_hash = HASH;
+      return r;
+    },
+  ];
+
+  for (const caso of casos) {
+    const before = verify.mock.callCount();
+    const r = await caso();
+    assert.strictEqual(r.estado, 'rechazado');
+    assert.strictEqual(verify.mock.callCount() - before, 1);
+  }
+});
+

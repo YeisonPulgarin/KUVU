@@ -1,6 +1,7 @@
 // auth/credentials.js — checks full credentials (e-mail + document + password + company)
 // and keeps the per-account failure counter and temporary lock.
-const { verifyPassword, DUMMY_HASH } = require('./password');
+// Called through the module object so tests can observe every hash verification.
+const password = require('./password');
 const { logAuth } = require('./auth-log');
 
 const MAX_INTENTOS = 5;
@@ -55,17 +56,20 @@ async function registrarFallo(db, filas, ahora) {
  *   { estado: 'rechazado', motivo: 'credenciales' | 'bloqueada' | 'sin_hash', idUsuario?: number }
  * >}
  */
-async function verificarCredenciales(db, { correo, documento, password, empresa_id }) {
+async function verificarCredenciales(db, { correo, documento, password: clave, empresa_id }) {
   const ahora = Date.now();
   const [filas] = await db.execute(SQL_CUENTAS, [String(correo).trim(), Number(empresa_id)]);
 
   if (filas.length === 0) {
-    await verifyPassword(password, DUMMY_HASH);
+    await password.verifyPassword(clave, password.DUMMY_HASH);
     return { estado: 'rechazado', motivo: 'credenciales' };
   }
 
   const bloqueada = filas.find((f) => estaBloqueada(f, ahora));
   if (bloqueada) {
+    // Same bcrypt cost as every other path: a fast answer would reveal that the account
+    // exists and is locked.
+    await password.verifyPassword(clave, password.DUMMY_HASH);
     return { estado: 'rechazado', motivo: 'bloqueada', idUsuario: bloqueada.idUsuario };
   }
 
@@ -73,14 +77,14 @@ async function verificarCredenciales(db, { correo, documento, password, empresa_
   const fila = filas.find((f) => String(f.documento).trim() === doc);
 
   if (!fila || !fila.password_hash) {
-    await verifyPassword(password, DUMMY_HASH);
+    await password.verifyPassword(clave, password.DUMMY_HASH);
     await registrarFallo(db, filas, ahora);
     return fila
       ? { estado: 'rechazado', motivo: 'sin_hash', idUsuario: fila.idUsuario }
       : { estado: 'rechazado', motivo: 'credenciales' };
   }
 
-  if (!(await verifyPassword(password, fila.password_hash))) {
+  if (!(await password.verifyPassword(clave, fila.password_hash))) {
     await registrarFallo(db, filas, ahora);
     return { estado: 'rechazado', motivo: 'credenciales', idUsuario: fila.idUsuario };
   }
