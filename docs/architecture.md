@@ -27,7 +27,10 @@ Sitio multipágina con una sola navegación: `/`, `/servicios`, `/nosotros`,
 
 - `src/app/content/` — contenido institucional en módulos TS tipados (site, pages,
   responsible, legal-index, legal, contact, services, companies, howItWorks, benefits,
-  security, origin, about, faq, team, logo), fuente única del texto. `site.ts` declara
+  security, origin, about, faq, team, headlines, logo), fuente única del texto.
+  `headlines.ts` declara los titulares partidos para resaltar una parte (`Headline` =
+  `title` + `parts`, con a lo sumo un fragmento `accent` o `tape`); un spec garantiza que
+  `parts` concatena exactamente `title`. `site.ts` declara
   `sitePages` y `siteNavLinks` (la navegación única) y `pages.ts` los meta de cada página.
   El barrel `content/index.ts` no reexporta `legal.ts` ni `contact.ts`: solo `/legal` y
   `/contacto` los importan, así quedan en su chunk lazy.
@@ -57,9 +60,12 @@ Sitio multipágina con una sola navegación: `/`, `/servicios`, `/nosotros`,
   `ScrollMotionService` para sus efectos ligados al scroll. Las secciones con estructura y
   movimiento propios son componentes con selector de atributo sobre su `<section>`:
   `hero/` (`app-home-hero`), `steps-journey/` (recorrido sticky de "¿Cómo funciona?"),
-  `companies-marquee/` (banda infinita con botón de pausa) y `team-band/`; además,
-  `scroll-progress/` (barra de progreso de lectura). `_section-heading.scss` comparte
-  `.container`, `.section-title` y `.section-lead` entre la home y esas secciones. Detalle en
+  `companies-marquee/` (cinta de marca en bucle, con nombres en display y botón de pausa) y
+  `team-band/`; además, `scroll-progress/` (barra de progreso de lectura). `_section-heading.scss`
+  comparte `.container`, `.section-title` (titular display) y `.section-lead` entre la home y
+  esas secciones. Cada sección usa una composición propia (manifiesto tipográfico, statement,
+  recorrido sticky, bento, lista sobre trama, cinta, foto en marco, editorial, CTA en bloque de
+  marca); detalle en `docs/sitio-publico-expresivo.md`. Detalle en
   `docs/home-animaciones.md`.
 - `src/app/services/theme.service.ts` — tema claro/oscuro persistido en `kuvu-theme`.
 - `src/app/services/page-meta.service.ts` — `setPage(meta)`: title, description, Open Graph,
@@ -86,6 +92,16 @@ Sitio multipágina con una sola navegación: `/`, `/servicios`, `/nosotros`,
   (publica `--p`), `<app-split-text>` (texto por palabra con copia accesible) y `[appMagnetic]`
   (publica `--mx` / `--my`). `motion/testing/` tiene los dobles de `matchMedia`,
   `requestAnimationFrame` e `IntersectionObserver` para specs.
+- `src/styles/_site.scss` — primitivas visuales del sitio público, incluidas por
+  `styles.scss`: `.site-root` (raíz de la home y de `app-public-page`: cuerpo fluido y grano
+  fijo decorativo), `.surface-dots`, `.surface-tint`, `.block-brand` (texto en el alias
+  `--color-on-brand`), `.display-title(--xl|l|m)`, `.tape`, `.lead-site`, `.btn-site(--ghost)`,
+  `.site-section(-head)` y `.site-cta`. Tipografía display: Big Shoulders Display
+  autohospedada (`public/fonts/`, `@font-face` en `styles.css`) en `--font-display`, con la
+  escala fluida `--text-display-xl/l/m`, `--text-lead` y `--text-body-site` en `@theme static`.
+- `src/app/components/public/headline/` — `<app-headline [parts] [title]>`: contenido en línea
+  de un titular partido (`em` para `accent`, `.tape` para `tape`), con el texto una sola vez en
+  el DOM. Lo usan el hero, los títulos de la home, `app-public-page` (`titleParts`) y Nosotros.
 - `src/styles/_motion.scss` — tokens de movimiento en `:root` (curvas, duraciones, distancias),
   incluidos por `styles.scss`, que también define las reglas globales de reveal, `.hover-lift`,
   `.magnetic`, la transición `html.vt-public` y `html.smooth-anchors`.
@@ -96,15 +112,18 @@ Sitio multipágina con una sola navegación: `/`, `/servicios`, `/nosotros`,
 - `src/app/anchor-smooth-scroll.ts` — initializer: scroll suave solo mientras el router lleva a
   un ancla de la misma página pública.
 - `frontend/proyecto_angular/public/Imagenes_web/` — imágenes del sitio público en variantes
-  responsive `{nombre-base}-{ancho}.{webp|jpeg}` (640/1024/1536), generadas con
+  responsive `{nombre-base}-{ancho}.{webp|jpeg}` (640/1024/1536 y, con
+  `--keep-original-as-max`, el ancho original), generadas con
   `scripts/generate-image-variants.py` (Python + Pillow, fuera del build). Cada imagen se declara
-  como `SiteImage` en `content/` (hoy: `content/team.ts`, la foto del equipo YCW).
+  como `SiteImage` en `content/`: `content/team.ts` declara las tres fotos del equipo
+  (`TeamSection.photos`, `equipo-kuvu-1|2|3`, verticales 3:4, `alt` sin nombres).
 - `src/app/components/public/responsive-image/` — `app-responsive-image`: renderiza un
   `SiteImage` como `<picture>` (WebP + respaldo JPEG, `srcset`/`sizes`, `width`/`height`,
   `loading="lazy"`), con modos `contain`/`cover` y `decorative`.
-- `src/app/components/home/team-band/` — banda full-bleed "El equipo detrás de KUVU" de la home
-  (selector de atributo sobre `<section id="equipo">`); `/nosotros` muestra la misma foto como
-  `<figure>`.
+- `src/app/components/home/team-band/` — sección "El equipo detrás de KUVU" de la home (selector
+  de atributo sobre `<section id="equipo">`): la foto destacada (`photos[0]`) en un marco girado
+  junto al titular, los nombres y el enlace a Nosotros. `/nosotros` muestra las tres fotos en
+  una galería asimétrica dentro de un `<figure>`.
 
 ### Clúster autenticado (app de gestión)
 
@@ -209,6 +228,14 @@ comodín `**` muestra la 404 pública y no forma parte del flujo de acceso.
   fallback literal, y sus nombres pueden escribirse en `.ts`/`.html`. Tradeoff: los 15 tokens
   viajan siempre en el CSS global (~0,3 kB), a cambio de una sola fuente de valores. Un token
   nuevo de marca va en ese bloque.
+- **Display autohospedada, sin `@import` de Google**: la fuente de titulares es un woff2 de
+  `public/` con `@font-face` global y sin `preload`. No se incrusta en el CSS (no suma al
+  warning `css-inline-fonts`) y solo se descarga en las páginas que la usan; `/acceder`, `/login`
+  y la app interna nunca la piden. Tradeoff: el `swap` puede mover líneas al llegar la fuente
+  (respaldo angosto para acotarlo).
+- **"Ingresar" conserva el azul de la app** (`.btn-primary`, `--color-primario` →
+  `--color-secundario`) como excepción explícita al acento verde único del sitio: es el puente
+  visual hacia la app. El resto de los CTAs usa `.btn-site`.
 - **Movimiento: JS mide, CSS anima.** El JS solo publica variables CSS (`--p`,
   `--page-progress`, `--mx` / `--my`) y toda la presentación vive en CSS dentro de
   `prefers-reduced-motion: no-preference` (y de `width >= 1024px` o puntero fino según el

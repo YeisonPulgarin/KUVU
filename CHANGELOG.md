@@ -9,6 +9,17 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com) y este proyecto 
 
 ### Added
 
+- El sitio público estrena identidad visual: titulares grandes en una tipografía display
+  condensada, textos más grandes que aprovechan el ancho, fondo con grano y trama de puntos, y
+  bloques a ancho completo en el verde de marca (sin colores nuevos). Claro y oscuro reciben el
+  mismo tratamiento.
+- La home tiene una composición distinta por sección: titular manifiesto, servicios en bento,
+  compañías en una cinta verde con los nombres en grande, la foto del equipo en un marco que se
+  endereza con el scroll y un cierre en bloque de marca. El título de "El origen de KUVU" se
+  enciende palabra por palabra.
+- **Nosotros** muestra las tres fotos nuevas del equipo en una galería; **Servicios**,
+  **Preguntas frecuentes** y **Contacto** se rediseñan y terminan en un bloque de marca.
+
 - La página de inicio tiene movimiento ligado al scroll: una barra fina arriba muestra cuánto
   de la página se recorrió; el título principal entra palabra por palabra, con un indicador que
   invita a bajar, y en escritorio el contenido del hero se aleja con parallax al salir; el
@@ -53,6 +64,11 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com) y este proyecto 
 - Las páginas **Nosotros** y **Preguntas frecuentes** muestran un breadcrumb ("Inicio › Nosotros", "Inicio › Preguntas frecuentes") arriba del título, con enlace a la página de inicio, y publican esa ruta como datos estructurados schema.org (`BreadcrumbList`) para buscadores.
 
 ### Changed
+
+- Las fotos del equipo frente a la universidad reemplazan a la foto del equipo de traje en la
+  home, en Nosotros y en la vista previa al compartir. El título del hero entra completo (sin
+  ir palabra por palabra) y ya no tiene el indicador para bajar; las secciones dejan de mostrar
+  números ("01", "02") sobre los títulos. Los botones "Ingresar" conservan su azul.
 
 - Las apariciones al hacer scroll del sitio público recorren más distancia con una curva más
   suave, y las filas y tarjetas se elevan también al recibir el foco del teclado; en pantallas
