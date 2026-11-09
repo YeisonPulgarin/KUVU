@@ -12,6 +12,7 @@ import { StaggerDirective } from '../shared/stagger.directive';
 import { IconComponent } from '../shared/icon/icon.component';
 import { ConfirmService } from '../shared/confirm/confirm.service';
 import { ToastService } from '../shared/toast/toast.service';
+import { formatMoneda } from '../shared/formato';
 
 @Component({
   selector: 'app-locales',
@@ -145,8 +146,6 @@ export class LocalesComponent implements OnInit {
   }
 
   formatCurrency(value: number = 0): string {
-    return new Intl.NumberFormat('es-CO', {
-      style: 'currency', currency: 'COP', maximumFractionDigits: 0
-    }).format(value);
+    return formatMoneda(value);
   }
 }
