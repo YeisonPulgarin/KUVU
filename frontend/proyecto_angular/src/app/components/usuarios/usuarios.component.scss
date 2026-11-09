@@ -45,7 +45,11 @@
   &__correo { font-size: .75rem; color: #475467; margin-top: .15rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   &__tel  { font-size: .75rem; color: #475467; }
 
-  &__rol { flex-shrink: 0; .badge { gap: .3rem; --icon-size: .8rem; } }
+  &__rol {
+    flex-shrink: 0;
+    display: flex; flex-direction: column; align-items: flex-end; gap: .35rem;
+    .badge { gap: .3rem; --icon-size: .8rem; }
+  }
 
   &__actions {
     display: flex; flex-direction: column; gap: .4rem; flex-shrink: 0;
@@ -63,3 +67,31 @@
     }
   }
 }
+
+// ── Contraseña temporal: reglas en vivo y textos de apoyo ─────
+.reglas-password {
+  list-style: none;
+  margin: .45rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: .2rem;
+  font-size: .75rem;
+  color: #667085;
+
+  li::before { content: '•'; display: inline-block; width: 1rem; font-weight: 700; }
+}
+
+.reglas-password__ok {
+  color: var(--sem-success-fg);
+  &::before { content: '✓' !important; }
+}
+
+.form-hint, .form-intro {
+  margin: .35rem 0 0;
+  font-size: .78rem;
+  color: #667085;
+}
+
+.form-intro { margin: 0 0 1rem; font-size: .85rem; color: #475467; }
+
+.error-msg--lista { margin-top: -.25rem; padding-left: 1.2rem; }

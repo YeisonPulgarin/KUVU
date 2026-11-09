@@ -207,6 +207,22 @@ $transition:         .25s cubic-bezier(.4,0,.2,1);
 
     &--icon-only { margin: 0 auto; padding: .4rem; }
   }
+
+  // Same shape as the logout button, neutral hover (it is not a destructive action).
+  &__password {
+    color: #a0aec0;
+    padding: .3rem;
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: color $transition, background $transition;
+
+    svg { width: 16px; height: 16px; }
+
+    &:hover { color: #fff; background: rgba(255,255,255,.1); }
+
+    &--icon-only { margin: 0 auto; padding: .4rem; }
+  }
 }
 
 // ── MOBILE: botón hamburger flotante (solo móvil) ──────────

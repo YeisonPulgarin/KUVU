@@ -22,8 +22,13 @@ export interface AppDoubles {
   providers: Array<Provider | EnvironmentProviders>;
 }
 
-export const ADMIN: Usuario = { idUsuario: 1, empresa_id: 1, nombre: 'Wilson Solano', documento: '1127723450', idRol: 1 };
-export const ARRENDATARIO: Usuario = { idUsuario: 2, empresa_id: 1, nombre: 'Carlos Lesmes', documento: '21249773', idRol: 2 };
+export const ADMIN: Usuario = {
+  idUsuario: 1, empresa_id: 1, nombre: 'Wilson Solano', documento: '1127723450', correo: 'wilson@amarilo.co', idRol: 1
+};
+export const ARRENDATARIO: Usuario = {
+  idUsuario: 2, empresa_id: 1, nombre: 'Carlos Lesmes', documento: '21249773', correo: 'carlos@amarilo.co', idRol: 2,
+  debe_cambiar_password: 1
+};
 
 function crearDataDouble() {
   const usuarios = signal<Usuario[]>([ADMIN, ARRENDATARIO]);
@@ -53,7 +58,7 @@ function crearDataDouble() {
     agregarContrato: ok(), actualizarContrato: ok(), eliminarContrato: ok(),
     agregarPago: ok(), eliminarPago: ok(),
     agregarMantenimiento: ok(), actualizarEstadoMantenimiento: ok(), eliminarMantenimiento: ok(),
-    agregarUsuario: ok(), actualizarUsuario: ok(), eliminarUsuario: ok()
+    agregarUsuario: ok(), actualizarUsuario: ok(), eliminarUsuario: ok(), restablecerPassword: ok()
   };
 }
 

@@ -51,6 +51,11 @@
               <app-icon [name]="u.idRol === 1 ? 'shield' : 'home'" />
               {{ u.idRol === 1 ? 'Administrador' : 'Arrendatario' }}
             </span>
+            @if (u.debe_cambiar_password === 1) {
+              <span class="badge badge--warning badge--temporal">
+                <app-icon name="lock" /> Contraseña temporal
+              </span>
+            }
           </div>
           <div class="usuario-card__actions">
             <button type="button" class="btn-action btn-action--info btn-action--icon"
@@ -58,6 +63,14 @@
                     (click)="abrirFormulario(u)">
               <app-icon name="pencil" />
             </button>
+            @if (!esYo(u)) {
+              <button type="button" class="btn-action btn-action--warning btn-action--icon"
+                      [attr.aria-label]="'Restablecer contraseña de ' + u.nombre"
+                      [title]="'Restablecer contraseña de ' + u.nombre"
+                      (click)="abrirRestablecer(u)">
+                <app-icon name="lock" />
+              </button>
+            }
             @if (esYo(u)) {
               <button type="button" class="btn-action btn-action--danger btn-action--icon"
                       disabled [attr.aria-describedby]="'usuario-yo-' + u.idUsuario"
@@ -98,7 +111,7 @@
             <input id="usuario-documento" name="documento" type="text" required aria-required="true"
                    placeholder="Cédula de ciudadanía"
                    [attr.aria-invalid]="intentoInvalido() && !form.documento ? 'true' : null"
-                   [(ngModel)]="form.documento" />
+                   [ngModel]="form.documento" (ngModelChange)="form.documento = $event; sincronizarPolitica()" />
           </div>
           <div class="form-group">
             <label for="usuario-rol">Rol</label>
@@ -113,17 +126,89 @@
           </div>
           <div class="form-group">
             <label for="usuario-correo">Correo electrónico</label>
-            <input id="usuario-correo" name="correo" type="email" placeholder="correo@empresa.co" [(ngModel)]="form.correo" />
+            <input id="usuario-correo" name="correo" type="email" placeholder="correo@empresa.co"
+                   [ngModel]="form.correo" (ngModelChange)="form.correo = $event; sincronizarPolitica()" />
           </div>
+          @if (!usuarioEditando()) {
+            <div class="form-group form-group--full">
+              <label for="usuario-password-temporal">Contraseña temporal <span aria-hidden="true">*</span></label>
+              <input id="usuario-password-temporal" name="passwordTemporal" type="text" required aria-required="true"
+                     autocomplete="off" spellcheck="false" aria-describedby="usuario-reglas"
+                     [attr.aria-invalid]="intentoInvalido() && !passwordTemporal() ? 'true' : null"
+                     [ngModel]="passwordTemporal()" (ngModelChange)="passwordTemporal.set($event)" />
+              <ul class="reglas-password" id="usuario-reglas" aria-live="polite">
+                @for (r of reglasTemporal(); track r.codigo) {
+                  <li [class.reglas-password__ok]="r.cumple" [attr.data-codigo]="r.codigo">{{ r.mensaje }}</li>
+                }
+              </ul>
+              <p class="form-hint">El usuario deberá cambiarla en su primer ingreso.</p>
+            </div>
+            <div class="form-group form-group--full">
+              <label for="usuario-admin-password">Tu contraseña (confirma que eres administrador) <span aria-hidden="true">*</span></label>
+              <input id="usuario-admin-password" name="adminPassword" type="password" required aria-required="true"
+                     autocomplete="current-password"
+                     [ngModel]="adminPassword()" (ngModelChange)="adminPassword.set($event)" />
+            </div>
+          }
         </div>
         @if (errorMsg()) {
           <p class="error-msg" role="alert">{{ errorMsg() }}</p>
+          @if (reglasServidor().length) {
+            <ul class="error-msg error-msg--lista">
+              @for (r of reglasServidor(); track r.codigo) { <li [attr.data-codigo]="r.codigo">{{ r.mensaje }}</li> }
+            </ul>
+          }
         }
         <div class="modal__footer">
           <button type="button" class="btn-secondary" (click)="modal()?.cerrar()">Cancelar</button>
           <button type="submit" class="btn-primary" [disabled]="guardando()"
                   [attr.aria-busy]="guardando() ? 'true' : null">
             {{ guardando() ? 'Guardando…' : 'Guardar' }}
+          </button>
+        </div>
+      </form>
+    </app-modal>
+  }
+
+  @if (restableciendo(); as u) {
+    <app-modal [titulo]="'Restablecer contraseña de ' + u.nombre" (closed)="cerrarRestablecer()">
+      <form (ngSubmit)="restablecer()" novalidate>
+        <p class="form-intro">
+          {{ u.nombre }} recibirá esta contraseña temporal y deberá cambiarla en su próximo ingreso.
+          Si su cuenta estaba bloqueada por intentos fallidos, queda desbloqueada.
+        </p>
+        <div class="form-grid">
+          <div class="form-group form-group--full">
+            <label for="reset-temporal">Contraseña temporal <span aria-hidden="true">*</span></label>
+            <input id="reset-temporal" name="resetTemporal" type="text" required aria-required="true"
+                   autocomplete="off" spellcheck="false" aria-describedby="reset-reglas"
+                   [ngModel]="resetTemporal()" (ngModelChange)="resetTemporal.set($event)" />
+            <ul class="reglas-password" id="reset-reglas" aria-live="polite">
+              @for (r of reglasReset(); track r.codigo) {
+                <li [class.reglas-password__ok]="r.cumple" [attr.data-codigo]="r.codigo">{{ r.mensaje }}</li>
+              }
+            </ul>
+          </div>
+          <div class="form-group form-group--full">
+            <label for="reset-admin-password">Tu contraseña (confirma que eres administrador) <span aria-hidden="true">*</span></label>
+            <input id="reset-admin-password" name="resetAdminPassword" type="password" required aria-required="true"
+                   autocomplete="current-password"
+                   [ngModel]="resetAdminPassword()" (ngModelChange)="resetAdminPassword.set($event)" />
+          </div>
+        </div>
+        @if (resetError()) {
+          <p class="error-msg" role="alert">{{ resetError() }}</p>
+          @if (resetReglasServidor().length) {
+            <ul class="error-msg error-msg--lista">
+              @for (r of resetReglasServidor(); track r.codigo) { <li [attr.data-codigo]="r.codigo">{{ r.mensaje }}</li> }
+            </ul>
+          }
+        }
+        <div class="modal__footer">
+          <button type="button" class="btn-secondary" (click)="modal()?.cerrar()">Cancelar</button>
+          <button type="submit" class="btn-primary" [disabled]="resetGuardando()"
+                  [attr.aria-busy]="resetGuardando() ? 'true' : null">
+            {{ resetGuardando() ? 'Restableciendo…' : 'Restablecer contraseña' }}
           </button>
         </div>
       </form>
