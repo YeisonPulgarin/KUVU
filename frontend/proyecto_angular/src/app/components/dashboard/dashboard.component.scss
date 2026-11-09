@@ -126,12 +126,16 @@
     h2 { font-size: .95rem; font-weight: 700; color: #2d3748; margin: 0; }
   }
 
+  // Neutral text (AA on white); the brand only marks the underline on hover.
   &__link {
     font-size: .78rem;
-    color: var(--color-primario, #3A6FD8);
+    color: #344054;
     font-weight: 600;
-    transition: opacity .15s;
-    &:hover { opacity: .7; }
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+    &:hover { text-decoration-color: var(--color-primario, #3A6FD8); }
   }
 }
 

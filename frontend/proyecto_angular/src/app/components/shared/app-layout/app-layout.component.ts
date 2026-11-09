@@ -47,9 +47,10 @@ export const MENSAJE_ERROR_CARGA =
         </nav>
         <ng-content />
       </main>
+      <!-- Inside .app-layout so the app-scoped button styles reach the dialog and toasts. -->
+      <app-toast-host />
+      <app-confirm-host />
     </div>
-    <app-toast-host />
-    <app-confirm-host />
   `
 })
 export class AppLayoutComponent {

@@ -197,42 +197,68 @@
 }
 
 // BUTTONS
+// The public site also uses the global .btn-primary / .btn-secondary (header and hero CTAs,
+// with their own component styles on top): these two blocks stay as the public site expects
+// them. The signed-in app refines both below, scoped to .app-layout.
 .btn-primary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: .45rem;
   background: linear-gradient(135deg, var(--color-primario, #2B4C8C), var(--color-secundario, #3A6FD8));
-  color: var(--color-primario-contraste);
+  color: #fff;
   border: none;
   padding: .6rem 1.3rem;
   border-radius: 9px;
   font-weight: 700;
   font-size: .84rem;
   cursor: pointer;
-  box-shadow: 0 2px 8px color-mix(in srgb, var(--color-primario, #2B4C8C) 35%, transparent);
+  transition: opacity .15s, transform .15s, box-shadow .15s;
+  box-shadow: 0 2px 8px rgba(0,0,0,.2);
   white-space: nowrap;
 
-  &:hover  { box-shadow: 0 6px 18px color-mix(in srgb, var(--color-primario, #2B4C8C) 40%, transparent); }
-  &:disabled { opacity: .55; cursor: not-allowed; box-shadow: none; }
+  &:hover  { opacity: .92; transform: translateY(-1px); box-shadow: 0 6px 18px rgba(0,0,0,.22); }
+  &:active { transform: translateY(0); box-shadow: 0 2px 8px rgba(0,0,0,.18); }
+  &:disabled { opacity: .5; cursor: not-allowed; transform: none; }
 }
 
 .btn-secondary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: .45rem;
   background: #fff;
-  color: #344054;
-  border: 1.5px solid var(--sem-neutral-border);
+  color: #4a5568;
+  border: 1.5px solid #e2e8f0;
   padding: .58rem 1.2rem;
   border-radius: 9px;
   font-weight: 600;
   font-size: .84rem;
   cursor: pointer;
+  transition: all .15s;
 
-  &:hover { background: var(--sem-neutral-bg); }
-  &:disabled { opacity: .55; cursor: not-allowed; }
+  &:hover { background: #f7fafc; border-color: #cbd5e0; }
+}
+
+// Signed-in app: brand CTA with a luminance-picked label, neutral AA discard button.
+.app-layout {
+  .btn-primary,
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .45rem;
+    transition: none;
+  }
+
+  .btn-primary {
+    color: var(--color-primario-contraste);
+    box-shadow: 0 2px 8px color-mix(in srgb, var(--color-primario, #2B4C8C) 35%, transparent);
+
+    &:hover  { opacity: 1; transform: none; box-shadow: 0 6px 18px color-mix(in srgb, var(--color-primario, #2B4C8C) 40%, transparent); }
+    &:active { transform: none; }
+    &:disabled { opacity: .55; box-shadow: none; }
+  }
+
+  .btn-secondary {
+    color: #344054;
+    border-color: var(--sem-neutral-border);
+
+    &:hover { background: var(--sem-neutral-bg); border-color: var(--sem-neutral-border); }
+    &:disabled { opacity: .55; cursor: not-allowed; }
+  }
 }
 
 // Row and card actions: tinted with their semantic role at rest, not only on hover.
@@ -378,7 +404,7 @@
   label {
     font-size: .78rem;
     font-weight: 600;
-    color: #a0aec0;
+    color: #475467;
     white-space: nowrap;
   }
 }
@@ -736,18 +762,17 @@ dialog.app-modal {
   .toast { animation: app-toast-in var(--dur-base) var(--ease-out-expo); }
   .toast[data-state="closing"] { animation: app-toast-out var(--dur-fast) var(--ease-in-out) forwards; }
 
-  .btn-primary, .btn-secondary, .btn-action, [class*="btn-solid--"], .btn-sm {
+  .app-layout :is(.btn-primary, .btn-secondary, .btn-action, [class*="btn-solid--"]) {
     transition:
       transform var(--dur-fast) var(--ease-out-expo),
       box-shadow var(--dur-fast) ease,
       background-color var(--dur-fast) ease,
       border-color var(--dur-fast) ease;
   }
-  .btn-primary:hover:not(:disabled) { transform: translateY(-1px); }
-  .btn-primary:active:not(:disabled),
-  .btn-secondary:active:not(:disabled),
-  .btn-action:active:not(:disabled),
-  [class*="btn-solid--"]:active:not(:disabled) { transform: scale(.97); }
+  .app-layout .btn-primary:hover:not(:disabled) { transform: translateY(-1px); }
+  .app-layout :is(.btn-primary, .btn-secondary, .btn-action, [class*="btn-solid--"]):active:not(:disabled) {
+    transform: scale(.97);
+  }
 
   [aria-busy="true"].btn-primary::before,
   [aria-busy="true"].btn-action::before,
