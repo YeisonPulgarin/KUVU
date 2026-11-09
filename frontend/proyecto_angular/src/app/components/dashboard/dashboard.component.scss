@@ -25,7 +25,7 @@
   }
 
   &__subtitle {
-    color: #a0aec0;
+    color: #667085;
     font-size: .85rem;
     margin: 0;
 
@@ -33,7 +33,11 @@
   }
 
   &__rol-badge {
-    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    --icon-size: .95rem;
+    color: var(--color-primario-contraste, #fff);
     padding: .5rem 1.1rem;
     border-radius: 25px;
     font-size: .8rem;
@@ -75,9 +79,13 @@
   padding: 1.2rem 1.3rem;
   box-shadow: 0 1px 3px rgba(0,0,0,.06), 0 4px 16px rgba(0,0,0,.04);
   border: 1px solid rgba(0,0,0,.04);
-  transition: transform .2s, box-shadow .2s;
 
-  &:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,.1); }
+  &:hover { box-shadow: 0 8px 24px rgba(0,0,0,.1); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    transition: transform var(--dur-fast) var(--ease-out-expo), box-shadow var(--dur-fast) ease;
+    &:hover { transform: translateY(-2px); }
+  }
 
   &--blue  .stat-card__body .stat-card__value { color: #2b6cb0; }
   &--green .stat-card__body .stat-card__value { color: #276749; }
@@ -123,7 +131,11 @@
     padding-bottom: .75rem;
     border-bottom: 1px solid #f7fafc;
 
-    h2 { font-size: .95rem; font-weight: 700; color: #2d3748; margin: 0; }
+    h2 {
+      display: inline-flex; align-items: center; gap: .45rem;
+      font-size: .95rem; font-weight: 700; color: #2d3748; margin: 0;
+      --icon-size: 1rem;
+    }
   }
 
   // Neutral text (AA on white); the brand only marks the underline on hover.
@@ -174,11 +186,16 @@
   }
 }
 
-.empty-state { text-align: center; color: #68d391; padding: 1.5rem; font-size: .88rem; }
+.empty-ok {
+  display: flex; align-items: center; justify-content: center; gap: .4rem;
+  padding: 2rem; font-size: .88rem;
+  color: var(--sem-success-fg);
+  --icon-size: 1.1rem;
+}
 
 // Quick actions
 .quick-actions {
-  &__title { font-size: .85rem; font-weight: 700; color: #a0aec0; text-transform: uppercase; letter-spacing: .6px; margin-bottom: .9rem; }
+  &__title { font-size: .85rem; font-weight: 700; color: #667085; text-transform: uppercase; letter-spacing: .6px; margin-bottom: .9rem; }
   &__grid  { display: flex; gap: .75rem; flex-wrap: wrap; }
 }
 
@@ -193,16 +210,31 @@
   font-weight: 600;
   font-size: .83rem;
   text-decoration: none;
-  transition: all .2s;
   box-shadow: 0 1px 3px rgba(0,0,0,.05);
 
-  &__icon { font-size: 1.1rem; }
+  &__icon {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 30px; height: 30px; border-radius: 8px;
+    background: color-mix(in srgb, var(--color-primario, #3A6FD8) 14%, white);
+    color: #1a202c;
+    --icon-size: 1rem;
+  }
 
+  // The brand only tints the border: brand-colored text would fail AA on light brands.
   &:hover {
     border-color: var(--color-primario, #3A6FD8);
-    color: var(--color-primario, #3A6FD8);
-    transform: translateY(-2px);
+    color: #1a202c;
     box-shadow: 0 6px 18px rgba(0,0,0,.1);
     background: color-mix(in srgb, var(--color-primario, #3A6FD8) 5%, white);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    transition:
+      transform var(--dur-fast) var(--ease-out-expo),
+      box-shadow var(--dur-fast) ease,
+      border-color var(--dur-fast) ease,
+      background-color var(--dur-fast) ease;
+    &:hover { transform: translateY(-2px); }
+    &:active { transform: scale(.97); }
   }
 }

@@ -3,7 +3,13 @@
   padding: 2rem 1.5rem;
   text-align: center;
 
-  .pasarela-icon { font-size: 3.5rem; margin-bottom: 1rem; display: block; }
+  .pasarela-icon {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 64px; height: 64px; margin-bottom: 1rem;
+    border-radius: 50%;
+    background: var(--sem-info-bg); color: var(--sem-info-fg);
+    --icon-size: 1.9rem;
+  }
 
   h3 { font-size: 1.1rem; font-weight: 800; color: #1a202c; margin-bottom: .4rem; }
 
@@ -28,9 +34,10 @@
     border: 1px solid #bee3f8;
     border-radius: 10px;
     padding: .85rem 1rem;
-    color: #2b6cb0;
+    color: #175CD3;
     font-size: .82rem;
     margin-bottom: 1.25rem;
+    display: flex; align-items: center; justify-content: center; gap: .4rem;
   }
 
   .pasarela-actions { display: flex; gap: .75rem; justify-content: center; flex-wrap: wrap; }
@@ -42,3 +49,6 @@
   align-items: center;
   flex-wrap: wrap;
 }
+.metodo { display: inline-flex; align-items: center; gap: .35rem; --icon-size: .95rem; color: #344054; }
+
+.total-label { text-align: right; font-weight: 700; }

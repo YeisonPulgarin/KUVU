@@ -1,24 +1,32 @@
-import { Component, inject, OnInit, signal, computed } from '@angular/core';
+import { Component, inject, OnInit, signal, computed, viewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { finalize } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
 import { DataService } from '../../services/data.service';
 import { PagoVariado } from '../../models/index';
-import { SidebarService } from '../../services/sidebar.service';
-import { SidebarComponent } from '../shared/sidebar/sidebar.component';
+import { AppLayoutComponent } from '../shared/app-layout/app-layout.component';
+import { ModalComponent } from '../shared/modal/modal.component';
+import { IconComponent, IconName } from '../shared/icon/icon.component';
+import { ConfirmService } from '../shared/confirm/confirm.service';
+import { ToastService } from '../shared/toast/toast.service';
+import { badgeTipoPago } from '../shared/badges';
+import { formatFecha, formatMoneda } from '../shared/formato';
 
 @Component({
   selector: 'app-pagos',
   standalone: true,
-  imports: [CommonModule, FormsModule, SidebarComponent],
+  imports: [CommonModule, FormsModule, AppLayoutComponent, ModalComponent, IconComponent],
   templateUrl: './pagos.component.html',
   styleUrls: ['./pagos.component.scss']
 })
 export class PagosComponent implements OnInit {
-  sidebarSvc        = inject(SidebarService);
-  sidebarColapsado  = this.sidebarSvc.colapsado;
   auth              = inject(AuthService);
   data              = inject(DataService);
+  private confirm   = inject(ConfirmService);
+  private toast     = inject(ToastService);
+
+  modal = viewChild(ModalComponent);
 
   empresa  = this.auth.empresaActiva;
   usuario  = this.auth.usuarioActivo;
@@ -26,7 +34,12 @@ export class PagosComponent implements OnInit {
 
   mostrarPasarela = signal(false);
   filtroTipo      = signal('');
-  errorMsg        = signal('');
+  /** True from the first click on "Ir a pagar" until the API answers: one click, one payment. */
+  pagando         = signal(false);
+  eliminandoId    = signal<number | null>(null);
+
+  protected readonly badgeTipoPago = badgeTipoPago;
+  protected readonly formatFecha = formatFecha;
 
   pagos = computed(() => {
     const tipo  = this.filtroTipo();
@@ -57,6 +70,9 @@ export class PagosComponent implements OnInit {
 
   irAPasarelaPago(): void { this.mostrarPasarela.set(true); }
 
+  /** Runs when the gateway modal finished closing. */
+  cerrarPasarela(): void { this.mostrarPasarela.set(false); }
+
   getValorArriendo(): number {
     const contrato = this.contratoActivo();
     if (!contrato) return 0;
@@ -65,8 +81,12 @@ export class PagosComponent implements OnInit {
   }
 
   confirmarPago(): void {
+    if (this.pagando()) return;
     const contrato = this.contratoActivo();
-    if (!contrato) { alert('No tienes un contrato activo para realizar el pago.'); return; }
+    if (!contrato) {
+      this.toast.error('No tienes un contrato activo para realizar el pago.');
+      return;
+    }
     const primerAdmin = this.usuarios().find(u => u.idRol === 1);
     const pago: PagoVariado = {
       empresa_id:      this.empresa()!.id,
@@ -80,10 +100,35 @@ export class PagosComponent implements OnInit {
       idLocal:         contrato.idLocal,
       idContrato:      contrato.idContrato,
     } as PagoVariado;
-    this.data.agregarPago(pago).subscribe({
-      next: () => { this.mostrarPasarela.set(false); alert('✅ ¡Pago realizado exitosamente!'); },
-      error: () => alert('Error al procesar el pago. Intenta de nuevo.')
+    this.pagando.set(true);
+    this.data.agregarPago(pago).pipe(finalize(() => this.pagando.set(false))).subscribe({
+      next: () => {
+        this.toast.exito(`Pago de ${this.formatCurrency(pago.monto)} registrado.`);
+        this.modal()?.cerrar();
+      },
+      error: () => this.toast.error('No se pudo procesar el pago. Intenta de nuevo.')
     });
+  }
+
+  /** Administrator only: deletes a payment after a danger confirmation. */
+  async eliminar(pago: PagoVariado): Promise<void> {
+    if (!this.esAdmin() || this.eliminandoId() !== null) return;
+    const detalle = `${this.formatCurrency(pago.monto)} del ${formatFecha(pago.fechaPago)}`;
+    const confirmado = await this.confirm.confirmar({
+      titulo: 'Eliminar pago',
+      mensaje: `¿Eliminar el pago #${pago.idPagoVariado} (${pago.tipo}, ${detalle}) de ${this.getNombreArrendatario(pago.idArrendatario)}? Esta acción no se puede deshacer.`,
+      confirmarTexto: 'Eliminar pago',
+      variante: 'danger'
+    });
+    if (!confirmado) return;
+
+    this.eliminandoId.set(pago.idPagoVariado);
+    this.data.eliminarPago(pago.idPagoVariado, pago.empresa_id)
+      .pipe(finalize(() => this.eliminandoId.set(null)))
+      .subscribe({
+        next: () => this.toast.exito(`Pago #${pago.idPagoVariado} eliminado.`),
+        error: () => this.toast.error(`No se pudo eliminar el pago #${pago.idPagoVariado}. Intenta de nuevo.`)
+      });
   }
 
   // ── PDF de reporte (admin y arrendatario) ───────────────────
@@ -181,24 +226,11 @@ export class PagosComponent implements OnInit {
     return local.direccion.length > 30 ? local.direccion.substring(0, 30) + '...' : local.direccion;
   }
 
-  formatFecha(fecha: string): string {
-    if (!fecha) return '—';
-    const d = new Date(fecha);
-    if (isNaN(d.getTime())) return fecha;
-    return d.toLocaleDateString('es-CO', { day: '2-digit', month: '2-digit', year: 'numeric' });
-  }
-
   formatCurrency(value: number = 0): string {
-    return new Intl.NumberFormat('es-CO', {
-      style: 'currency', currency: 'COP', maximumFractionDigits: 0
-    }).format(value);
+    return formatMoneda(value);
   }
 
-  getBadgeClass(tipo: string): string {
-    return ({ 'Arriendo': 'badge--blue', 'Multa': 'badge--red', 'Otro': 'badge--gray' } as Record<string, string>)[tipo] ?? 'badge--gray';
-  }
-
-  getMetodoIcon(metodo: string): string {
-    return ({ 'Efectivo': '💵', 'Transferencia': '🏦', 'Tarjeta': '💳' } as Record<string, string>)[metodo] ?? '💰';
+  getMetodoIcon(metodo: string): IconName {
+    return ({ Efectivo: 'banknote', Transferencia: 'landmark', Tarjeta: 'credit-card' } as Record<string, IconName>)[metodo] ?? 'wallet';
   }
 }

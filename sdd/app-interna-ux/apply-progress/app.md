@@ -87,8 +87,34 @@ tests_agregados:
 excepciones_sin_test: ninguna nueva
 ```
 
+## Grupo C — pagos, mantenimiento y dashboard (rama `feat/app-interna-ux-pagos-mant`, apilada sobre gestión)
+
+Estado: completo.
+
+| Tarea | Estado | Nota |
+|---|---|---|
+| T-16 | hecho | pagos: eliminar (admin, danger, confirmación con monto y fecha), badges con `badgeTipoPago`, método con ícono SVG, pasarela en `<app-modal>`, `pagando` contra el doble pago (R4.4), toasts de éxito/error y de "sin contrato" en lugar de `alert()`, fechas `dd/mm/aaaa` |
+| T-17 | hecho | mantenimiento: Iniciar (info), Completar (success), Cancelar solicitud (danger + confirmación, enmienda 1), Eliminar (danger, solo ícono con `aria-label`), badges legibles, toasts en cada cambio de estado y en errores, formulario siempre limpio (R4.2) y validación con `aria-invalid` |
+| T-18 | hecho | dashboard: badges de tipo de pago (R4.1), íconos SVG en títulos de panel y accesos rápidos, badge de rol con contraste, fechas formateadas, breadcrumb "{Empresa} › Inicio"; hover de accesos rápidos sin texto en color de marca (Amarilo fallaba AA) |
+| T-19 | hecho | `shared.styles.scss` sin `.btn-sm`, `.btn-edit/blue/green/gray/red`, badges de color viejos, `.modal-overlay` ni el emoji de `.empty-state`; grises de texto a `#667085`; ningún `confirm(`/`alert(`/`prompt(` en la app interna |
+
+### Desvíos
+
+- El saludo del dashboard pasa de "Bienvenido," a "Hola," (neutro en género).
+- Las animaciones de hover de `.mant-stat`, `.mant-card`, `.stat-card` y `.quick-btn` quedan
+  dentro de `prefers-reduced-motion: no-preference`.
+- `ng build` falló una vez por `css-inline-fonts` (respuesta variable de Google Fonts) y pasó al
+  reintentar (P-4).
+
+```
+tests_status: verde (574/574)
+tests_agregados:
+  - src/app/components/pagos/pagos.component.spec.ts
+  - src/app/components/mantenimiento/mantenimiento.component.spec.ts
+  - src/app/components/dashboard/dashboard.component.spec.ts
+```
+
 ## Pendiente
 
-- Grupo C (T-16…T-19): pagos, mantenimiento, dashboard, limpieza de clases viejas.
 - Grupo D (T-20…T-24): skeleton, escalonado, conteo, view transitions, verificación.
 - `cierre` (T-25).

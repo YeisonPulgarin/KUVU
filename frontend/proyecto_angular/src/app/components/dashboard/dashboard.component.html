@@ -1,17 +1,15 @@
-<div class="app-layout">
-  <app-sidebar></app-sidebar>
-
-  <main class="main-content" [class.collapsed]="sidebarColapsado()">
+<app-layout pagina="Inicio">
     <div class="dashboard">
 
       <!-- HEADER -->
       <div class="dashboard__header">
         <div>
-          <h1 class="dashboard__title">Bienvenido, {{ usuario()?.nombre?.split(' ')?.[0] ?? '' }} </h1>
+          <h1 class="dashboard__title">Hola, {{ usuario()?.nombre?.split(' ')?.[0] ?? '' }}</h1>
           <p class="dashboard__subtitle">Panel de control · <strong>{{ empresa()?.nombre }}</strong></p>
         </div>
         <div class="dashboard__rol-badge" [style.background]="empresa()?.color_primario">
-          {{ esAdmin() ? ' Administrador' : ' Arrendatario' }}
+          <app-icon [name]="esAdmin() ? 'shield' : 'home'" />
+          {{ esAdmin() ? 'Administrador' : 'Arrendatario' }}
         </div>
       </div>
 
@@ -109,8 +107,8 @@
       <div class="dashboard__content">
         <div class="panel">
           <div class="panel__header">
-            <h2>{{ esAdmin() ? '💳 Pagos recientes' : '💳 Mis pagos recientes' }}</h2>
-            <a routerLink="/pagos" class="panel__link">Ver todos →</a>
+            <h2><app-icon name="credit-card" /> {{ esAdmin() ? 'Pagos recientes' : 'Mis pagos recientes' }}</h2>
+            <a routerLink="/pagos" class="panel__link">Ver todos <span aria-hidden="true">→</span></a>
           </div>
           <table class="tabla">
             <thead>
@@ -125,9 +123,12 @@
             <tbody>
               @for (pago of pagosRecientes(); track pago.idPagoVariado) {
                 <tr>
-                  <td>{{ pago.fechaPago }}</td>
+                  <td>{{ formatFecha(pago.fechaPago) }}</td>
                   <td>{{ pago.descripcion || '—' }}</td>
-                  <td><span class="badge" [class]="'badge--' + pago.tipo.toLowerCase()">{{ pago.tipo }}</span></td>
+                  <td>
+                    @let tipo = badgeTipoPago(pago.tipo);
+                    <span class="badge {{ tipo.clase }}">{{ tipo.etiqueta }}</span>
+                  </td>
                   <td class="monto">{{ formatCurrency(pago.monto) }}</td>
                   <td>{{ pago.metodoPago }}</td>
                 </tr>
@@ -140,8 +141,8 @@
 
         <div class="panel">
           <div class="panel__header">
-            <h2>{{ esAdmin() ? '🚨 Mantenimientos urgentes' : '🚨 Mis solicitudes urgentes' }}</h2>
-            <a routerLink="/mantenimiento" class="panel__link">Ver todos →</a>
+            <h2><app-icon name="alert-triangle" /> {{ esAdmin() ? 'Mantenimientos urgentes' : 'Mis solicitudes urgentes' }}</h2>
+            <a routerLink="/mantenimiento" class="panel__link">Ver todos <span aria-hidden="true">→</span></a>
           </div>
           @for (m of mantenUrgentes(); track m.idMantenimiento) {
             <div class="mant-item">
@@ -150,10 +151,10 @@
                 <strong>{{ m.tipoMantenimiento }}</strong>
                 <span>{{ m.descripcion }}</span>
               </div>
-              <span class="badge badge--red">Urgente</span>
+              <span class="badge badge--danger">Urgente</span>
             </div>
           } @empty {
-            <div class="empty-state" style="padding: 2rem; font-size:.88rem;">✅ Sin urgentes pendientes</div>
+            <div class="empty-ok"><app-icon name="check-circle" /> Sin urgentes pendientes</div>
           }
         </div>
       </div>
@@ -163,19 +164,18 @@
         <h3 class="quick-actions__title">Accesos rápidos</h3>
         <div class="quick-actions__grid">
           @if (esAdmin()) {
-            <a routerLink="/locales"       class="quick-btn"><span class="quick-btn__icon">🏗️</span><span>Locales</span></a>
-            <a routerLink="/contratos"     class="quick-btn"><span class="quick-btn__icon">📄</span><span>Contratos</span></a>
-            <a routerLink="/pagos"         class="quick-btn"><span class="quick-btn__icon">💰</span><span>Pagos</span></a>
-            <a routerLink="/mantenimiento" class="quick-btn"><span class="quick-btn__icon">🔧</span><span>Mantenimiento</span></a>
-            <a routerLink="/usuarios"      class="quick-btn"><span class="quick-btn__icon">👥</span><span>Usuarios</span></a>
+            <a routerLink="/locales"       class="quick-btn"><span class="quick-btn__icon"><app-icon name="building" /></span><span>Locales</span></a>
+            <a routerLink="/contratos"     class="quick-btn"><span class="quick-btn__icon"><app-icon name="file-text" /></span><span>Contratos</span></a>
+            <a routerLink="/pagos"         class="quick-btn"><span class="quick-btn__icon"><app-icon name="wallet" /></span><span>Pagos</span></a>
+            <a routerLink="/mantenimiento" class="quick-btn"><span class="quick-btn__icon"><app-icon name="wrench" /></span><span>Mantenimiento</span></a>
+            <a routerLink="/usuarios"      class="quick-btn"><span class="quick-btn__icon"><app-icon name="users" /></span><span>Usuarios</span></a>
           } @else {
-            <a routerLink="/contratos"     class="quick-btn"><span class="quick-btn__icon">📄</span><span>Mi Contrato</span></a>
-            <a routerLink="/pagos"         class="quick-btn"><span class="quick-btn__icon">💰</span><span>Realizar Pago</span></a>
-            <a routerLink="/mantenimiento" class="quick-btn"><span class="quick-btn__icon">🔧</span><span>Solicitar Mant.</span></a>
+            <a routerLink="/contratos"     class="quick-btn"><span class="quick-btn__icon"><app-icon name="file-text" /></span><span>Mi contrato</span></a>
+            <a routerLink="/pagos"         class="quick-btn"><span class="quick-btn__icon"><app-icon name="wallet" /></span><span>Realizar pago</span></a>
+            <a routerLink="/mantenimiento" class="quick-btn"><span class="quick-btn__icon"><app-icon name="wrench" /></span><span>Solicitar mantenimiento</span></a>
           }
         </div>
       </div>
 
     </div>
-  </main>
-</div>
+</app-layout>

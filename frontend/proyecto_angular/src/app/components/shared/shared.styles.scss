@@ -49,7 +49,7 @@
     }
 
     p {
-      color: #a0aec0;
+      color: #667085;
       font-size: .83rem;
       margin: 0;
     }
@@ -135,7 +135,7 @@
     vertical-align: middle;
 
     &.monto    { font-weight: 700; color: #276749; white-space: nowrap; font-size: .9rem; }
-    &.empty    { text-align: center; color: #cbd5e0; padding: 2.5rem; font-style: italic; font-size: .88rem; }
+    &.empty    { text-align: center; color: #667085; padding: 2.5rem; font-style: italic; font-size: .88rem; }
     &.td-dir   { max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   }
 
@@ -155,17 +155,9 @@
 
 .empty-state {
   text-align: center;
-  color: #a0aec0;
+  color: #667085;
   padding: 3rem 2rem;
   font-size: .9rem;
-
-  &::before {
-    content: '📭';
-    display: block;
-    font-size: 2.5rem;
-    margin-bottom: .75rem;
-    opacity: .5;
-  }
 }
 
 // BADGES
@@ -179,12 +171,6 @@
   letter-spacing: .3px;
   white-space: nowrap;
 
-  &--blue   { background: #ebf8ff; color: #2b6cb0; }
-  &--green  { background: #f0fff4; color: #276749; }
-  &--red    { background: #fff5f5; color: #c53030; }
-  &--yellow { background: #fffff0; color: #b7791f; }
-  &--gray   { background: #f7fafc; color: #718096; }
-  &--purple { background: #faf5ff; color: #6b46c1; }
 }
 
 // Semantic badges (state, priority, payment type) — see badges.ts.
@@ -335,24 +321,6 @@
   app-icon { display: none; }
 }
 
-.btn-sm {
-  padding: .3rem .75rem;
-  border-radius: 7px;
-  font-size: .75rem;
-  font-weight: 600;
-  border: none;
-  cursor: pointer;
-  transition: opacity .15s, transform .12s;
-
-  &:hover { opacity: .85; transform: translateY(-1px); }
-}
-
-.btn-edit  { background: #ebf8ff; color: #2b6cb0; }
-.btn-green { background: #f0fff4; color: #276749; }
-.btn-blue  { background: #ebf8ff; color: #2b6cb0; }
-.btn-gray  { background: #f7fafc; color: #718096; }
-.btn-red   { background: #fff5f5; color: #c53030; }
-
 // Actions cell of a table row.
 .row-actions {
   display: flex;
@@ -438,18 +406,6 @@
 }
 
 // MODAL
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(10,10,20,.55);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 300;
-  padding: 1rem;
-  backdrop-filter: blur(2px);
-}
-
 .modal {
   background: #fff;
   border-radius: 16px;
@@ -577,9 +533,6 @@
   box-shadow: 0 1px 4px rgba(0,0,0,.06);
   border: 1px solid rgba(0,0,0,.04);
   border-top: 3px solid transparent;
-  transition: transform .2s, box-shadow .2s;
-
-  &:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,.1); }
 
   &--yellow { border-top-color: #D69E2E; }
   &--blue   { border-top-color: var(--color-primario, #3A6FD8); }
@@ -587,7 +540,11 @@
   &--red    { border-top-color: #E53E3E; }
 
   &__num   { display: block; font-size: 1.8rem; font-weight: 800; color: #1a202c; line-height: 1; }
-  &__label { display: block; font-size: .72rem; color: #a0aec0; margin-top: .35rem; font-weight: 500; }
+  &__label {
+    display: inline-flex; align-items: center; gap: .3rem;
+    font-size: .72rem; color: #667085; margin-top: .35rem; font-weight: 500;
+    --icon-size: .85rem;
+  }
 }
 
 .mant-list { display: flex; flex-direction: column; gap: .7rem; }
@@ -603,11 +560,10 @@
   border-left: 4px solid #e2e8f0;
   border: 1px solid rgba(0,0,0,.04);
   border-left: 4px solid #e2e8f0;
-  transition: box-shadow .2s, transform .2s;
 
-  &--urgente { border-left-color: #E53E3E; background: #fffafa; }
+  &--urgente { border-left-color: var(--sem-danger-solid); background: #fffafa; }
 
-  &:hover { box-shadow: 0 6px 20px rgba(0,0,0,.1); transform: translateY(-1px); }
+  &:hover { box-shadow: 0 6px 20px rgba(0,0,0,.1); }
 
   &__left  { flex: 1; }
   &__tipo  { font-weight: 700; font-size: .95rem; color: #1a202c; margin-bottom: .25rem; }
@@ -617,8 +573,10 @@
     gap: 1rem;
     flex-wrap: wrap;
     font-size: .74rem;
-    color: #a0aec0;
+    color: #667085;
     font-weight: 500;
+
+    span { display: inline-flex; align-items: center; gap: .3rem; --icon-size: .85rem; }
   }
 
   &__right {
@@ -757,10 +715,6 @@ dialog.app-modal {
 @keyframes app-spin { to { transform: rotate(360deg); } }
 
 @media (prefers-reduced-motion: no-preference) {
-  // Legacy overlay modal (screens not yet on <app-modal>).
-  .modal-overlay { animation: app-fade-in var(--dur-fast) ease; }
-  .modal-overlay .modal { animation: app-rise-in var(--dur-base) var(--ease-out-expo); }
-
   dialog.app-modal[open] { animation: app-rise-in var(--dur-base) var(--ease-out-expo); }
   dialog.app-modal[open]::backdrop { animation: app-fade-in var(--dur-fast) ease; }
   dialog.app-modal[data-state="closing"] { animation: app-sink-out var(--dur-fast) var(--ease-in-out) forwards; }
@@ -780,6 +734,12 @@ dialog.app-modal {
   .app-layout :is(.btn-primary, .btn-secondary, .btn-action, [class*="btn-solid--"]):active:not(:disabled) {
     transform: scale(.97);
   }
+
+  .mant-stat, .mant-card {
+    transition: transform var(--dur-fast) var(--ease-out-expo), box-shadow var(--dur-fast) ease;
+  }
+  .mant-stat:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,.1); }
+  .mant-card:hover { transform: translateY(-1px); }
 
   [aria-busy="true"].btn-primary::before,
   [aria-busy="true"].btn-action::before,
@@ -822,7 +782,6 @@ dialog.app-modal {
   // Touch targets mínimos en móvil
   .btn-primary,
   .btn-secondary,
-  .btn-sm,
   .btn-action,
   [class*="btn-solid--"] {
     min-height: 44px;

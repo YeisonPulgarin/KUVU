@@ -3,27 +3,29 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { DataService } from '../../services/data.service';
-import { SidebarService } from '../../services/sidebar.service';
-import { SidebarComponent } from '../shared/sidebar/sidebar.component';
+import { AppLayoutComponent } from '../shared/app-layout/app-layout.component';
+import { IconComponent } from '../shared/icon/icon.component';
+import { badgeTipoPago } from '../shared/badges';
+import { formatFecha, formatMoneda } from '../shared/formato';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterLink, SidebarComponent],
+  imports: [CommonModule, RouterLink, AppLayoutComponent, IconComponent],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
   auth       = inject(AuthService);
   data       = inject(DataService);
-  sidebarSvc = inject(SidebarService);
-
-  sidebarColapsado = this.sidebarSvc.colapsado;
   empresa  = this.auth.empresaActiva;
   usuario  = this.auth.usuarioActivo;
   cargando = this.data.cargando;
   esAdmin  = computed(() => this.usuario()?.idRol === 1);
   stats    = this.data.getEstadisticas();
+
+  protected readonly badgeTipoPago = badgeTipoPago;
+  protected readonly formatFecha = formatFecha;
 
   pagosRecientes = computed(() => {
     const todos = this.data.getPagos()();
@@ -52,10 +54,11 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     const empId = this.empresa()?.id;
-    if (empId) this.data.cargarTodo(empId).subscribe({ error: err => console.error(err) });
+    // A failed load is reported by <app-layout> (toast) through DataService.errorCarga.
+    if (empId) this.data.cargarTodo(empId).subscribe({ error: err => console.error('Error cargando el panel', err) });
   }
 
   formatCurrency(value: number = 0): string {
-    return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(value);
+    return formatMoneda(value);
   }
 }

@@ -19,7 +19,7 @@ export const MAX_TOASTS = 3;
 export const SALIDA_TOAST_MS = 200;
 
 /**
- * Feedback messages of the signed-in app (success and error), replacing alert(). Root
+ * Feedback messages of the signed-in app (success and error), instead of native dialogs. Root
  * service: a toast raised right before navigating stays visible on the next screen, because
  * every screen's <app-layout> renders the same list.
  */
