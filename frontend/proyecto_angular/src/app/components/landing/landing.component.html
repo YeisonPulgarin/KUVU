@@ -11,9 +11,19 @@
     [class.from-intro]="startsWithIntro"
     [inert]="estado() === 'INTRO'">
 
+    <!-- VOLVER A LA HOME -->
+    <a routerLink="/" class="back-home">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+        <path d="M15 18l-6-6 6-6"/>
+      </svg>
+      Volver al inicio
+    </a>
+
     <!-- MARCA -->
     <div class="brand">
-      <img src="/logo-rediseno/Logo_Kuvu.png" alt="KUVU" class="brand-logo-img" />
+      <a routerLink="/" class="brand-link" aria-label="KUVU, volver al inicio">
+        <img src="/logo-rediseno/Logo_Kuvu.png" alt="" class="brand-logo-img" />
+      </a>
       <span class="brand-tagline">GESTIÓN INTELIGENTE DE PROPIEDADES</span>
     </div>
 

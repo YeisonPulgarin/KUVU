@@ -65,7 +65,53 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
+// ── Volver a la home ──────────────────────────────────────────
+// Same "back" language as /login's .back-btn; slightly brighter base for contrast
+// over the photo. Lives inside .landing-container, so it is inert during the intro.
+.back-home {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  min-height: 44px;
+  margin-bottom: -.8rem;
+  color: rgba(255,255,255,0.55);
+  font-size: .78rem;
+  font-weight: 500;
+  transition: color .2s;
+
+  svg { width: 14px; height: 14px; }
+
+  &:hover { color: rgba(255,255,255,0.9); }
+
+  &:focus-visible {
+    outline: 2px solid rgba(140, 215, 255, .9);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+}
+
 // ── Marca ─────────────────────────────────────────────────────
+.brand-link {
+  display: inline-flex;
+  border-radius: 12px;
+  transition: opacity .2s;
+
+  &:hover { opacity: .85; }
+
+  &:focus-visible {
+    outline: 2px solid rgba(140, 215, 255, .9);
+    outline-offset: 3px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .back-home,
+  .brand-link {
+    transition: none;
+  }
+}
+
 .brand {
   display: flex;
   flex-direction: column;
