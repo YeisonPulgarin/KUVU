@@ -109,7 +109,8 @@ Sitio multipágina con una sola navegación: `/`, `/servicios`, `/nosotros`,
 ### Clúster autenticado (app de gestión)
 
 - `components/landing/` (`/acceder`) — selección de inmobiliaria (empresas en orden de `id`),
-  orquesta la intro.
+  orquesta la intro. El enlace "Volver al inicio" y el logo llevan a `/`. Detalle en
+  `docs/acceso-volver-inicio.md`.
 - `components/shared/auth-intro/` — intro "hoja que pasa" (~2,9 s, CSS 3D con 6 franjas anidadas,
   salto por clic/teclado/botón). Detalle en `docs/acceso-orden-e-intro.md`.
 - `src/app/intro-view-transition.ts` — `skipViewTransitionIntoIntro`: saltea el cross-fade de
