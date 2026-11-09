@@ -1,15 +1,16 @@
 # Archive report — home-animaciones
 
 Estado: **cerrado**. Almacenamiento de artifacts: `files` (sin memoria compartida que
-sincronizar). Extensión `git` inactiva: commits locales **sin push**; el push y la apertura de
-los PRs los autoriza el usuario.
+sincronizar). Extensión `git` inactiva: el usuario autorizó el push y la apertura de los PRs.
 
 | PR | Rama | Base del PR | Commits |
 |---|---|---|---|
 | PR A: base común de movimiento | `feat/home-animaciones-base` | `feat/acceso-orden-e-intro` (PR #2, apilada sobre la PR #1) | `5f66d68` |
 | PR B: animaciones de la home | `feat/home-animaciones` | `feat/home-animaciones-base` | `e718dcc`, `974ccf1`, `c84c0dc`, `f84234c` y el commit de este cierre |
 
-Los dos PRs están **pendientes de apertura**.
+PRs abiertos: **PR A [#3](https://github.com/wilsonsolano-nino/KUVU/pull/3)** y **PR B
+[#4](https://github.com/wilsonsolano-nino/KUVU/pull/4)**. Las ramas también se pushean a
+`YeisonPulgarin/KUVU`, porque `origin` tiene dos URLs de push.
 
 ## Secretos a rotar
 
@@ -88,9 +89,5 @@ Todo es nativo, sin dependencias, y queda estático con `prefers-reduced-motion:
 
 ## Siguiente paso manual
 
-1. Push de las dos ramas: `git push -u origin feat/home-animaciones-base` y
-   `git push -u origin feat/home-animaciones`.
-2. PR A `feat(motion): base común de movimiento del sitio público`, base
-   `feat/acceso-orden-e-intro`.
-3. PR B `feat(home): animaciones de la home`, base `feat/home-animaciones-base`. Al mergear la
-   pila, rebasear o cambiar la base según se vayan mergeando la PR #1 y la PR #2.
+Revisar y mergear la pila en orden: #1 → #2 → #3 → #4. Al mergear cada PR, cambiar la base del
+siguiente a la rama destino (o rebasear) para que su diff no arrastre commits ya mergeados.
