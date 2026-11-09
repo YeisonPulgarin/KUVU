@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { SiteHeaderComponent } from '../public/site-header/site-header.component';
@@ -6,11 +6,17 @@ import { SiteFooterComponent } from '../public/site-footer/site-footer.component
 import { ServiceIconComponent } from '../public/service-icon/service-icon.component';
 import { RevealDirective } from '../../directives/reveal.directive';
 import { TeamBandComponent } from './team-band/team-band.component';
+import { ScrollProgressBarComponent } from './scroll-progress/scroll-progress-bar.component';
+import { HomeHeroComponent } from './hero/home-hero.component';
+import { StepsJourneyComponent } from './steps-journey/steps-journey.component';
+import { CompaniesMarqueeComponent } from './companies-marquee/companies-marquee.component';
+import { MagneticDirective } from '../../motion/magnetic.directive';
+import { ScrollMotionService } from '../../motion/scroll-motion.service';
+import { ScrollProgressDirective } from '../../motion/scroll-progress.directive';
+import { SplitTextComponent } from '../../motion/split-text.component';
 import { PageMetaService } from '../../services/page-meta.service';
 import {
-  companies,
   homeFaqItems,
-  howItWorks,
   logo,
   origin,
   pageMeta,
@@ -32,17 +38,27 @@ export const HOME_JSONLD_ID = 'kuvu-home-jsonld';
     SiteFooterComponent,
     ServiceIconComponent,
     RevealDirective,
-    TeamBandComponent
+    TeamBandComponent,
+    ScrollProgressBarComponent,
+    HomeHeroComponent,
+    StepsJourneyComponent,
+    CompaniesMarqueeComponent,
+    MagneticDirective,
+    ScrollProgressDirective,
+    SplitTextComponent
   ],
+  // Scroll-linked motion lives only while the home does: leaving it destroys the service and
+  // releases its listeners, observer and pending frame.
+  providers: [ScrollMotionService],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit, OnDestroy {
+export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly meta = inject(PageMetaService);
+  private readonly scroll = inject(ScrollMotionService);
+  private readonly host: HTMLElement = inject<ElementRef<HTMLElement>>(ElementRef).nativeElement;
 
   readonly services = services;
-  readonly companies = companies;
-  readonly howItWorks = howItWorks;
   readonly securityHighlights = securityHighlights;
   readonly origin = origin;
   readonly homeFaqItems = homeFaqItems;
@@ -71,6 +87,11 @@ export class HomeComponent implements OnInit, OnDestroy {
         }
       ]
     });
+  }
+
+  /** The reading-progress bar reads `--page-progress` from the home host. */
+  ngAfterViewInit(): void {
+    this.scroll.setPageProgressHost(this.host);
   }
 
   ngOnDestroy(): void {

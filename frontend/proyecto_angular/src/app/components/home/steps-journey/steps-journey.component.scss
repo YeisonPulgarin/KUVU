@@ -1,0 +1,140 @@
+@use '../section-heading' as *;
+@include section-heading;
+
+:host {
+  display: block;
+  background-color: var(--color-home-surface);
+}
+
+.steps-list {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  @media (width >= 768px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2rem;
+  }
+}
+
+.step {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.25rem;
+  padding: 1.5rem;
+  border: 1px solid var(--color-home-border);
+  border-radius: var(--radius-card);
+  background-color: var(--color-home-surface);
+
+  .step-number {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: #fff;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-icon);
+    background-color: var(--color-brand-600);
+  }
+
+  .step-body {
+    h3 {
+      margin: 0 0 0.375rem;
+      font-size: 1.125rem;
+      line-height: 1.556;
+      font-weight: 700;
+      color: var(--color-home-text);
+    }
+
+    p {
+      margin: 0;
+      font-size: 0.875rem;
+      line-height: 1.625;
+      color: var(--color-home-muted);
+    }
+  }
+}
+
+.steps-track {
+  position: relative;
+  margin-top: 2.5rem;
+}
+
+.steps-line {
+  display: none;
+}
+
+// ─── Journey (desktop, no reduced motion; the component sets .is-journey) ─────
+// The section pads ~250vh of scroll; the inner box sticks below the compact header
+// (64 px) while the line fills and the active step moves.
+:host(.is-journey) {
+  .steps-stage {
+    height: 250vh;
+  }
+
+  .steps-inner {
+    position: sticky;
+    top: 64px;
+    min-height: calc(100vh - 64px);
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    align-items: center;
+    gap: 4rem;
+  }
+
+  .steps-track {
+    margin-top: 0;
+    padding-left: 2rem;
+  }
+
+  // Track behind the line, then the line that fills with --p.
+  .steps-line,
+  .steps-track::before {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 3px;
+    border-radius: 3px;
+  }
+
+  .steps-track::before {
+    background-color: var(--color-home-border);
+  }
+
+  .steps-line {
+    z-index: 1;
+    background-color: var(--color-brand-600);
+    transform-origin: top center;
+    transform: scaleY(var(--p, 0));
+  }
+
+  .steps-list {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1rem;
+  }
+
+  // Wins over the global `[data-reveal].is-visible` opacity once the step has appeared.
+  .step.is-visible:not(.is-active) {
+    opacity: 0.55;
+  }
+
+  // Keeps the reveal's transform transition and adds the active-state changes.
+  .step {
+    transition:
+      opacity var(--dur-base) var(--ease-out-expo),
+      transform var(--dur-slow) var(--ease-out-expo),
+      border-color var(--dur-base) var(--ease-out-expo);
+  }
+
+  .step.is-active {
+    border-color: var(--color-brand-600);
+  }
+}

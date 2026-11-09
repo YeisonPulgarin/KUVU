@@ -1,7 +1,3 @@
-@reference "../../../../styles.css";
-
-$ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
-
 // ─── Equipo (banda full-bleed) ───────────────────────────────
 // Banda oscura en ambos temas: texto blanco fijo sobre velo de marca.
 // Mobile: foto completa 3:2 + texto sobre verde de marca (un recorte cover
@@ -13,7 +9,8 @@ $ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 :host {
   --team-band-green: var(--color-brand-700, #2f4a2f);
   display: block;
-  @apply relative overflow-hidden;
+  position: relative;
+  overflow: hidden;
   background-color: var(--team-band-green);
   color: #fff;
 
@@ -27,11 +24,18 @@ $ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .team-band-content {
-    @apply relative flex flex-col items-start gap-4 py-12;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    padding-block: 3rem;
   }
 
   .team-band-title {
-    @apply m-0 font-extrabold text-balance;
+    margin: 0;
+    font-weight: 800;
+    text-wrap: balance;
     font-size: clamp(1.875rem, 4.5vw, 3.25rem);
     letter-spacing: -0.02em;
     line-height: 1.1;
@@ -40,25 +44,41 @@ $ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .team-band-lead {
-    @apply m-0 text-base leading-relaxed text-pretty max-w-xl;
+    margin: 0;
+    max-width: 36rem;
+    font-size: 1rem;
+    line-height: 1.625;
+    text-wrap: pretty;
     color: rgb(255 255 255 / 0.9);
 
     @media (width >= 768px) {
-      @apply text-lg;
+      font-size: 1.125rem;
     }
   }
 
   .team-band-caption {
-    @apply m-0 text-sm font-semibold uppercase;
+    margin: 0;
+    font-size: 0.875rem;
+    line-height: 1.43;
+    font-weight: 600;
+    text-transform: uppercase;
     letter-spacing: 0.12em;
     color: rgb(255 255 255 / 0.85);
   }
 
   .team-band-link {
-    @apply inline-flex items-center rounded-pill px-8 py-3 mt-2 text-base font-bold no-underline;
+    display: inline-flex;
+    align-items: center;
+    margin-top: 0.5rem;
+    border-radius: var(--radius-pill, 9999px);
+    padding: 0.75rem 2rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    font-weight: 700;
+    text-decoration: none;
     color: #fff;
     border: 2px solid #fff;
-    transition: transform 0.2s $ease-out-expo, background-color 0.2s $ease-out-expo;
+    transition: transform var(--dur-fast) var(--ease-out-expo), background-color var(--dur-fast) var(--ease-out-expo);
 
     &:hover {
       transform: translateY(-2px);
@@ -69,18 +89,22 @@ $ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   @media (width >= 768px) {
-    @apply flex items-end;
+    display: flex;
+    align-items: flex-end;
     min-height: clamp(28rem, 72vh, 44rem);
 
     .team-band-media {
-      @apply absolute inset-0;
+      position: absolute;
+      inset: 0;
       aspect-ratio: auto;
 
       // Velo: denso en el 0-60 % inferior (bloque de texto, >= 4.5:1 aun
       // sobre las camisas blancas) y liviano arriba (caras y logo).
       &::after {
         content: '';
-        @apply absolute inset-0 pointer-events-none;
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
         background: linear-gradient(
           to top,
           color-mix(in srgb, var(--team-band-green) 88%, #000) 0%,
@@ -93,16 +117,31 @@ $ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .team-band-content {
-      @apply w-full py-16;
+      width: 100%;
+      padding-block: 4rem;
     }
+  }
+}
+
+// Parallax de la foto, solo en desktop sin movimiento reducido (la directiva publica --p solo
+// ahí). scale(1.06) deja ~3 % de sobrante por lado, más que los ±12 px de recorrido: nunca se ven
+// bordes vacíos. Con --p = 0,5 (banda centrada) la foto queda en su posición neutra.
+@media (prefers-reduced-motion: no-preference) and (width >= 1024px) {
+  :host .team-band-media > app-responsive-image {
+    display: block;
+    transform:
+      translateY(calc((var(--p, 0.5) - 0.5) * -2 * var(--dist-parallax)))
+      scale(1.06);
   }
 }
 
 // Contenedor equivalente al de la home (max-w-6xl + gutters).
 .container {
-  @apply max-w-6xl mx-auto px-4;
+  max-width: 72rem;
+  margin-inline: auto;
+  padding-inline: 1rem;
 
   @media (width >= 768px) {
-    @apply px-6;
+    padding-inline: 1.5rem;
   }
 }

@@ -1,14 +1,12 @@
-// ─── Tailwind v4 reference ────────────────────────────────────
-// Grants access to Tailwind's theme/utilities for @apply in this
-// component-scoped stylesheet without duplicating its CSS output.
-@reference "../../../styles.css";
+@use 'section-heading' as *;
 
-// Easing estándar del sistema (regla MOTION)
-$ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+// Plain CSS on purpose: Tailwind utilities applied in component styles expand into every
+// component that uses them and count against the initial bundle.
 
 // ─── Home layout ─────────────────────────────────────────────
 .home-layout {
-  @apply font-sans min-h-screen;
+  font-family: var(--font-sans);
+  min-height: 100vh;
   // `clip`, not `hidden`: with `hidden` the wrapper is a scroll container and the sticky
   // header stops sticking.
   overflow-x: clip;
@@ -16,103 +14,19 @@ $ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   color: var(--color-home-text);
 }
 
-// ─── Container ────────────────────────────────────────────────
-.container {
-  @apply max-w-6xl mx-auto px-4;
-
-  @media (width >= 768px) {
-    @apply px-6;
-  }
-}
-
-// ─── Hero ─────────────────────────────────────────────────────
-.hero {
-  @apply relative flex items-center justify-center text-center overflow-hidden;
-  min-height: calc(100dvh - 64px);
-  background-color: var(--color-home-bg);
-  border-bottom: 1px solid var(--color-home-border);
-
-  // Rejilla de marca sutil (patrón, no gradiente decorativo)
-  background-image:
-    radial-gradient(circle at 15% 20%, var(--color-brand-100) 0 2px, transparent 3px),
-    radial-gradient(circle at 85% 70%, var(--color-brand-100) 0 2px, transparent 3px);
-  background-size: 240px 240px;
-  background-position: 0 0, 120px 120px;
-
-  @media (width >= 768px) {
-    min-height: calc(100dvh - 80px);
-  }
-}
-
-.hero-inner {
-  @apply py-20 flex flex-col items-center gap-6;
-}
-
-.hero-brand {
-  @apply m-0 text-5xl font-extrabold tracking-tight;
-  color: var(--color-brand-500);
-
-  @media (width >= 768px) {
-    @apply text-6xl;
-  }
-}
-
-.hero-title {
-  @apply m-0 font-extrabold leading-tight text-balance;
-  font-size: clamp(2.25rem, 6vw, 4rem);
-  max-width: 22ch;
-  color: var(--color-home-text);
-
-  @media (width >= 768px) {
-    font-size: clamp(3rem, 5.5vw, 4.5rem);
-  }
-}
-
-.hero-subtitle {
-  @apply m-0 text-base font-normal text-pretty max-w-xl;
-  color: var(--color-home-muted);
-
-  @media (width >= 768px) {
-    @apply text-xl;
-  }
-}
-
-.hero-cta {
-  @apply inline-flex items-center rounded-pill px-10 py-4 text-base font-bold text-white no-underline;
-  background-color: var(--color-brand-700);
-  transition: transform 0.2s $ease-out-expo, opacity 0.2s $ease-out-expo;
-
-  &:hover { transform: translateY(-2px); }
-  &:active { transform: translateY(0); }
-}
+// ─── Container and section heading (shared with the extracted sections) ───
+@include section-heading;
 
 // ─── Generic section ──────────────────────────────────────────
 .section {
-  @apply py-20;
+  padding-block: 5rem;
 
   @media (width >= 768px) {
-    @apply py-32;
+    padding-block: 8rem;
   }
 
   @media (width >= 1280px) {
-    @apply py-40;
-  }
-}
-
-.section-title {
-  @apply m-0 mb-4;
-  font-size: clamp(1.875rem, 3.5vw, 2.75rem);
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  color: var(--color-home-text);
-}
-
-.section-lead {
-  @apply m-0 text-base leading-relaxed max-w-2xl;
-  color: var(--color-home-muted);
-
-  @media (width >= 768px) {
-    @apply text-lg;
+    padding-block: 10rem;
   }
 }
 
@@ -123,6 +37,14 @@ $ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   .section-title {
     color: var(--color-brand-600);
   }
+
+  // Words light up with the section's progress; the dimmed state keeps >= 3:1 on the
+  // surface in both themes (light 3.1:1, dark 3.6:1). The rate finishes the paragraph
+  // while the section is still around the middle of the viewport.
+  .section-lead {
+    --dim: 0.65;
+    --scrub-rate: 1.6;
+  }
 }
 
 // ─── Servicios (split + lista divide-y, sin cards idénticas) ─
@@ -130,10 +52,13 @@ $ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   background-color: var(--color-home-bg);
 
   .services-inner {
-    @apply grid grid-cols-1 gap-12;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 3rem;
 
     @media (width >= 1024px) {
-      @apply grid-cols-[1fr_1.5fr] gap-16;
+      grid-template-columns: 1fr 1.5fr;
+      gap: 4rem;
     }
   }
 
@@ -144,17 +69,23 @@ $ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .services-list {
-    @apply flex flex-col;
+    display: flex;
+    flex-direction: column;
     border-top: 1px solid var(--color-home-border);
   }
 
   .service-row {
-    @apply flex items-start gap-6 py-8;
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
+    padding-block: 2rem;
     border-bottom: 1px solid var(--color-home-border);
-    transition: transform 0.2s $ease-out-expo;
 
     .service-icon {
-      @apply flex items-center justify-center shrink-0;
+      display: flex;
+      flex-shrink: 0;
+      align-items: center;
+      justify-content: center;
       width: 44px;
       height: 44px;
       border-radius: var(--radius-icon);
@@ -166,79 +97,17 @@ $ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 
     .service-body {
       h3 {
-        @apply m-0 mb-2 text-lg font-bold;
+        margin: 0 0 0.5rem;
+        font-size: 1.125rem;
+        line-height: 1.556;
+        font-weight: 700;
         color: var(--color-home-text);
       }
 
       p {
-        @apply m-0 text-sm leading-relaxed;
-        color: var(--color-home-muted);
-      }
-    }
-  }
-}
-
-// ─── Compañías (wordmarks tipográficos) ───────────────────────
-.companies {
-  background-color: var(--color-home-surface);
-
-  .companies-list {
-    @apply flex flex-wrap items-center gap-x-12 gap-y-6;
-
-    .company-item {
-      @apply font-bold;
-      letter-spacing: -0.01em;
-      color: var(--color-home-text);
-      transition: color 0.2s $ease-out-expo, transform 0.2s $ease-out-expo;
-      cursor: default;
-
-      &:hover {
-        color: var(--color-brand-600);
-        transform: translateY(-1px);
-      }
-    }
-
-    // Wordmark variances (tipográficos, sin pills ni logos)
-    .company-amarilo   { font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; font-size: 1.05rem; }
-    .company-nido      { font-weight: 700; font-style: normal; }
-    .company-balcones  { font-weight: 600; }
-    .company-mi        { font-weight: 800; }
-  }
-}
-
-// ─── Cómo funciona (pasos numerados, no cards idénticas) ──────
-.steps {
-  background-color: var(--color-home-surface);
-
-  .steps-list {
-    @apply list-none m-0 p-0 grid grid-cols-1 gap-6;
-
-    @media (width >= 768px) {
-      @apply grid-cols-2 gap-8;
-    }
-  }
-
-  .step {
-    @apply flex items-start gap-5 p-6;
-    border: 1px solid var(--color-home-border);
-    border-radius: var(--radius-card);
-
-    .step-number {
-      @apply flex items-center justify-center shrink-0 font-bold text-white;
-      width: 40px;
-      height: 40px;
-      border-radius: var(--radius-icon);
-      background-color: var(--color-brand-600);
-    }
-
-    .step-body {
-      h3 {
-        @apply m-0 mb-1.5 text-lg font-bold;
-        color: var(--color-home-text);
-      }
-
-      p {
-        @apply m-0 text-sm leading-relaxed;
+        margin: 0;
+        font-size: 0.875rem;
+        line-height: 1.625;
         color: var(--color-home-muted);
       }
     }
@@ -250,21 +119,27 @@ $ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   background-color: var(--color-home-surface);
 
   .security-list {
-    @apply flex flex-col;
+    display: flex;
+    flex-direction: column;
     border-top: 1px solid var(--color-home-border);
   }
 
   .security-item {
-    @apply py-8;
+    padding-block: 2rem;
     border-bottom: 1px solid var(--color-home-border);
 
     h3 {
-      @apply m-0 mb-1.5 text-lg font-bold;
+      margin: 0 0 0.375rem;
+      font-size: 1.125rem;
+      line-height: 1.556;
+      font-weight: 700;
       color: var(--color-home-text);
     }
 
     p {
-      @apply m-0 text-sm leading-relaxed;
+      margin: 0;
+      font-size: 0.875rem;
+      line-height: 1.625;
       color: var(--color-home-muted);
     }
   }
@@ -275,18 +150,26 @@ $ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   background-color: var(--color-home-bg);
 
   .origin-paragraph {
-    @apply m-0 mb-4 text-base leading-relaxed max-w-3xl;
+    margin: 0 0 1rem;
+    max-width: 48rem;
+    font-size: 1rem;
+    line-height: 1.625;
     color: var(--color-home-muted);
 
     @media (width >= 768px) {
-      @apply text-lg;
+      font-size: 1.125rem;
     }
   }
 
   .origin-link {
-    @apply inline-flex mt-4 text-base font-semibold no-underline;
+    display: inline-flex;
+    margin-top: 1rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    font-weight: 600;
+    text-decoration: none;
     color: var(--color-brand-600);
-    transition: color 0.2s $ease-out-expo;
+    transition: color var(--dur-fast) var(--ease-out-expo);
 
     &:hover {
       color: var(--color-brand-500);
@@ -299,33 +182,45 @@ $ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   background-color: var(--color-home-surface);
 
   .faq-inner {
-    @apply flex flex-col;
+    display: flex;
+    flex-direction: column;
   }
 
   .faq-list {
-    @apply flex flex-col;
+    display: flex;
+    flex-direction: column;
     border-top: 1px solid var(--color-home-border);
   }
 
   .faq-item {
-    @apply py-8;
+    padding-block: 2rem;
     border-bottom: 1px solid var(--color-home-border);
 
     .faq-q {
-      @apply m-0 mb-2 text-lg font-bold;
+      margin: 0 0 0.5rem;
+      font-size: 1.125rem;
+      line-height: 1.556;
+      font-weight: 700;
       color: var(--color-home-text);
     }
 
     .faq-a {
-      @apply m-0 text-sm leading-relaxed;
+      margin: 0;
+      font-size: 0.875rem;
+      line-height: 1.625;
       color: var(--color-home-muted);
     }
   }
 
   .faq-link {
-    @apply inline-flex mt-8 text-base font-semibold no-underline;
+    display: inline-flex;
+    margin-top: 2rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    font-weight: 600;
+    text-decoration: none;
     color: var(--color-brand-600);
-    transition: color 0.2s $ease-out-expo;
+    transition: color var(--dur-fast) var(--ease-out-expo);
 
     &:hover {
       color: var(--color-brand-500);
@@ -335,35 +230,55 @@ $ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 
 // ─── CTA final ────────────────────────────────────────────────
 .cta-final {
-  @apply relative overflow-hidden;
+  position: relative;
+  overflow: hidden;
   // Fallback: Tailwind v4 puede no emitir el token al CSS global (mismo patrón que team-band).
   background-color: var(--color-brand-700, #2f4a2f);
   color: #fff;
 
   .cta-final-inner {
-    @apply py-20 text-center flex flex-col items-center gap-5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+    padding-block: 5rem;
+    text-align: center;
 
     @media (width >= 768px) {
-      @apply py-28;
+      padding-block: 7rem;
     }
   }
 
   h2 {
-    @apply m-0 font-extrabold;
+    margin: 0;
+    font-weight: 800;
     font-size: clamp(1.875rem, 3.5vw, 2.75rem);
     letter-spacing: -0.02em;
   }
 
   p {
-    @apply m-0 text-base max-w-xl;
+    margin: 0;
+    max-width: 36rem;
+    font-size: 1rem;
+    line-height: 1.5;
     color: rgba(255, 255, 255, 0.85);
   }
 
   // Fondo: gradiente azul de .btn-primary (igual que hero y header). Texto blanco ≥ 4.5:1.
   .cta-button {
-    @apply inline-flex items-center rounded-pill px-10 py-4 text-base font-bold no-underline;
+    display: inline-flex;
+    align-items: center;
+    border-radius: var(--radius-pill, 9999px);
+    padding: 1rem 2.5rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    font-weight: 700;
+    text-decoration: none;
     color: #fff;
-    transition: transform 0.2s $ease-out-expo, opacity 0.2s $ease-out-expo;
+    transition:
+      transform var(--dur-fast) var(--ease-out-expo),
+      translate var(--dur-base) var(--ease-out-expo),
+      opacity var(--dur-fast) var(--ease-out-expo);
 
     &:hover { transform: translateY(-2px); }
 
@@ -377,54 +292,7 @@ $ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   }
 }
 
-// ─── Motion — animaciones (solo transform/opacity) ─────────────
-// Respeto obligatorio de prefers-reduced-motion: todo el bloque de
-// animación queda suspendido bajo reduced-motion.
-@media (prefers-reduced-motion: no-preference) {
-  // Hero entrance: único momento orquestado (stagger).
-  .hero-brand,
-  .hero-title,
-  .hero-subtitle,
-  .hero-actions {
-    opacity: 0;
-    animation: rise-in 0.6s $ease-out-expo forwards;
-  }
-
-  .hero-title   { animation-delay: 0.12s; }
-  .hero-subtitle { animation-delay: 0.24s; }
-  .hero-actions { animation-delay: 0.36s; }
-
-  @keyframes rise-in {
-    from {
-      opacity: 0;
-      transform: translateY(16px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-}
-
-// Reduced motion (o sin soporte): hero visible sin transición.
-@media (prefers-reduced-motion: reduce) {
-  .hero-brand,
-  .hero-title,
-  .hero-subtitle,
-  .hero-actions {
-    opacity: 1;
-    transform: none;
-  }
-}
 // ─── Home as a showcase: actions and links to the pages ───────
-.hero-actions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem 1.75rem;
-}
-
 .services-link {
   margin-top: 1.5rem;
 }

@@ -110,16 +110,17 @@ html {
 
 // Cards of the public site lift slightly on hover and on visible focus. The hover state only
 // exists with a real hover, so it never sticks after a tap; with reduced motion the lifted
-// state applies instantly and the shadow keeps signalling it.
+// state applies instantly and the shadow keeps signalling it. The lift uses `translate`, so it
+// never fights the `transform` of the [data-reveal] entrance.
 .hover-lift:focus-visible,
 .hover-lift:focus-within {
-  transform: translateY(-2px);
+  translate: 0 -2px;
   box-shadow: 0 12px 28px -18px rgb(0 0 0 / 0.45);
 }
 
 @media (hover: hover) {
   .hover-lift:hover {
-    transform: translateY(-2px);
+    translate: 0 -2px;
     box-shadow: 0 12px 28px -18px rgb(0 0 0 / 0.45);
   }
 }
@@ -127,8 +128,23 @@ html {
 @media (prefers-reduced-motion: no-preference) {
   .hover-lift {
     transition:
-      transform var(--dur-base) var(--ease-out-expo),
+      translate var(--dur-base) var(--ease-out-expo),
       box-shadow var(--dur-base) var(--ease-out-expo);
+  }
+
+  // A card that also reveals keeps both transitions: the entrance (staggered) and the lift
+  // (immediate).
+  [data-reveal].hover-lift {
+    transition:
+      opacity var(--dur-slow) var(--ease-out-expo),
+      transform var(--dur-slow) var(--ease-out-expo),
+      translate var(--dur-base) var(--ease-out-expo),
+      box-shadow var(--dur-base) var(--ease-out-expo);
+    transition-delay:
+      calc(var(--reveal-index, 0) * 60ms),
+      calc(var(--reveal-index, 0) * 60ms),
+      0s,
+      0s;
   }
 }
 

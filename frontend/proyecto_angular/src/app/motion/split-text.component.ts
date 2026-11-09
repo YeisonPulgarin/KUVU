@@ -9,7 +9,9 @@ export type SplitTextMode = 'enter' | 'scrub';
  *
  * - `enter`: each word rises from a mask with a staggered delay (hero heading).
  * - `scrub`: each word's opacity follows `--p`, published on an ancestor by
- *   `[appScrollProgress]`; without `--p` the words stay fully opaque.
+ *   `[appScrollProgress]`; without `--p` the words stay fully opaque. An ancestor can set
+ *   `--dim` (dimmed opacity, 0.35 by default) and `--scrub-rate` (how fast the words light up
+ *   relative to the progress, 1 by default).
  *
  * Every motion rule lives inside `prefers-reduced-motion: no-preference`: with reduced motion
  * the words are static and fully visible.
@@ -24,10 +26,6 @@ export type SplitTextMode = 'enter' | 'scrub';
   },
   template: `<span class="split-sr">{{ text() }}</span><span class="split" aria-hidden="true">@for (word of words(); track $index) {<span class="w" [style.--i]="$index"><span class="w-in">{{ word }}</span></span>@if (!$last) {{{ ' ' }}}}</span>`,
   styles: `
-    :host {
-      --dim: 0.35;
-    }
-
     .split-sr {
       position: absolute;
       width: 1px;
@@ -60,7 +58,11 @@ export type SplitTextMode = 'enter' | 'scrub';
       }
 
       :host([data-mode='scrub']) .w {
-        opacity: clamp(var(--dim), calc(var(--p, 1) * (var(--n) + 4) - var(--i)), 1);
+        opacity: clamp(
+          var(--dim, 0.35),
+          calc(var(--p, 1) * var(--scrub-rate, 1) * (var(--n) + 4) - var(--i)),
+          1
+        );
       }
     }
 

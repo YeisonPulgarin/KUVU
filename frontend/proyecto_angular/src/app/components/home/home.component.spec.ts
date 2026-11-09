@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HOME_JSONLD_ID, HomeComponent } from './home.component';
 import { pageMeta } from '../../content/pages';
+import { ScrollMotionService } from '../../motion/scroll-motion.service';
 
 function asElement(node: unknown): HTMLElement {
   return node as HTMLElement;
@@ -412,6 +413,77 @@ describe('HomeComponent', () => {
     it('should remove its structured data when leaving the home', () => {
       fixture.destroy();
       expect(homeJsonLd()).toBeNull();
+    });
+  });
+
+  // home-animaciones, slice home (RF-03, RF-06, RF-10, RF-11, CA-03, CA-07, CA-23).
+  describe('motion', () => {
+    const ABOUT_TEXT =
+      'KUVU es un sistema de administración de inmobiliarias que brinda servicio a distintas compañías. ' +
+      'Unificamos la gestión de propiedades, contratos y operaciones diarias para que cada empresa ' +
+      'administradora trabaje desde una sola plataforma, con datos centralizados y acceso por rol.';
+
+    const service = () => fixture.debugElement.injector.get(ScrollMotionService);
+
+    it('renders the reading-progress bar only as decoration', () => {
+      const bar = asElement(root.querySelector('.home-layout > app-scroll-progress'));
+      expect(bar).toBeTruthy();
+      expect(bar.getAttribute('aria-hidden')).toBe('true');
+    });
+
+    it('publishes --page-progress on the home host', async () => {
+      await new Promise((resolve) => requestAnimationFrame(resolve));
+      const value = root.style.getPropertyValue('--page-progress');
+      expect(value).not.toBe('');
+      expect(Number(value)).toBeGreaterThanOrEqual(0);
+      expect(Number(value)).toBeLessThanOrEqual(1);
+    });
+
+    it('keeps the "Qué es KUVU" paragraph text exact, announced once as a continuous text', () => {
+      const lead = asElement(root.querySelector('#que-es .section-lead'));
+      expect(lead.querySelector('.split-sr')?.textContent).toBe(ABOUT_TEXT);
+      const visible = asElement(lead.querySelector('.split'));
+      expect(visible.getAttribute('aria-hidden')).toBe('true');
+      expect(visible.textContent).toBe(ABOUT_TEXT);
+      expect(lead.querySelector('app-split-text')?.getAttribute('data-mode')).toBe('scrub');
+    });
+
+    it('keeps the dimmed words of the paragraph readable (>= 3:1 needs --dim >= 0.63)', () => {
+      const lead = asElement(root.querySelector('#que-es .section-lead'));
+      expect(Number(getComputedStyle(lead).getPropertyValue('--dim'))).toBeGreaterThanOrEqual(0.63);
+    });
+
+    it('lifts the service rows, security items and FAQ items', () => {
+      ['.service-row', '.security-item', '.faq-item'].forEach((selector) => {
+        const items = Array.from(root.querySelectorAll(selector));
+        expect(items.length).withContext(selector).toBeGreaterThan(0);
+        items.forEach((item) => expect(item.classList).withContext(selector).toContain('hover-lift'));
+      });
+    });
+
+    it('makes the hero and final CTAs magnetic, keeping their link', () => {
+      [root.querySelector('.hero-cta'), root.querySelector('.cta-final .cta-button')].forEach((cta) => {
+        expect(cta?.classList).toContain('magnetic');
+        expect(cta?.getAttribute('href')).toBe('/acceder');
+      });
+    });
+
+    it('composes the extracted sections in place', () => {
+      expect(root.querySelector('section#inicio[app-home-hero]')).toBeTruthy();
+      expect(root.querySelector('section#como-funciona[app-steps-journey]')).toBeTruthy();
+      expect(root.querySelector('section#companias[app-companies-marquee]')).toBeTruthy();
+    });
+
+    it('releases the scroll loop when leaving the home', () => {
+      // The header also listens to scroll: check the service's own handler.
+      const handler = (service() as unknown as { onScroll: EventListener }).onScroll;
+      const remove = spyOn(window, 'removeEventListener').and.callThrough();
+      const cancel = spyOn(window, 'cancelAnimationFrame').and.callThrough();
+      window.dispatchEvent(new Event('scroll'));
+      fixture.destroy();
+      expect(remove).toHaveBeenCalledWith('scroll', handler);
+      expect(remove).toHaveBeenCalledWith('resize', handler);
+      expect(cancel).toHaveBeenCalled();
     });
   });
 });

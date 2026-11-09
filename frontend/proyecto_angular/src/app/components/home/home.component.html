@@ -1,57 +1,23 @@
 <div class="home-layout">
 
+  <app-scroll-progress />
+
   <app-site-header></app-site-header>
 
   <!-- ── Hero ────────────────────────────────────────────── -->
-  <section id="inicio" class="hero">
-    <div class="container hero-inner">
-      <p class="hero-brand">KUVU.</p>
-      <h1 class="hero-title">Administración inmobiliaria para empresas que crecen</h1>
-      <p class="hero-subtitle">
-        Gestiona locales, contratos, pagos y mantenimientos de múltiples compañías
-        desde un solo sistema.
-      </p>
-      <div class="hero-actions">
-        <a routerLink="/acceder" class="btn-primary hero-cta">Ingresar</a>
-        <a routerLink="/servicios" class="link-arrow hero-secondary">
-          Conoce los servicios <span class="link-arrow-icon" aria-hidden="true">→</span>
-        </a>
-      </div>
-    </div>
-  </section>
+  <section id="inicio" class="hero" app-home-hero></section>
 
   <!-- ── ¿Qué es KUVU? ──────────────────────────────────── -->
-  <section id="que-es" class="section about">
+  <section id="que-es" class="section about" appScrollProgress>
     <div class="container">
       <span class="section-eyebrow" aria-hidden="true">01</span>
       <h2 class="section-title">¿Qué es KUVU?</h2>
-      <p class="section-lead">
-        KUVU es un sistema de administración de inmobiliarias que brinda servicio a
-        distintas compañías. Unificamos la gestión de propiedades, contratos y
-        operaciones diarias para que cada empresa administradora trabaje desde una
-        sola plataforma, con datos centralizados y acceso por rol.
-      </p>
+      <p class="section-lead"><app-split-text mode="scrub" text="KUVU es un sistema de administración de inmobiliarias que brinda servicio a distintas compañías. Unificamos la gestión de propiedades, contratos y operaciones diarias para que cada empresa administradora trabaje desde una sola plataforma, con datos centralizados y acceso por rol." /></p>
     </div>
   </section>
 
   <!-- ── Cómo funciona ──────────────────────────────────── -->
-  <section id="como-funciona" class="section steps">
-    <div class="container">
-      <span class="section-eyebrow" aria-hidden="true">02</span>
-      <h2 class="section-title">¿Cómo funciona?</h2>
-      <p class="section-lead">En cuatro pasos, KUVU reemplaza tus planillas dispersas por una sola plataforma.</p>
-
-      <ol class="steps-list">
-        <li class="step" data-reveal *ngFor="let step of howItWorks; let i = index">
-          <span class="step-number">{{ i + 1 }}</span>
-          <div class="step-body">
-            <h3>{{ step.title }}</h3>
-            <p>{{ step.description }}</p>
-          </div>
-        </li>
-      </ol>
-    </div>
-  </section>
+  <section id="como-funciona" class="section steps" app-steps-journey></section>
 
   <!-- ── Servicios ──────────────────────────────────────── -->
   <section id="servicios" class="section services">
@@ -66,7 +32,7 @@
       </div>
 
       <div class="services-list">
-        <article class="service-row" data-reveal *ngFor="let svc of services">
+        <article class="service-row hover-lift" data-reveal *ngFor="let svc of services">
           <app-service-icon class="service-icon" [icon]="svc.icon"></app-service-icon>
           <div class="service-body">
             <h3>{{ svc.title }}</h3>
@@ -85,7 +51,7 @@
       <p class="section-lead">Cuidamos la información de tus inmobiliarias.</p>
 
       <div class="security-list">
-        <article class="security-item" data-reveal *ngFor="let item of securityHighlights">
+        <article class="security-item hover-lift" data-reveal *ngFor="let item of securityHighlights">
           <h3>{{ item.title }}</h3>
           <p>{{ item.description }}</p>
         </article>
@@ -94,17 +60,7 @@
   </section>
 
   <!-- ── Compañías que confían ──────────────────────────── -->
-  <section id="companias" class="section companies">
-    <div class="container">
-      <span class="section-eyebrow" aria-hidden="true">05</span>
-      <h2 class="section-title">Compañías que confían</h2>
-      <p class="section-lead">Distintas empresas administran sus inmobiliarias con KUVU.</p>
-
-      <div class="companies-list" data-reveal>
-        <span class="company-item" *ngFor="let company of companies" [ngClass]="company.className">{{ company.name }}</span>
-      </div>
-    </div>
-  </section>
+  <section id="companias" class="section companies" app-companies-marquee></section>
 
   <!-- ── Equipo (banda full-bleed) ─────────────────────── -->
   <section id="equipo" class="team-band" app-team-band aria-labelledby="equipo-title"></section>
@@ -129,7 +85,7 @@
       </div>
 
       <div class="faq-list">
-        <article class="faq-item" data-reveal *ngFor="let item of homeFaqItems()">
+        <article class="faq-item hover-lift" data-reveal *ngFor="let item of homeFaqItems()">
           <h3 class="faq-q">{{ item.q }}</h3>
           <p class="faq-a">{{ item.a }}</p>
         </article>
@@ -145,7 +101,7 @@
       <h2>¿Listo para administrar tus inmobiliarias?</h2>
       <p>Ingresa a tu cuenta y gestiona todas tus compañías desde un solo lugar.</p>
       <div class="cta-final-actions">
-        <a routerLink="/acceder" class="btn-primary cta-button">Ingresar</a>
+        <a routerLink="/acceder" class="btn-primary cta-button" appMagnetic>Ingresar</a>
         <a routerLink="/contacto" class="link-arrow cta-secondary">
           ¿Todavía no usas KUVU? Contáctanos <span class="link-arrow-icon" aria-hidden="true">→</span>
         </a>

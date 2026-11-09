@@ -1,0 +1,39 @@
+<div class="container">
+  <span class="section-eyebrow" aria-hidden="true">05</span>
+  <h2 class="section-title">Compañías que confían</h2>
+  <p class="section-lead">Distintas empresas administran sus inmobiliarias con KUVU.</p>
+
+  <div
+    #band
+    class="companies-list marquee"
+    data-reveal
+    [class.is-paused]="paused()"
+    [class.is-offscreen]="offscreen()"
+  >
+    <div class="marquee-track">
+      <ul class="marquee-list">
+        @for (company of companies; track company.name) {
+          <li class="company-item" [ngClass]="company.className">{{ company.name }}</li>
+        }
+      </ul>
+      @if (animated()) {
+        @for (copy of copies; track copy) {
+          <ul class="marquee-list marquee-copy" aria-hidden="true" inert>
+            @for (company of companies; track company.name) {
+              <li class="company-item" [ngClass]="company.className">{{ company.name }}</li>
+            }
+          </ul>
+        }
+      }
+    </div>
+  </div>
+
+  @if (animated()) {
+    <button
+      type="button"
+      class="marquee-toggle"
+      [attr.aria-pressed]="paused()"
+      (click)="toggle()"
+    >{{ toggleLabel() }}</button>
+  }
+</div>
