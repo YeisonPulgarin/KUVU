@@ -87,6 +87,7 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com) y este proyecto 
 
 ### Fixed
 
+- En tema claro, la página de inicio, Nosotros, Preguntas frecuentes y el encabezado muestran los colores y formas de marca: las tarjetas de "¿Cómo funciona?" tienen borde, fondo y esquinas redondeadas, los números de paso se ven (antes, texto blanco sin fondo), los íconos de servicios tienen su fondo verde claro y las secciones alternan sus fondos. En los dos temas, los botones redondeados del encabezado, del pie y de Nosotros y las tarjetas e íconos de la página de inicio muestran sus esquinas redondeadas.
 - La sección final de la página de inicio ("¿Listo para administrar tus inmobiliarias?") se lee en modo claro: el titular y el párrafo blancos quedaban sobre un fondo gris claro casi del mismo tono. La banda mantiene su fondo verde.
 - El botón "Ingresar" de esa sección se lee: muestra texto blanco sobre el azul de los botones principales (antes, texto verde oscuro sobre azul) y un contorno blanco visible al navegar con teclado.
 

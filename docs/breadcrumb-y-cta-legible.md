@@ -26,8 +26,8 @@ claro y oscuro.
 - Uso en una página: `readonly breadcrumb = breadcrumbFor('/nosotros')` y
   `<app-breadcrumb [items]="breadcrumb">` dentro de `.page-hero`, antes del `h1`.
 - Estilos (`breadcrumb.component.scss`): lista en fila con `flex-wrap`, centrada, 0.875rem.
-  Los colores usan `var(--color-home-muted, #4c5a4e)` y `var(--color-home-text, #1f2920)`
-  con fallback, porque esos tokens no existen en runtime en modo claro (ver Decisiones).
+  Los colores usan `var(--color-home-muted)` y `var(--color-home-text)`, tokens de marca
+  declarados en `@theme static` de `styles.css` (ver `docs/tema-claro-tokens.md`).
 
 ### JSON-LD
 
@@ -81,12 +81,9 @@ Tests: `breadcrumb.component.spec.ts`, `page-meta.service.spec.ts` › 'breadcru
 - **URLs absolutas sobre `location.origin`.** El sitio no tiene dominio de producción, así que
   las URLs reflejan el origen donde corre la app. Al definir un dominio, alcanza con cambiar
   el origen en `setBreadcrumb`.
-- **Fallback literal en los tokens de Tailwind.** Tailwind v4 emite al CSS global solo las
-  variables de `@theme` cuyo nombre encuentra al escanear archivos, y los usos dentro de los
-  SCSS de componentes no cuentan. `--color-brand-700` aparece en el build solo porque su
-  nombre figura en un archivo escaneado. Por eso `.cta-final` y el breadcrumb usan
-  `var(--token, valor)`. Mencionar nombres de tokens en archivos `.ts`/`.html` cambia lo que
-  emite Tailwind; los tests arman esos nombres por partes.
+- **Tokens de marca sin fallback.** `.cta-final` y el breadcrumb consumen los tokens con
+  `var(--token)`: el bloque `@theme static` de `styles.css` los emite siempre en `:root` (ver
+  `docs/tema-claro-tokens.md`).
 - **El botón reutiliza `.btn-primary`** en lugar de copiar el gradiente localmente, para
   mantenerlo igual al hero y al header. Tradeoff: su contraste depende de
   `--color-secundario` (`#3A6FD8`). Si ese token se aclara, el texto blanco baja de 4.5 : 1.

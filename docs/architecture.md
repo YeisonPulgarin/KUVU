@@ -201,15 +201,14 @@ comodín `**` muestra la 404 pública y no forma parte del flujo de acceso.
   lazy nativo, `alt` real y testeable. Tradeoff: las variantes se generan a mano con un script y
   la declaración en `content/` debe coincidir con los anchos generados. El logo mantiene su
   patrón propio (swap por viewport), porque su variante depende del breakpoint, no del ancho.
-- **Tokens de Tailwind v4 solo usados en componentes no existen en runtime**: Tailwind emite al
-  CSS global únicamente los tokens de `@theme` cuyo nombre encuentra en los archivos que escanea.
-  En modo claro faltan `--color-home-*`, `--radius-*` y `--color-brand-100/200/300/600`, y
-  `--color-brand-700` se emite solo de forma incidental (ver el patrón `var(--token, valor)` más
-  abajo). Un componente que depende de uno de ellos lo referencia con fallback literal, en una
-  custom property local (`--team-band-green: var(--color-brand-700, #2f4a2f)` en `team-band`) o
-  en la propia declaración (fondo de `cta-final`). Tradeoff: el valor se repite en cada punto, a
-  cambio de no alterar los CTA del hero y del header, que no llevan fallback y se ven con el
-  gradiente de `.btn-primary`.
+- **Tokens de marca en `@theme static`**: `src/styles.css` declara los tokens del sitio público
+  (`--color-brand-*`, `--color-home-*`, `--radius-*`) en un bloque `@theme static`, así que
+  Tailwind v4 los emite siempre en `:root`, aunque ninguna utilidad los use. El bloque `.dark`
+  (sin capa, gana sobre `@layer theme`) redefine `brand-100/500/600` y los `home-*`; el resto
+  conserva el valor claro en los dos temas. Los componentes los consumen con `var(--token)`, sin
+  fallback literal, y sus nombres pueden escribirse en `.ts`/`.html`. Tradeoff: los 15 tokens
+  viajan siempre en el CSS global (~0,3 kB), a cambio de una sola fuente de valores. Un token
+  nuevo de marca va en ese bloque.
 - **Movimiento: JS mide, CSS anima.** El JS solo publica variables CSS (`--p`,
   `--page-progress`, `--mx` / `--my`) y toda la presentación vive en CSS dentro de
   `prefers-reduced-motion: no-preference` (y de `width >= 1024px` o puntero fino según el
@@ -223,15 +222,6 @@ comodín `**` muestra la 404 pública y no forma parte del flujo de acceso.
   (va en el bundle inicial). Tradeoff: valores literales en lugar de utilidades.
 - **Sitio público sin API**: textos estáticos en el bundle. Tradeoff: el contenido no cambia
   sin redeploy; nada que proteger expuesto ni latencia de red en el sitio.
-- **Patrón `var(--token, valor)` para tokens de marca en estilos de componentes**: Tailwind v4
-  emite una variable de `@theme` solo si encuentra su nombre en los archivos que escanea
-  (`.ts`/`.html`), y los usos en SCSS de componentes no cuentan. En modo claro el build emite
-  `--color-brand-700` (porque su nombre figura en un archivo escaneado) y `--color-brand-500`,
-  pero no `--color-home-*`, `--radius-*` ni el resto de `--color-brand-*`. La banda `cta-final`,
-  `team-band`, `app-breadcrumb`, la línea del recorrido de `steps-journey` y el botón de pausa
-  de `companies-marquee` declaran fallback literal. Los nombres de tokens no se
-  escriben en `.ts`/`.html`: los tests los arman por partes. Tradeoff: el valor se repite en
-  cada punto que lo necesita, a cambio de no cambiar el aspecto del resto de la home.
 - **Breadcrumb visual y JSON-LD desde una sola fuente**: `app-breadcrumb` recibe los ítems y
   los publica vía `PageMetaService`. Tradeoff: un componente presentacional escribe en
   `<head>`, a cambio de que el visual y los datos estructurados no puedan divergir.

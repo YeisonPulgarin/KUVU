@@ -91,7 +91,7 @@ Acá la imagen no es decorativa: su `alt` describe al equipo.
 
 ## Decisiones
 
-- **Verde de la banda con fallback propio** (`--team-band-green: var(--color-brand-700, #2f4a2f)`). Tailwind v4 solo emite al CSS global los tokens de `@theme` que usa, y `--color-brand-700` aparece solo en estilos de componentes, así que en runtime no existe. Sin el fallback, la banda queda sin velo ni fondo y el texto blanco se vuelve ilegible. Tradeoff: el valor del token se repite como literal en un lugar. La alternativa (emitir el token globalmente) cambia el color de otros CTA del sitio que hoy dependen de que no exista.
+- **Verde de la banda en un alias local** (`--team-band-green: var(--color-brand-700)`). El color de la banda se nombra en un solo lugar y alimenta el fondo móvil y los `color-mix()` del velo de escritorio. El token viene del bloque `@theme static` de `styles.css`, que lo emite siempre en `:root` (ver `docs/tema-claro-tokens.md`). Sin él, la banda queda sin velo ni fondo y el texto blanco se vuelve ilegible; el spec de `team-band` lo comprueba.
 - **Velo denso hasta el 60 % de la altura.** Garantiza ≥ 4.5:1 en todo el bloque de texto aun sobre las camisas blancas de la foto. Tradeoff: tiñe de verde la parte baja de las caras en escritorio. Para mostrar más foto, conviene achicar el bloque de texto antes que aclarar el velo.
 - **`<picture>` nativo en lugar de `NgOptimizedImage` o `background-image`.** Resuelve formato y ancho con `<source type>` y `srcset`, carga diferida nativa, `alt` real y es testeable desde el DOM. `NgOptimizedImage` no cambia de formato y pide un loader. Un `background-image` no tiene carga diferida ni `alt`.
 - **Banda en componente propio.** Con sus estilos dentro de `home.component.scss`, la home supera el budget `anyComponentStyle` de 17 kB. El selector de atributo evita un wrapper extra en el DOM.
@@ -103,4 +103,3 @@ Acá la imagen no es decorativa: su `alt` describe al equipo.
 - Sin AVIF: los formatos son WebP y JPEG.
 - El script no se ejecuta en el build. Si se reemplaza una imagen hay que volver a correrlo, y la declaración en `content/` tiene que coincidir con los anchos generados.
 - Los anchos de variante están fijos en el script (640, 1024, 1536). Una imagen de menos de 640 px de ancho no genera variantes.
-- Tailwind v4 no emite al CSS global varios tokens de marca en modo claro (`--color-brand-200` y `--color-brand-300`, entre otros), y `--color-brand-700` aparece solo de forma incidental. El fondo de `cta-final` usa valor de respaldo; los CTA del hero y del header no lo llevan y se ven con el gradiente de `.btn-primary`. El arreglo global de tokens es deuda fuera de este cambio.
