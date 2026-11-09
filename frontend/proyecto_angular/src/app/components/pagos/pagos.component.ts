@@ -13,7 +13,7 @@ import { IconComponent, IconName } from '../shared/icon/icon.component';
 import { ConfirmService } from '../shared/confirm/confirm.service';
 import { ToastService } from '../shared/toast/toast.service';
 import { badgeTipoPago } from '../shared/badges';
-import { formatFecha, formatMoneda } from '../shared/formato';
+import { escaparHtml, formatFecha, formatMoneda } from '../shared/formato';
 
 @Component({
   selector: 'app-pagos',
@@ -141,16 +141,19 @@ export class PagosComponent implements OnInit {
     const contrato  = this.contratoActivo();
     const local     = contrato ? this.locales().find(l => l.idLocal === contrato.idLocal) : null;
 
+    // The report is written into a same-origin window: every API value is escaped, so a
+    // stored description or address can never run as markup there.
+    const esc = escaparHtml;
     const totalPagado = misPagos.reduce((a, p) => a + Number(p.monto), 0);
     const alDia       = contrato !== null;
 
     const filas = misPagos.map(p => `
       <tr>
-        <td>${this.formatFecha(p.fechaPago)}</td>
-        <td>${p.tipo}</td>
-        <td>${p.descripcion || '—'}</td>
-        <td>${p.metodoPago}</td>
-        <td style="text-align:right;font-weight:600;">${this.formatCurrency(p.monto)}</td>
+        <td>${esc(this.formatFecha(p.fechaPago))}</td>
+        <td>${esc(p.tipo)}</td>
+        <td>${esc(p.descripcion || '—')}</td>
+        <td>${esc(p.metodoPago)}</td>
+        <td style="text-align:right;font-weight:600;">${esc(this.formatCurrency(p.monto))}</td>
       </tr>`).join('');
 
     const html = `
@@ -176,11 +179,11 @@ export class PagosComponent implements OnInit {
         .footer { margin-top: 32px; font-size: 11px; color: #a0aec0; text-align: center; }
       </style></head><body>
       <h1>📄 Reporte de Pagos</h1>
-      <h2>${empresa?.nombre ?? ''} — Generado el ${new Date().toLocaleDateString('es-CO')}</h2>
+      <h2>${esc(empresa?.nombre ?? '')} — Generado el ${esc(new Date().toLocaleDateString('es-CO'))}</h2>
       <div class="info-grid">
         <div class="info-box">
           <label>${this.esAdmin() ? 'Administrador' : 'Arrendatario'}</label>
-          <strong>${usuario?.nombre ?? ''}</strong>
+          <strong>${esc(usuario?.nombre ?? '')}</strong>
         </div>
         ${!this.esAdmin() ? `
         <div class="info-box">
@@ -189,11 +192,11 @@ export class PagosComponent implements OnInit {
         </div>
         <div class="info-box">
           <label>Local arrendado</label>
-          <strong>${local?.direccion ?? 'N/A'}</strong>
+          <strong>${esc(local?.direccion ?? 'N/A')}</strong>
         </div>` : ''}
         <div class="info-box">
           <label>Total pagado</label>
-          <strong>${this.formatCurrency(totalPagado)}</strong>
+          <strong>${esc(this.formatCurrency(totalPagado))}</strong>
         </div>
       </div>
       <table>
@@ -203,10 +206,10 @@ export class PagosComponent implements OnInit {
         <tbody>${filas || '<tr><td colspan="5" style="text-align:center;color:#a0aec0;">Sin pagos registrados</td></tr>'}</tbody>
         <tfoot><tr class="total-row">
           <td colspan="4" style="text-align:right;">Total:</td>
-          <td style="text-align:right;">${this.formatCurrency(totalPagado)}</td>
+          <td style="text-align:right;">${esc(this.formatCurrency(totalPagado))}</td>
         </tr></tfoot>
       </table>
-      <div class="footer">Documento generado automáticamente por ${empresa?.nombre ?? 'ArrendApp'}</div>
+      <div class="footer">Documento generado automáticamente por ${esc(empresa?.nombre ?? 'ArrendApp')}</div>
       </body></html>`;
 
     const ventana = window.open('', '_blank');

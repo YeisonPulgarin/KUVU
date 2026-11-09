@@ -21,3 +21,16 @@ const MONEDA = new Intl.NumberFormat('es-CO', {
 export function formatMoneda(valor: number | string | null | undefined): string {
   return MONEDA.format(Number(valor ?? 0));
 }
+
+const ENTIDADES: Record<string, string> = {
+  '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+};
+
+/**
+ * Escapes text for an HTML context (element content or a quoted attribute). Every value from
+ * the API that goes into hand-built HTML (the printable payments report) passes through it,
+ * so stored data is shown as text and never parsed as markup.
+ */
+export function escaparHtml(valor: unknown): string {
+  return String(valor ?? '').replace(/[&<>"']/g, c => ENTIDADES[c]);
+}

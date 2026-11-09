@@ -1,4 +1,4 @@
-import { formatFecha, formatMoneda } from './formato';
+import { escaparHtml, formatFecha, formatMoneda } from './formato';
 
 describe('formato', () => {
   it('formats API dates as dd/mm/aaaa keeping the stored day', () => {
@@ -18,5 +18,12 @@ describe('formato', () => {
     expect(texto).toContain('$');
     expect(formatMoneda('2500')).toContain('2.500');
     expect(formatMoneda(null)).toContain('0');
+  });
+
+  it('escapes HTML metacharacters so stored data stays text', () => {
+    expect(escaparHtml(`<b onclick="x">Tom & Jerry's</b>`))
+      .toBe('&lt;b onclick=&quot;x&quot;&gt;Tom &amp; Jerry&#39;s&lt;/b&gt;');
+    expect(escaparHtml(null)).toBe('');
+    expect(escaparHtml(42)).toBe('42');
   });
 });

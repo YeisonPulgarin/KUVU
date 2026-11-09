@@ -79,6 +79,27 @@ describe('PagosComponent', () => {
     });
   });
 
+  describe('printable report (security)', () => {
+    it('writes stored values as escaped text, never as markup', () => {
+      crear(ADMIN);
+      d.data.pagos.set([{ ...PAGO, descripcion: '<img src=x onerror="alert(1)">' }]);
+      d.data.locales.set([{ idLocal: 5, empresa_id: 1, direccion: '<script>x()</script>', idAdministrador: 1 }]);
+      d.auth.empresaActiva.set({ id: 1, nombre: 'Amarilo <b>', color_primario: '#F5A623' });
+      fixture.detectChanges();
+      const write = jasmine.createSpy('write');
+      const ventana = { document: { write, close: () => undefined }, focus: () => undefined, print: () => undefined };
+      spyOn(window, 'open').and.returnValue(ventana as unknown as Window);
+
+      fixture.componentInstance.generarPDF();
+
+      const html: string = write.calls.mostRecent().args[0];
+      expect(html).toContain('&lt;img src=x onerror=&quot;alert(1)&quot;&gt;');
+      expect(html).not.toContain('<img src=x');
+      expect(html).toContain('Amarilo &lt;b&gt;');
+      expect(html).not.toContain('<script>');
+    });
+  });
+
   describe('tenant', () => {
     beforeEach(() => crear(ARRENDATARIO));
 
