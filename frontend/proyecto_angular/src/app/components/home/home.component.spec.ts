@@ -492,6 +492,7 @@ describe('HomeComponent', () => {
     it('composes the extracted sections in place', () => {
       expect(root.querySelector('section#inicio[app-home-hero]')).toBeTruthy();
       expect(root.querySelector('section#como-funciona[app-steps-journey]')).toBeTruthy();
+      expect(root.querySelector('section#como-funciona')?.classList).toContain('surface-dots');
       expect(root.querySelector('section#companias[app-companies-marquee]')).toBeTruthy();
     });
 

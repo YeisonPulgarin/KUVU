@@ -3,13 +3,7 @@
 
 :host {
   display: block;
-  // Trama de puntos del sitio (mismos tokens que .surface-dots).
-  background-color: var(--color-home-bg);
-  background-image: radial-gradient(
-    color-mix(in oklab, var(--color-brand-600) 22%, transparent) 1px,
-    transparent 1.2px
-  );
-  background-size: 14px 14px;
+  // La trama de puntos la pone la home con la clase global .surface-dots.
   border-top: 2px solid var(--color-home-text);
 }
 
