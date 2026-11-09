@@ -37,12 +37,13 @@
 }
 
 .nav-container {
-  @apply flex items-center justify-between px-4 max-w-6xl mx-auto;
+  @apply flex items-center justify-between px-4 mx-auto;
+  max-width: 72rem;
   height: 64px;
 
   @media (width >= 768px) {
     height: 80px;
-    @apply px-6;
+    padding-inline: 1.5rem;
   }
 }
 
@@ -86,7 +87,8 @@
   }
 
   .nav-item {
-    @apply flex items-center gap-1 text-sm font-medium no-underline;
+    @apply flex items-center gap-1 font-medium no-underline;
+    font-size: 0.9375rem;
     color: var(--color-home-text);
     transition: color var(--dur-fast) var(--ease-out-expo);
 

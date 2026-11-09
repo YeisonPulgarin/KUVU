@@ -4,6 +4,19 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&display=swap');
 
+/* Display del sitio público: Big Shoulders Display (SIL OFL 1.1, ver public/fonts/OFL.txt).
+   Autohospedada y sin @import de Google, así no se incrusta en el CSS: el navegador solo
+   la descarga cuando una regla la usa (titulares del sitio público). */
+@font-face {
+  font-family: "Big Shoulders Display";
+  src: url("/fonts/big-shoulders-display-latin.woff2") format("woff2");
+  font-weight: 800 900;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304,
+    U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 /* Tailwind v4: Import via PostCSS (processed before SCSS) */
 @import "tailwindcss";
 
@@ -16,6 +29,15 @@
    Shape Consistency Lock: "botones pill, cards 16, íconos 12". */
 @theme static {
   --font-sans: "Geist", system-ui, sans-serif;
+  /* Titulares del sitio público. Respaldo angosto para que el swap mueva poco las líneas. */
+  --font-display: "Big Shoulders Display", "Arial Narrow", "Roboto Condensed", Impact, sans-serif;
+
+  /* Escala fluida del sitio público (clamp: crece de forma continua con el viewport) */
+  --text-display-xl: clamp(2.75rem, 1.2rem + 7.6vw, 7.5rem);
+  --text-display-l:  clamp(2.25rem, 1.4rem + 4.6vw, 5rem);
+  --text-display-m:  clamp(1.75rem, 1.2rem + 2.2vw, 3rem);
+  --text-lead:       clamp(1.25rem, 1rem + 0.9vw, 1.75rem);
+  --text-body-site:  clamp(1rem, 0.93rem + 0.35vw, 1.1875rem);
 
   /* Verde de marca */
   --color-brand-700: #2f4a2f;
@@ -37,6 +59,10 @@
   --radius-pill: 9999px;
   --radius-card: 16px;
   --radius-icon: 12px;
+
+  /* Texto sobre bloques de marca (alias: sin valores nuevos) y opacidad del grano */
+  --color-on-brand: var(--color-home-bg);
+  --grain-opacity: 0.06;
 }
 
 /* Dark mode — overrides de superficie y acento aclarado */
@@ -50,6 +76,8 @@
   --color-home-text:        #eef0ec;
   --color-home-muted:       #a8b2a8;
   --color-home-border:      #2c382c;
+  --color-on-brand:         var(--color-home-text);
+  --grain-opacity:          0.05;
 }
 
 :root {

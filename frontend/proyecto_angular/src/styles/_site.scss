@@ -1,0 +1,210 @@
+/* ============================================================
+   SITE PRIMITIVES — public site (home + internal public pages)
+   Raíz de sitio con grano, superficies, bloques de marca, titulares display, énfasis y
+   botones. Todos los colores salen de los tokens de marca de styles.css (@theme static):
+   no hay valores nuevos. Sin @apply (estas reglas van en el bundle inicial).
+   Escala de capas: contenido 0 · header sticky 40/50 · grano 60 (decorativo, sin eventos).
+   ============================================================ */
+
+// Grano: ruido fractal en escala de grises, SVG inline (sin descarga).
+$grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+
+// Raíz de los dos layouts públicos (home y app-public-page): cuerpo fluido y fondo granulado.
+.site-root {
+  font-size: var(--text-body-site);
+  line-height: 1.6;
+  background-color: var(--color-home-bg);
+  color: var(--color-home-text);
+
+  // Capa fija y decorativa: no repinta con el scroll ni intercepta clics o selección.
+  &::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    pointer-events: none;
+    opacity: var(--grain-opacity);
+    background-image: $grain;
+    background-size: 180px 180px;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+}
+
+/* ── Superficies ─────────────────────────────────────────── */
+
+// Trama de puntos sobre el fondo de la página.
+.surface-dots {
+  background-color: var(--color-home-bg);
+  background-image: radial-gradient(
+    color-mix(in oklab, var(--color-brand-600) 22%, transparent) 1px,
+    transparent 1.2px
+  );
+  background-size: 14px 14px;
+}
+
+.surface-tint {
+  background-color: var(--color-brand-100);
+}
+
+// Bloque a sangre completa en el verde de marca (mismo verde en claro y oscuro).
+.block-brand {
+  background-color: var(--color-brand-700);
+  color: var(--color-on-brand);
+  --focus-ring: var(--color-on-brand);
+}
+
+/* ── Titulares display ───────────────────────────────────── */
+
+.display-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 900;
+  text-transform: uppercase;
+  line-height: 0.92;
+  letter-spacing: -0.005em;
+  text-wrap: balance;
+  overflow-wrap: break-word;
+  hyphens: manual;
+
+  em {
+    font-style: normal;
+    color: var(--color-brand-600);
+  }
+}
+
+.display-title--xl {
+  font-size: var(--text-display-xl);
+}
+
+.display-title--l {
+  font-size: var(--text-display-l);
+}
+
+.display-title--m {
+  font-size: var(--text-display-m);
+  font-weight: 800;
+  line-height: 0.95;
+}
+
+// Sobre un bloque de marca, el énfasis no puede usar el verde del fondo.
+.block-brand .display-title em {
+  color: var(--color-on-brand);
+  text-decoration: underline;
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.12em;
+}
+
+// Cinta: fragmento con fondo de marca y una leve rotación estática.
+.tape {
+  display: inline-block;
+  padding: 0 0.12em;
+  background-color: var(--color-brand-700);
+  color: var(--color-on-brand);
+  rotate: -1.5deg;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+.block-brand .tape {
+  background-color: var(--color-on-brand);
+  color: var(--color-brand-700);
+}
+
+// Entrada "sello": la cinta se asienta una vez al aparecer.
+@media (prefers-reduced-motion: no-preference) {
+  .tape {
+    animation: tape-stamp var(--dur-slow) var(--ease-out-expo) 0.35s both;
+  }
+
+  @keyframes tape-stamp {
+    from {
+      scale: 1.08;
+      rotate: -4deg;
+    }
+  }
+}
+
+.lead-site {
+  font-size: var(--text-lead);
+  line-height: 1.45;
+  color: var(--color-home-muted);
+  max-width: 40ch;
+}
+
+/* ── Botones del sitio ───────────────────────────────────── */
+// Forma pill (Shape Lock del sitio) con borde y sombra dura. "Ingresar" conserva
+// .btn-primary (azul de la app); .btn-site cubre el resto de los CTAs.
+
+.btn-site {
+  --btn-shadow: var(--color-home-text);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  padding: 0.75em 1.5em;
+  border: 2px solid var(--color-home-text);
+  border-radius: var(--radius-pill);
+  background-color: var(--color-brand-700);
+  color: var(--color-on-brand);
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: 4px 4px 0 var(--btn-shadow);
+  text-decoration: none;
+
+  &:focus-visible {
+    outline: 3px solid var(--focus-ring, var(--color-brand-600));
+    outline-offset: 3px;
+  }
+}
+
+.btn-site--ghost {
+  background-color: transparent;
+  color: var(--color-home-text);
+}
+
+.block-brand .btn-site {
+  --btn-shadow: var(--color-on-brand);
+  border-color: var(--color-on-brand);
+  background-color: var(--color-on-brand);
+  color: var(--color-brand-700);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .btn-site {
+    transition:
+      translate var(--dur-fast) var(--ease-out-expo),
+      box-shadow var(--dur-fast) var(--ease-out-expo);
+  }
+}
+
+// Con puntero fino el botón avanza hacia su sombra; al presionarlo la toca.
+@media (hover: hover) and (pointer: fine) {
+  .btn-site:hover {
+    translate: 2px 2px;
+    box-shadow: 2px 2px 0 var(--btn-shadow);
+  }
+
+  .btn-site:active {
+    translate: 4px 4px;
+    box-shadow: 0 0 0 var(--btn-shadow);
+  }
+}
+
+/* ── Contenedor del sitio ────────────────────────────────── */
+
+.site-container {
+  width: 100%;
+  max-width: 72rem;
+  margin-inline: auto;
+  padding-inline: 1rem;
+
+  @media (width >= 768px) {
+    padding-inline: 1.5rem;
+  }
+}

@@ -4,6 +4,7 @@ import { provideRouter } from '@angular/router';
 import { PublicPageComponent } from './public-page.component';
 import { breadcrumbFor } from '../../../content/site';
 import { PageMetaService } from '../../../services/page-meta.service';
+import { headlines } from '../../../content';
 
 @Component({
   standalone: true,
@@ -25,10 +26,19 @@ class HostWithBreadcrumb {
 })
 class HostWithoutBreadcrumb {}
 
+@Component({
+  standalone: true,
+  imports: [PublicPageComponent],
+  template: `<app-public-page [pageTitle]="faq.title" [titleParts]="faq.parts"></app-public-page>`
+})
+class HostWithParts {
+  faq = headlines.faq;
+}
+
 describe('PublicPageComponent', () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
-      imports: [HostWithBreadcrumb, HostWithoutBreadcrumb],
+      imports: [HostWithBreadcrumb, HostWithoutBreadcrumb, HostWithParts],
       providers: [provideRouter([])]
     })
   );
@@ -62,5 +72,23 @@ describe('PublicPageComponent', () => {
     expect(root.querySelector('app-breadcrumb')).toBeNull();
     expect(root.querySelector('.page-lead')).toBeNull();
     expect(root.querySelector('h1')?.textContent?.trim()).toBe('Página no encontrada');
+  });
+
+  it('should give the layout the site root and a single display h1', () => {
+    const fixture = TestBed.createComponent(HostWithBreadcrumb);
+    fixture.detectChanges();
+    const root = fixture.nativeElement as HTMLElement;
+    expect(root.querySelector('.page-layout')?.classList).toContain('site-root');
+    const h1s = root.querySelectorAll('h1');
+    expect(h1s.length).toBe(1);
+    expect(h1s[0].classList).toContain('display-title');
+  });
+
+  it('should render split title parts with the full title text once', () => {
+    const fixture = TestBed.createComponent(HostWithParts);
+    fixture.detectChanges();
+    const h1 = (fixture.nativeElement as HTMLElement).querySelector('h1.page-title') as HTMLElement;
+    expect(h1.textContent).toBe('Preguntas frecuentes');
+    expect(h1.querySelector('em')?.textContent).toBe('frecuentes');
   });
 });

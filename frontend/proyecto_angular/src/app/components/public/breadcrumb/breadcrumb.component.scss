@@ -8,7 +8,7 @@
 }
 
 .breadcrumb-list {
-  @apply m-0 p-0 flex flex-wrap items-center justify-center;
+  @apply m-0 p-0 flex flex-wrap items-center justify-start;
   list-style: none;
   column-gap: 0.5rem;
   row-gap: 0.25rem;

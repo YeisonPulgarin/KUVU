@@ -26,7 +26,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
       height: 100%;
       transform-origin: left center;
       transform: scaleX(var(--page-progress, 0));
-      background: linear-gradient(90deg, var(--color-primario, #2b4c8c), var(--color-secundario, #3a6fd8));
+      background: linear-gradient(90deg, var(--color-brand-600), var(--color-brand-700));
     }
   `
 })
