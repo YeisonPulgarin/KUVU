@@ -105,14 +105,13 @@
     border-radius: 3px;
   }
 
-  // Literal fallbacks: Tailwind v4 does not emit the light theme tokens on :root.
   .steps-track::before {
-    background-color: var(--color-home-border, #cddccd);
+    background-color: var(--color-home-border);
   }
 
   .steps-line {
     z-index: 1;
-    background-color: var(--color-brand-600, #3e5c40);
+    background-color: var(--color-brand-600);
     transform-origin: top center;
     transform: scaleY(var(--p, 0));
   }

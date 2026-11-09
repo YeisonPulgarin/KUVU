@@ -2,12 +2,8 @@
 // Banda oscura en ambos temas: texto blanco fijo sobre velo de marca.
 // Mobile: foto completa 3:2 + texto sobre verde de marca (un recorte cover
 // dejaría afuera a los integrantes laterales). Desktop: foto de fondo.
-//
-// --team-band-green lleva fallback literal: Tailwind v4 no emite
-// --color-brand-700 al CSS global (solo se usa en estilos de componentes),
-// y sin fallback la banda queda sin fondo ni velo.
 :host {
-  --team-band-green: var(--color-brand-700, #2f4a2f);
+  --team-band-green: var(--color-brand-700);
   display: block;
   position: relative;
   overflow: hidden;
@@ -70,7 +66,7 @@
     display: inline-flex;
     align-items: center;
     margin-top: 0.5rem;
-    border-radius: var(--radius-pill, 9999px);
+    border-radius: var(--radius-pill);
     padding: 0.75rem 2rem;
     font-size: 1rem;
     line-height: 1.5;

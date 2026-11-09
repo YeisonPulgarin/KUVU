@@ -87,8 +87,8 @@ describe('StepsJourneyComponent', () => {
       });
     });
 
-    // The light theme tokens are not emitted on :root (Tailwind v4): the line must resolve
-    // its colours from literal fallbacks or it is invisible.
+    // The brand tokens come from the global @theme static block (styles.css); without them
+    // on :root the line and its track are invisible.
     it('draws the progress line and its track with the brand colours', () => {
       const line = section.querySelector('.steps-line') as HTMLElement;
       const track = section.querySelector('.steps-track') as HTMLElement;

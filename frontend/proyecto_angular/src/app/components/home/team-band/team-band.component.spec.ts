@@ -29,10 +29,10 @@ describe('TeamBandComponent', () => {
     band = (fixture.nativeElement as HTMLElement).querySelector('#equipo') as HTMLElement;
   });
 
-  // Regresión verify D-1: Tailwind v4 no emite --color-brand-700 al CSS global, así que la
-  // banda debe resolver su verde con un fallback propio. Sin él, el fondo queda transparente
-  // y el texto blanco es invisible en mobile, y el velo desaparece en desktop.
-  it('should resolve the brand green even when --color-brand-700 is not defined globally', () => {
+  // La banda toma su verde de --color-brand-700, que el bloque @theme static de styles.css
+  // declara en :root. Sin ese token el fondo queda transparente, el texto blanco es invisible
+  // en mobile y el velo desaparece en desktop.
+  it('should resolve the brand green from the global --color-brand-700 token', () => {
     const style = getComputedStyle(band);
     expect(style.getPropertyValue('--team-band-green').trim()).toBe('#2f4a2f');
     expect(style.backgroundColor).toBe(BRAND_GREEN);

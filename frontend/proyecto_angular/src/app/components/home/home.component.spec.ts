@@ -310,8 +310,6 @@ describe('HomeComponent', () => {
   // breadcrumb-y-cta-legible, slice cta-banda (CA-1, CA-2b, CA-8).
   describe('cta final legible', () => {
     const BRAND_GREEN = 'rgb(47, 74, 47)';
-    // Nombre armado por partes: un literal del token en un .ts cambia lo que emite Tailwind v4.
-    const BRAND_TOKEN = ['--color', 'brand', '700'].join('-');
     let band: HTMLElement;
     let button: HTMLElement;
 
@@ -320,13 +318,12 @@ describe('HomeComponent', () => {
       button = asElement(band.querySelector('.cta-button'));
     });
 
-    it('should keep the green background when the brand token is not defined', () => {
-      band.style.setProperty(BRAND_TOKEN, 'initial');
+    // El verde sale de --color-brand-700, que el bloque @theme static de styles.css declara en :root.
+    it('should take the green background from the global brand token', () => {
       expect(getComputedStyle(band).backgroundColor).toBe(BRAND_GREEN);
     });
 
     it('should keep the heading and lead white over the band', () => {
-      band.style.setProperty(BRAND_TOKEN, 'initial');
       expect(getComputedStyle(asElement(band.querySelector('h2'))).color).toBe('rgb(255, 255, 255)');
       expect(getComputedStyle(asElement(band.querySelector('p'))).color).toBe(
         'rgba(255, 255, 255, 0.85)'

@@ -232,8 +232,7 @@
 .cta-final {
   position: relative;
   overflow: hidden;
-  // Fallback: Tailwind v4 puede no emitir el token al CSS global (mismo patrón que team-band).
-  background-color: var(--color-brand-700, #2f4a2f);
+  background-color: var(--color-brand-700);
   color: #fff;
 
   .cta-final-inner {
@@ -268,7 +267,7 @@
   .cta-button {
     display: inline-flex;
     align-items: center;
-    border-radius: var(--radius-pill, 9999px);
+    border-radius: var(--radius-pill);
     padding: 1rem 2.5rem;
     font-size: 1rem;
     line-height: 1.5;
