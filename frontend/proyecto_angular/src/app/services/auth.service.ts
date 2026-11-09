@@ -10,6 +10,32 @@ import { Usuario } from '../models/index';
 
 const API = 'http://localhost:3000/api';
 
+export interface LoginExitoso {
+  ok: true;
+  requiereCambioPassword: false;
+  usuario: Usuario;
+  empresa: Empresa;
+}
+
+export interface LoginCambioRequerido {
+  ok: true;
+  requiereCambioPassword: true;
+}
+
+export type LoginResponse = LoginExitoso | LoginCambioRequerido;
+
+// Same text as the backend's 401: it never says which value failed.
+export const MENSAJE_ACCESO =
+  'Los datos de acceso no son válidos o la cuenta está bloqueada temporalmente. ' +
+  'Revisa e intenta de nuevo en unos minutos.';
+
+export interface CambioPendiente {
+  correo: string;
+  documento: string;
+  empresa_id: number;
+  empresa: Empresa | null;
+}
+
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private http   = inject(HttpClient);
@@ -35,33 +61,67 @@ export class AuthService {
     );
   }
 
-  // ── Login contra el backend (correo + documento) ─────────────
-  // ✅ FIX: el tipo de respuesta ahora incluye "empresa" que ya devuelve auth.js
-  login(correo: string, documento: string, empresa_id: number): Observable<{ ok: boolean; usuario: Usuario; empresa: Empresa }> {
-    return this.http.post<{ ok: boolean; usuario: Usuario; empresa: Empresa }>(
+  // ── Cambio de contraseña pendiente (solo en memoria) ─────────
+  // A login with a temporary password does not open a session: it only remembers who has
+  // to change it. Never the password, never in storage.
+  private _cambioPendiente = signal<CambioPendiente | null>(null);
+  cambioPendiente          = computed(() => this._cambioPendiente());
+
+  // ── Login contra el backend (correo + documento + contraseña) ─
+  // `empresa` (optional) is the company picked in /acceder; the password change screen uses it
+  // for its branding while there is no session yet.
+  login(
+    correo: string, documento: string, password: string, empresa_id: number, empresa?: Empresa | null
+  ): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(
       `${API}/auth/login`,
-      { correo, documento, empresa_id }
+      { correo, documento, password, empresa_id }
     ).pipe(
       tap(resp => {
-        if (resp.ok) {
-          // ✅ FIX PRINCIPAL: usar resp.empresa directamente (viene del backend)
-          // NO depender de this._empresas().find() que puede estar vacío o
-          // encontrar la empresa equivocada si hay un timing issue
-          const empresa: Empresa = resp.empresa ?? this._empresas().find(e => e.id === empresa_id) ?? null;
-
-          this._empresaActiva.set(empresa);
-          this._usuarioActivo.set(resp.usuario);
-          this._isAuthenticated.set(true);
-          this.aplicarTemaEmpresa(empresa);
-
-          // Persistir sesión en localStorage
-          localStorage.setItem('empresa_id', String(empresa_id));
-          localStorage.setItem('usuario',    JSON.stringify(resp.usuario));
-          // ✅ FIX: guardar empresa completa para restaurarSesion sin delay HTTP
-          if (empresa) localStorage.setItem('empresa', JSON.stringify(empresa));
+        if (resp.requiereCambioPassword) {
+          this._cambioPendiente.set({
+            correo, documento, empresa_id,
+            empresa: empresa ?? this._empresas().find(e => e.id === empresa_id) ?? null,
+          });
+        } else if (resp.ok) {
+          this.iniciarSesion(resp, empresa_id);
         }
       })
     );
+  }
+
+  // ── Cambiar contraseña (obligatorio tras la temporal, o voluntario con sesión) ──
+  cambiarPassword(actual: string, nueva: string): Observable<LoginExitoso> {
+    const pendiente = this._cambioPendiente();
+    const usuario   = this._usuarioActivo();
+    const datos = pendiente
+      ? { correo: pendiente.correo, documento: pendiente.documento, empresa_id: pendiente.empresa_id }
+      : { correo: usuario?.correo ?? '', documento: usuario?.documento ?? '', empresa_id: usuario?.empresa_id ?? 0 };
+
+    return this.http.post<LoginExitoso>(
+      `${API}/auth/cambiar-password`,
+      { ...datos, password: actual, passwordNueva: nueva }
+    ).pipe(
+      tap(resp => {
+        this._cambioPendiente.set(null);
+        this.iniciarSesion(resp, datos.empresa_id);
+      })
+    );
+  }
+
+  private iniciarSesion(resp: LoginExitoso, empresa_id: number): void {
+    // resp.empresa comes from the backend; the cached list is only a fallback.
+    const empresa: Empresa | null = resp.empresa ?? this._empresas().find(e => e.id === empresa_id) ?? null;
+
+    this._empresaActiva.set(empresa);
+    this._usuarioActivo.set(resp.usuario);
+    this._isAuthenticated.set(true);
+    this.aplicarTemaEmpresa(empresa);
+
+    // Persistir sesión en localStorage
+    localStorage.setItem('empresa_id', String(empresa_id));
+    localStorage.setItem('usuario',    JSON.stringify(resp.usuario));
+    if (empresa) localStorage.setItem('empresa', JSON.stringify(empresa));
   }
 
   // ── Logout ───────────────────────────────────────────────────
@@ -69,6 +129,7 @@ export class AuthService {
     this._empresaActiva.set(null);
     this._usuarioActivo.set(null);
     this._isAuthenticated.set(false);
+    this._cambioPendiente.set(null);
     localStorage.clear();
     this.resetearTema();
     this.router.navigate(['/login']);

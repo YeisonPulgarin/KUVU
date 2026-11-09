@@ -347,14 +347,54 @@
   cursor: pointer;
 }
 
-// Decorativo: no navega ni abre nada (decisión de producto)
+// Despliega la ayuda de recuperación (la contraseña la restablece el administrador)
 .extras-link {
   font-size: .78rem;
-  color: rgba(140, 215, 255, 0.6);
-  cursor: default;
+  font-family: inherit;
+  color: rgba(140, 215, 255, 0.8);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
   min-height: 44px;
   display: inline-flex;
   align-items: center;
+
+  &:hover { color: rgba(170, 225, 255, 1); text-decoration: underline; }
+  &:focus-visible { outline: 2px solid rgba(140, 215, 255, 0.8); outline-offset: 2px; border-radius: 4px; }
+}
+
+.login-ayuda {
+  margin: 0 0 .85rem;
+  padding: .55rem .8rem;
+  border-radius: 10px;
+  font-size: .8rem;
+  line-height: 1.45;
+  color: rgba(255,255,255,0.75);
+  background: rgba(140, 215, 255, 0.08);
+  border: 1px solid rgba(140, 215, 255, 0.2);
+}
+
+// ── Campo de contraseña con mostrar/ocultar ───────────────────
+.field-input--password { padding-right: 4.6rem; }
+
+.field-toggle {
+  position: absolute;
+  right: .35rem;
+  top: 50%;
+  transform: translateY(-50%);
+  min-height: 36px;
+  min-width: 44px;
+  padding: 0 .65rem;
+  border: none;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.75);
+  font: 600 .74rem 'Inter', sans-serif;
+  cursor: pointer;
+
+  &:hover { background: rgba(255,255,255,0.14); color: #fff; }
+  &:focus-visible { outline: 2px solid rgba(140, 215, 255, 0.8); outline-offset: 1px; }
 }
 
 // ── Error ────────────────────────────────────────────────────
