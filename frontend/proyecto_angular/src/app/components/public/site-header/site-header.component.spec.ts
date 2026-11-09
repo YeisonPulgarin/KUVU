@@ -18,6 +18,12 @@ describe('SiteHeaderComponent', () => {
   let root: HTMLElement;
   let router: Router;
 
+  // Leaves no theme behind: later specs read the default light theme.
+  afterEach(() => {
+    localStorage.removeItem('kuvu-theme');
+    document.documentElement.classList.remove('dark');
+  });
+
   beforeEach(async () => {
     localStorage.clear();
     document.documentElement.classList.remove('dark');

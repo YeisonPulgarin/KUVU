@@ -4,7 +4,7 @@ import { PublicPageComponent } from '../../public/public-page/public-page.compon
 import { ServiceIconComponent } from '../../public/service-icon/service-icon.component';
 import { RevealDirective } from '../../../directives/reveal.directive';
 import { PageMetaService } from '../../../services/page-meta.service';
-import { benefitsByRole, services } from '../../../content';
+import { benefitsByRole, headlines, services } from '../../../content';
 import { pageMeta } from '../../../content/pages';
 import { breadcrumbFor } from '../../../content/site';
 
@@ -21,6 +21,7 @@ export class ServiciosComponent implements OnInit {
   readonly breadcrumb = breadcrumbFor('/servicios');
   readonly services = services;
   readonly benefitsByRole = benefitsByRole;
+  readonly headline = headlines.servicios;
 
   ngOnInit(): void {
     this.meta.setPage(pageMeta.servicios);

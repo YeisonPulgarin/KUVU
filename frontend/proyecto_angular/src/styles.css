@@ -35,7 +35,7 @@
   /* Escala fluida del sitio público (clamp: crece de forma continua con el viewport) */
   --text-display-xl: clamp(2.75rem, 1.2rem + 7.6vw, 7.5rem);
   --text-display-l:  clamp(2.25rem, 1.4rem + 4.6vw, 5rem);
-  --text-display-m:  clamp(1.75rem, 1.2rem + 2.2vw, 3rem);
+  --text-display-m:  clamp(2rem, 1.4rem + 2.2vw, 3rem);
   --text-lead:       clamp(1.25rem, 1rem + 0.9vw, 1.75rem);
   --text-body-site:  clamp(1rem, 0.93rem + 0.35vw, 1.1875rem);
 

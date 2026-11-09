@@ -97,11 +97,10 @@ describe('PreguntasFrecuentesComponent', () => {
       expect(root.textContent).toContain('¿KUVU usa cookies?');
     });
 
-    it('should number the groups from 01 and link to contact and the data policy', () => {
-      const eyebrows = Array.from(root.querySelectorAll('.faq-group .section-eyebrow'));
-      expect(eyebrows.map((e) => e.textContent?.trim())).toEqual(
-        faqGroups.map((_, i) => String(i + 1).padStart(2, '0'))
-      );
+    it('should drop numbered eyebrows and close with a brand block linking to contact and the data policy', () => {
+      expect(root.querySelectorAll('.section-eyebrow').length).toBe(0);
+      expect(root.querySelector('.faq-more')?.closest('section')?.classList).toContain('block-brand');
+      expect(root.querySelector('h1 em')?.textContent).toBe('frecuentes');
       const hrefs = Array.from(root.querySelectorAll('.faq-more a')).map((a) => a.getAttribute('href'));
       expect(hrefs).toEqual(['/contacto', '/legal#tratamiento-datos']);
     });

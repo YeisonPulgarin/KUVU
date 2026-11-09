@@ -9,6 +9,12 @@ describe('SiteFooterComponent', () => {
   let fixture: ComponentFixture<SiteFooterComponent>;
   let root: HTMLElement;
 
+  // Leaves no theme behind: later specs read the default light theme.
+  afterEach(() => {
+    localStorage.removeItem('kuvu-theme');
+    document.documentElement.classList.remove('dark');
+  });
+
   beforeEach(async () => {
     localStorage.clear();
     document.documentElement.classList.remove('dark');

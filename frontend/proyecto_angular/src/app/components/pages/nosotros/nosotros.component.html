@@ -1,64 +1,77 @@
 <app-public-page
   pageTitle="Nosotros"
+  [titleParts]="headline.parts"
   lead="Conoce quién es KUVU, cómo opera y con quién trabaja."
   [breadcrumb]="breadcrumb"
 >
-  <!-- ── Secciones (quién es / cómo opera / con quién trabaja) ── -->
+  <!-- Secciones editoriales: titular fijo a la izquierda, texto a la derecha -->
   <section class="about-sections">
     <div class="container">
-      @for (section of sections; track section.title; let i = $index) {
+      @for (section of sections; track section.title) {
         <article class="about-section" data-reveal>
-          <span class="section-eyebrow" aria-hidden="true">{{ number(i) }}</span>
-          <h2 class="about-title">{{ section.title }}</h2>
+          <h2 class="about-title display-title display-title--m">{{ section.title }}</h2>
           <p class="about-body">{{ section.body }}</p>
         </article>
       }
     </div>
   </section>
 
-  <!-- ── Equipo ──────────────────────────────────────────────── -->
-  <section class="team">
+  <!-- Equipo: galería asimétrica de las tres fotos -->
+  <section class="team surface-tint" aria-labelledby="nosotros-equipo">
     <div class="container">
-      <figure class="team-figure" data-reveal>
-        <app-responsive-image
-          class="team-photo"
-          [image]="team.photos[0]"
-          sizes="(min-width: 1152px) 1104px, 100vw"
-        ></app-responsive-image>
-        <figcaption class="team-caption">{{ team.members.join(" · ") }}</figcaption>
+      <h2 class="display-title display-title--m team-title" id="nosotros-equipo">
+        <app-headline [parts]="teamHeadline.parts" [title]="teamHeadline.title" />
+      </h2>
+      <figure class="team-figure">
+        <div class="team-gallery">
+          @for (photo of team.photos; track photo.basePath; let i = $index) {
+            <app-responsive-image
+              [class]="'team-photo team-photo--' + (i + 1)"
+              data-reveal
+              [image]="photo"
+              fit="cover"
+              [sizes]="i === 0 ? '(min-width: 768px) 640px, 92vw' : '(min-width: 768px) 400px, 92vw'"
+            ></app-responsive-image>
+          }
+        </div>
+        <figcaption class="team-caption">{{ members }}</figcaption>
       </figure>
     </div>
   </section>
 
-  <!-- ── Origen ──────────────────────────────────────────────── -->
+  <!-- Origen -->
   <section class="origin">
     <div class="container">
-      <span class="section-eyebrow" aria-hidden="true">{{ number(sections.length) }}</span>
-      <h2 class="about-title">{{ origin.title }}</h2>
-      @for (paragraph of origin.paragraphs; track $index) {
-        <p class="origin-paragraph" data-reveal>{{ paragraph }}</p>
-      }
+      <h2 class="about-title display-title display-title--m">
+        <app-headline [parts]="originHeadline.parts" [title]="originHeadline.title" />
+      </h2>
+      <div class="origin-text">
+        @for (paragraph of origin.paragraphs; track $index) {
+          <p class="origin-paragraph" data-reveal>{{ paragraph }}</p>
+        }
+      </div>
     </div>
   </section>
 
-  <!-- ── CTA de contacto ─────────────────────────────────────── -->
-  <section class="cta-contact">
+  <!-- CTA de contacto -->
+  <section class="cta-contact site-cta block-brand">
     <div class="container cta-contact-inner">
-      <span class="section-eyebrow" aria-hidden="true">{{ number(sections.length + 1) }}</span>
-      <h2>¿Quieres saber más sobre KUVU?</h2>
+      <h2 class="display-title display-title--l">¿Quieres saber más sobre KUVU?</h2>
       <p>Escríbenos y te contamos cómo acompañamos a tu inmobiliaria.</p>
-      <a
-        class="btn-whatsapp"
-        [href]="whatsappLink"
-        target="_blank"
-        rel="noopener"
-        aria-label="Escríbenos por WhatsApp para información sobre KUVU"
-      >
-        Escríbenos por WhatsApp
-      </a>
-      <a routerLink="/contacto" class="link-arrow">
-        Ir al formulario de contacto <span class="link-arrow-icon" aria-hidden="true">→</span>
-      </a>
+      <div class="cta-actions">
+        <a
+          class="btn-whatsapp btn-site"
+          [href]="whatsappLink"
+          target="_blank"
+          rel="noopener"
+          aria-label="Escríbenos por WhatsApp para información sobre KUVU"
+        >
+          Escríbenos por WhatsApp
+        </a>
+        <a routerLink="/contacto" class="link-arrow cta-form-link">
+          Ir al formulario de contacto <span class="link-arrow-icon" aria-hidden="true">→</span>
+        </a>
+      </div>
     </div>
   </section>
 </app-public-page>

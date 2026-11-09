@@ -37,7 +37,7 @@ describe('ServiciosComponent', () => {
   });
 
   it('should list every service with title, description and icon', () => {
-    const cards = Array.from(root.querySelectorAll('.service-card'));
+    const cards = Array.from(root.querySelectorAll('.service-row'));
     expect(cards.length).toBe(services.length);
     cards.forEach((card, i) => {
       expect(card.querySelector('h3')?.textContent?.trim()).toBe(services[i].title);
@@ -55,21 +55,26 @@ describe('ServiciosComponent', () => {
     });
   });
 
-  it('should close with a secondary "Contactar" link to /contacto', () => {
-    const cta = root.querySelector('main a.btn-secondary') as HTMLAnchorElement;
+  it('should close with a "Contactar" site button to /contacto on a brand block', () => {
+    const cta = root.querySelector('main .block-brand a.btn-site') as HTMLAnchorElement;
     expect(cta.getAttribute('href')).toBe('/contacto');
     expect(cta.textContent).toContain('Contactar');
     expect(cta.querySelector('.link-arrow-icon')?.getAttribute('aria-hidden')).toBe('true');
     expect(root.querySelector('main .btn-primary')).toBeNull();
   });
 
-  it('should number its sections correlatively from 01, hidden from assistive tech', () => {
-    const eyebrows = Array.from(root.querySelectorAll('main .section-eyebrow'));
-    expect(eyebrows.map((e) => e.textContent?.trim())).toEqual(['01', '02', '03']);
-    eyebrows.forEach((e) => expect(e.getAttribute('aria-hidden')).toBe('true'));
+  it('should drop numbered eyebrows and title its sections in display type', () => {
+    expect(root.querySelectorAll('main .section-eyebrow').length).toBe(0);
+    const h2s = Array.from(root.querySelectorAll('main h2'));
+    expect(h2s.length).toBe(3);
+    h2s.forEach((h2) => expect(h2.classList).toContain('display-title'));
+  });
+
+  it('should emphasize part of the page title without changing it', () => {
+    expect(root.querySelector('h1 em')?.textContent).toBe('Servicios');
   });
 
   it('should reveal its cards on scroll', () => {
-    expect(root.querySelectorAll('.service-card[data-reveal]').length).toBe(services.length);
+    expect(root.querySelectorAll('.service-row[data-reveal]').length).toBe(services.length);
   });
 });

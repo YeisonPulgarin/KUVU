@@ -63,7 +63,8 @@ $grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width=
   font-family: var(--font-display);
   font-weight: 900;
   text-transform: uppercase;
-  line-height: 0.92;
+  // Las mayúsculas acentuadas (Á, É, Ó) necesitan aire entre líneas.
+  line-height: 1;
   letter-spacing: -0.005em;
   text-wrap: balance;
   overflow-wrap: break-word;
@@ -86,7 +87,6 @@ $grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width=
 .display-title--m {
   font-size: var(--text-display-m);
   font-weight: 800;
-  line-height: 0.95;
 }
 
 // Sobre un bloque de marca, el énfasis no puede usar el verde del fondo.
@@ -181,6 +181,16 @@ $grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width=
       translate var(--dur-fast) var(--ease-out-expo),
       box-shadow var(--dur-fast) var(--ease-out-expo);
   }
+
+  .btn-site .link-arrow-icon {
+    display: inline-block;
+    transition: transform var(--dur-base) var(--ease-out-expo);
+  }
+
+  .btn-site:hover .link-arrow-icon,
+  .btn-site:focus-visible .link-arrow-icon {
+    transform: translateX(4px);
+  }
 }
 
 // Con puntero fino el botón avanza hacia su sombra; al presionarlo la toca.
@@ -206,5 +216,49 @@ $grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width=
 
   @media (width >= 768px) {
     padding-inline: 1.5rem;
+  }
+}
+
+/* ── Secciones de las páginas internas ───────────────────── */
+
+.site-section {
+  padding-block: 4rem;
+
+  @media (width >= 768px) {
+    padding-block: 6.5rem;
+  }
+}
+
+// Encabezado de sección apilado: titular display y, debajo, su bajada.
+.site-section-head {
+  margin-bottom: 2.5rem;
+
+  .display-title {
+    margin-bottom: 1rem;
+  }
+
+  @media (width >= 768px) {
+    margin-bottom: 3.5rem;
+  }
+}
+
+// CTA de cierre de página: bloque de marca a sangre completa.
+.site-cta {
+  padding-block: 4.5rem;
+
+  @media (width >= 768px) {
+    padding-block: 7rem;
+  }
+
+  .display-title {
+    max-width: 16ch;
+    margin-bottom: 1.25rem;
+  }
+
+  p {
+    max-width: 44ch;
+    margin: 0 0 2rem;
+    font-size: var(--text-lead);
+    line-height: 1.45;
   }
 }

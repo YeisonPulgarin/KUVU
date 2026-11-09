@@ -1,10 +1,9 @@
-<app-public-page [pageTitle]="page.title" [lead]="page.lead" [breadcrumb]="breadcrumb">
-  <section class="section" aria-labelledby="contacto-form-title">
+<app-public-page [pageTitle]="page.title" [titleParts]="headline.parts" [lead]="page.lead" [breadcrumb]="breadcrumb">
+  <section class="section surface-dots" aria-labelledby="contacto-form-title">
     <div class="container contact-grid">
 
-      <div class="contact-form-col">
-        <span class="section-eyebrow" aria-hidden="true">01</span>
-        <h2 class="section-title" id="contacto-form-title">Escríbenos</h2>
+      <div class="contact-form-col contact-card">
+        <h2 class="section-title display-title display-title--m" id="contacto-form-title">Escríbenos</h2>
 
         <form class="contact-form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
           <div class="field">
@@ -133,8 +132,7 @@
       </div>
 
       <aside class="contact-aside" aria-labelledby="contacto-canales">
-        <div class="aside-block" data-reveal>
-          <span class="section-eyebrow" aria-hidden="true">02</span>
+        <div class="aside-block surface-tint" data-reveal>
           <h2 class="aside-title" id="contacto-canales">{{ page.directChannelsTitle }}</h2>
           <ul class="channel-list">
             <li>
@@ -147,23 +145,26 @@
           </ul>
         </div>
 
-        <div class="aside-block" data-reveal>
-          <span class="section-eyebrow" aria-hidden="true">03</span>
-          <h2 class="aside-title">{{ page.stepsTitle }}</h2>
-          <ol class="steps">
-            @for (step of steps; track step.title; let i = $index) {
-              <li class="step">
-                <span class="step-number" aria-hidden="true">{{ i + 1 }}</span>
-                <div>
-                  <h3>{{ step.title }}</h3>
-                  <p>{{ step.description }}</p>
-                </div>
-              </li>
-            }
-          </ol>
-        </div>
       </aside>
 
+    </div>
+  </section>
+
+  <!-- Qué pasa después: bloque de marca con los pasos numerados -->
+  <section class="steps-band site-cta block-brand" aria-labelledby="contacto-pasos">
+    <div class="container" data-reveal>
+      <h2 class="display-title display-title--m" id="contacto-pasos">{{ page.stepsTitle }}</h2>
+      <ol class="steps">
+        @for (step of steps; track step.title; let i = $index) {
+          <li class="step">
+            <span class="step-number" aria-hidden="true">{{ i + 1 }}</span>
+            <div>
+              <h3>{{ step.title }}</h3>
+              <p>{{ step.description }}</p>
+            </div>
+          </li>
+        }
+      </ol>
     </div>
   </section>
 </app-public-page>

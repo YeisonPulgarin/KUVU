@@ -1,61 +1,78 @@
-@reference "../../../../styles.css";
-
-$ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
-
 .container {
-  @apply max-w-6xl mx-auto px-4;
+  max-width: 72rem;
+  margin-inline: auto;
+  padding-inline: 1rem;
 
   @media (width >= 768px) {
-    @apply px-6;
+    padding-inline: 1.5rem;
   }
 }
 
 .faq-sections {
-  @apply py-20;
-  background-color: var(--color-home-bg);
+  padding-block: 4rem;
 
   @media (width >= 768px) {
-    @apply py-28;
+    padding-block: 6.5rem;
+  }
+}
+
+// Grupo: título fijo a la izquierda mientras se leen sus preguntas.
+.faq-group {
+  display: grid;
+  gap: 1.25rem 3rem;
+  grid-template-columns: minmax(0, 1fr);
+
+  @media (width >= 768px) {
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    align-items: start;
   }
 
-  .faq-group {
-    @apply mb-16;
+  & + & {
+    margin-top: 3.5rem;
 
-    &:last-child {
-      @apply mb-0;
-    }
-
-    .faq-group-title {
-      @apply m-0 mb-4 text-2xl font-extrabold;
-      letter-spacing: -0.01em;
-      color: var(--color-brand-600);
-    }
-
-    .faq-list {
-      @apply flex flex-col;
-      border-top: 1px solid var(--color-home-border);
-    }
-
-    .faq-item {
-      @apply py-6;
-      border-bottom: 1px solid var(--color-home-border);
-
-      .faq-q {
-        @apply m-0 mb-2 text-lg font-bold;
-        color: var(--color-home-text);
-      }
-
-      .faq-a {
-        @apply m-0 text-sm leading-relaxed;
-        color: var(--color-home-muted);
-      }
+    @media (width >= 768px) {
+      margin-top: 5rem;
     }
   }
+}
+
+.faq-group-title {
+  @media (width >= 768px) {
+    position: sticky;
+    top: 6rem;
+  }
+}
+
+.faq-item {
+  padding-block: 1.5rem;
+  border-top: 2px solid var(--color-home-text);
+
+  &:last-child {
+    border-bottom: 2px solid var(--color-home-text);
+  }
+}
+
+.faq-q {
+  margin: 0 0 0.5rem;
+  font-size: var(--text-lead);
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.faq-a {
+  margin: 0;
+  color: var(--color-home-muted);
 }
 
 .faq-more {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem 2rem;
-  margin-top: 3.5rem;
+  align-items: center;
+  gap: 1.25rem 2rem;
+}
+
+.faq-data-link {
+  color: var(--color-on-brand);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
 }

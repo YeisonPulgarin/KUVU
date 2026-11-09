@@ -6,6 +6,12 @@ describe('ThemeService', () => {
     document.documentElement.classList.remove('dark');
   });
 
+  // Leaves no theme behind: later specs read the default light theme.
+  afterEach(() => {
+    localStorage.removeItem('kuvu-theme');
+    document.documentElement.classList.remove('dark');
+  });
+
   it('should start in light mode by default', () => {
     const service = new ThemeService();
     expect(service.isDark()).toBeFalse();

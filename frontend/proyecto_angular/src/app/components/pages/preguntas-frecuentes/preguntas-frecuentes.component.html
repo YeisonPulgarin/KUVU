@@ -1,15 +1,15 @@
 <app-public-page
   pageTitle="Preguntas frecuentes"
+  [titleParts]="headline.parts"
   lead="Resuelve las dudas más comunes sobre KUVU. Si no encuentras la respuesta, escríbenos desde la página de contacto."
   [breadcrumb]="breadcrumb"
 >
-  <!-- ── FAQ completo agrupado ───────────────────────────────── -->
+  <!-- FAQ completo: título de grupo fijo a la izquierda, preguntas a la derecha -->
   <section class="faq-sections">
     <div class="container">
-      @for (group of groups; track group.group; let i = $index) {
+      @for (group of groups; track group.group) {
         <div class="faq-group" data-reveal>
-          <span class="section-eyebrow" aria-hidden="true">{{ number(i) }}</span>
-          <h2 class="faq-group-title">{{ group.group }}</h2>
+          <h2 class="faq-group-title display-title display-title--m">{{ group.group }}</h2>
           <div class="faq-list">
             @for (item of group.items; track item.q) {
               <article class="faq-item">
@@ -20,15 +20,18 @@
           </div>
         </div>
       }
+    </div>
+  </section>
 
-      <div class="faq-more" data-reveal>
-        <a routerLink="/contacto" class="link-arrow">
-          ¿Te quedó otra duda? Escríbenos <span class="link-arrow-icon" aria-hidden="true">→</span>
-        </a>
-        <a routerLink="/legal" fragment="tratamiento-datos" class="link-arrow">
-          Cómo tratamos tus datos <span class="link-arrow-icon" aria-hidden="true">→</span>
-        </a>
-      </div>
+  <!-- Cierre: bloque de marca con los dos caminos -->
+  <section class="site-cta block-brand faq-cta">
+    <div class="container faq-more" data-reveal>
+      <a routerLink="/contacto" class="btn-site">
+        ¿Te quedó otra duda? Escríbenos <span class="link-arrow-icon" aria-hidden="true">→</span>
+      </a>
+      <a routerLink="/legal" fragment="tratamiento-datos" class="link-arrow faq-data-link">
+        Cómo tratamos tus datos <span class="link-arrow-icon" aria-hidden="true">→</span>
+      </a>
     </div>
   </section>
 </app-public-page>

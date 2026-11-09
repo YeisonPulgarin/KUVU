@@ -187,4 +187,17 @@ describe('ContactoComponent', () => {
     expect(steps.length).toBe(contactSteps.length);
     expect(steps.map((s) => s.querySelector('.step-number')?.textContent?.trim())).toEqual(['1', '2', '3']);
   });
+
+  it('should drop numbered eyebrows and close with the steps on a brand block', () => {
+    expect(root.querySelectorAll('.section-eyebrow').length).toBe(0);
+    const sections = root.querySelectorAll('main > section');
+    const last = sections[sections.length - 1];
+    expect(last.classList).toContain('block-brand');
+    expect(last.querySelectorAll('.steps .step').length).toBe(contactSteps.length);
+  });
+
+  it('should present the form inside the bordered contact card', () => {
+    expect(root.querySelector('.contact-card form.contact-form')).toBeTruthy();
+    expect(root.querySelector('h1 em')?.textContent).toBe('Contacto');
+  });
 });

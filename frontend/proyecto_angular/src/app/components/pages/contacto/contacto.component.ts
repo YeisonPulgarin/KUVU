@@ -21,6 +21,7 @@ import {
   contactSubjects
 } from '../../../content/contact';
 import { pageMeta } from '../../../content/pages';
+import { headlines } from '../../../content/headlines';
 import { responsible } from '../../../content/responsible';
 import {
   breadcrumbFor,
@@ -60,6 +61,7 @@ export class ContactoComponent implements OnInit {
 
   readonly breadcrumb = breadcrumbFor('/contacto');
   readonly page = contactPage;
+  readonly headline = headlines.contacto;
   readonly labels = contactFieldLabels;
   readonly errors = contactErrors;
   readonly subjects = contactSubjects;

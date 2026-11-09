@@ -73,18 +73,27 @@ describe('NosotrosComponent', () => {
   });
 
   describe('team photo', () => {
-    it('should render the full team photo between the about sections and the origin', () => {
+    it('should render the three team photos between the about sections and the origin', () => {
       const sections = Array.from(root.querySelectorAll('main > section')).map(
-        (s) => s.className
+        (s) => s.classList[0]
       );
-      const team = sections.indexOf('team');
-      expect(team).toBeGreaterThan(sections.indexOf('about-sections'));
-      expect(team).toBeLessThan(sections.indexOf('origin'));
+      const teamIndex = sections.indexOf('team');
+      expect(teamIndex).toBeGreaterThan(sections.indexOf('about-sections'));
+      expect(teamIndex).toBeLessThan(sections.indexOf('origin'));
 
-      const img = asElement(root.querySelector('.team figure app-responsive-image picture img'));
-      expect(img.classList).not.toContain('responsive-image__img--cover');
-      expect(img.getAttribute('src')).toBe('/Imagenes_web/equipo-kuvu-1-1200.jpeg');
-      expect(img.getAttribute('sizes')).toBe('(min-width: 1152px) 1104px, 100vw');
+      const imgs = Array.from(root.querySelectorAll('.team figure app-responsive-image picture img'));
+      expect(imgs.length).toBe(3);
+      expect(imgs.map((img) => img.getAttribute('src'))).toEqual([
+        '/Imagenes_web/equipo-kuvu-1-1200.jpeg',
+        '/Imagenes_web/equipo-kuvu-2-960.jpeg',
+        '/Imagenes_web/equipo-kuvu-3-960.jpeg'
+      ]);
+      imgs.forEach((img) => expect(img.getAttribute('loading')).toBe('lazy'));
+    });
+
+    it('should give each photo its own descriptive alt text', () => {
+      const alts = Array.from(root.querySelectorAll('.team picture img')).map((img) => img.getAttribute('alt'));
+      expect(alts).toEqual(team.photos.map((p) => p.alt));
     });
 
     it('should describe the photo with a descriptive alt text that names no member', () => {
@@ -118,10 +127,13 @@ describe('NosotrosComponent', () => {
   });
 
   describe('editorial numbering', () => {
-    it('should number the sections correlatively from 01, hidden from assistive tech', () => {
-      const eyebrows = Array.from(root.querySelectorAll('main .section-eyebrow'));
-      expect(eyebrows.map((e) => e.textContent?.trim())).toEqual(['01', '02', '03', '04', '05']);
-      eyebrows.forEach((e) => expect(e.getAttribute('aria-hidden')).toBe('true'));
+    it('should drop numbered eyebrows', () => {
+      expect(root.querySelectorAll('main .section-eyebrow').length).toBe(0);
+    });
+
+    it('should close with a brand block CTA', () => {
+      const sections = root.querySelectorAll('main > section');
+      expect(sections[sections.length - 1].classList).toContain('block-brand');
     });
 
     it('should offer the contact form as a secondary link', () => {

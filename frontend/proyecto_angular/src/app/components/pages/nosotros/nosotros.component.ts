@@ -5,13 +5,14 @@ import { RevealDirective } from '../../../directives/reveal.directive';
 import { ResponsiveImageComponent } from '../../public/responsive-image/responsive-image.component';
 import { PageMetaService } from '../../../services/page-meta.service';
 import { pageMeta as metaByPage } from '../../../content/pages';
-import { aboutOrigin, aboutSections, team } from '../../../content';
+import { aboutOrigin, aboutSections, headlines, team } from '../../../content';
+import { HeadlineComponent } from '../../public/headline/headline.component';
 import { breadcrumbFor, contactWhatsAppLink } from '../../../content/site';
 
 @Component({
   selector: 'app-nosotros',
   standalone: true,
-  imports: [RouterModule, PublicPageComponent, RevealDirective, ResponsiveImageComponent],
+  imports: [RouterModule, PublicPageComponent, RevealDirective, ResponsiveImageComponent, HeadlineComponent],
   templateUrl: './nosotros.component.html',
   styleUrls: ['./nosotros.component.scss']
 })
@@ -22,13 +23,12 @@ export class NosotrosComponent implements OnInit {
   readonly origin = aboutOrigin;
   readonly team = team;
   readonly whatsappLink = contactWhatsAppLink;
+  readonly members = team.members.join(' · ');
+  readonly headline = headlines.nosotros;
+  readonly teamHeadline = headlines.equipo;
+  readonly originHeadline = headlines.origen;
 
   ngOnInit(): void {
     this.pageMeta.setPage(metaByPage.nosotros);
-  }
-
-  /** Two-digit section number ("01", "02"…). */
-  number(index: number): string {
-    return String(index + 1).padStart(2, '0');
   }
 }
