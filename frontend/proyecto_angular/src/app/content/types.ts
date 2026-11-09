@@ -79,7 +79,23 @@ export interface TeamSection {
   readonly lead: string;
   readonly linkLabel: string;
   readonly members: readonly string[];
-  readonly image: SiteImage;
+  /** Fotos del equipo; la primera es la destacada de la home. */
+  readonly photos: readonly SiteImage[];
+}
+
+/**
+ * Fragmento de un titular: texto plano o texto con énfasis. `accent` pinta el fragmento con
+ * el color de marca; `tape` lo pone dentro de una cinta de fondo de marca.
+ */
+export type HeadlinePart = string | { readonly text: string; readonly em: 'accent' | 'tape' };
+
+/**
+ * Titular partido para resaltar una parte. La concatenación de `parts` es exactamente
+ * `title` (sin reescribir palabras); `title` sigue siendo el texto de referencia.
+ */
+export interface Headline {
+  readonly title: string;
+  readonly parts: readonly HeadlinePart[];
 }
 
 /** Keys of every public page that publishes its own meta tags. */

@@ -7,7 +7,7 @@ const BREADCRUMB_SCRIPT_ID = 'kuvu-breadcrumb-jsonld';
 const CANONICAL_SELECTOR = 'link[rel="canonical"]';
 
 /** Image shared by every page in social previews (an existing site image). */
-export const SHARE_IMAGE_PATH = '/Imagenes_web/equipo-ycw-1024.jpeg';
+export const SHARE_IMAGE_PATH = '/Imagenes_web/equipo-kuvu-1-1024.jpeg';
 
 @Injectable({ providedIn: 'root' })
 export class PageMetaService {

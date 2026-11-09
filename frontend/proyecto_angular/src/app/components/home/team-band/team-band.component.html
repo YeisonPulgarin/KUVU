@@ -1,9 +1,9 @@
 <div class="team-band-media" data-reveal="clip" appScrollProgress desktopOnly>
-  <app-responsive-image [image]="team.image" [decorative]="true" fit="cover" sizes="100vw"></app-responsive-image>
+  <app-responsive-image [image]="team.photos[0]" [decorative]="true" fit="cover" sizes="100vw"></app-responsive-image>
 </div>
 <div class="container team-band-content" data-reveal>
   <h2 id="equipo-title" class="team-band-title">{{ team.title }}</h2>
   <p class="team-band-lead">{{ team.lead }}</p>
-  <p class="team-band-caption">{{ team.image.caption }}</p>
+  <p class="team-band-caption">{{ team.members.join(" · ") }}</p>
   <a routerLink="/nosotros" class="team-band-link" aria-label="Conoce al equipo de KUVU en Nosotros">{{ team.linkLabel }}</a>
 </div>

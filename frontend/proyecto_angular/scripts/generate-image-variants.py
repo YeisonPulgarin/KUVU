@@ -4,8 +4,9 @@ Uso:
     python scripts/generate-image-variants.py <origen> <nombre-base> [--keep-original-as-max]
 
 Escribe {nombre-base}-{ancho}.webp y .jpeg para cada ancho de WIDTHS que no supere el
-ancho del original, conservando el aspecto. Con --keep-original-as-max, la variante JPEG
-del ancho original es una copia byte a byte del archivo de origen (sin recomprimir).
+ancho del original, conservando el aspecto. Con --keep-original-as-max, el ancho original
+también es una variante (aunque no esté en WIDTHS) y su JPEG es una copia byte a byte del
+archivo de origen (sin recomprimir).
 Requiere Python 3 y Pillow con soporte WebP.
 """
 
@@ -33,7 +34,9 @@ def main() -> int:
         image = original.convert("RGB")
     width, height = image.size
     targets = [w for w in WIDTHS if w <= width]
-    if not targets:
+    if args.keep_original_as_max and width not in targets:
+        targets.append(width)
+    if not [w for w in WIDTHS if w <= width]:
         print(f"El original mide {width}px, menos que el ancho mínimo {WIDTHS[0]}px", file=sys.stderr)
         return 1
 

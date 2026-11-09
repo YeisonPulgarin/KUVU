@@ -46,8 +46,8 @@ describe('PageMetaService', () => {
   });
 
   it('should share an image that exists among the site images', () => {
-    expect(SHARE_IMAGE_PATH).toBe(`${team.image.basePath}-1024.jpeg`);
-    expect(team.image.widths).toContain(1024);
+    expect(SHARE_IMAGE_PATH).toBe(`${team.photos[0].basePath}-1024.jpeg`);
+    expect(team.photos[0].widths).toContain(1024);
   });
 
   it('should update every tag in place when navigating, without duplicates', () => {

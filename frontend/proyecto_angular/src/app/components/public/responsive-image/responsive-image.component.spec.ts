@@ -85,9 +85,9 @@ describe('ResponsiveImageComponent', () => {
     expect(img().classList).toContain('responsive-image__img--cover');
   });
 
-  it('should resolve the team photo to the generated equipo-ycw files', () => {
-    render({ image: team.image });
-    expect(img().getAttribute('src')).toBe('/Imagenes_web/equipo-ycw-1536.jpeg');
-    expect(source().getAttribute('srcset')).toContain('/Imagenes_web/equipo-ycw-640.webp 640w');
+  it('should resolve the featured team photo to the generated equipo-kuvu files', () => {
+    render({ image: team.photos[0] });
+    expect(img().getAttribute('src')).toBe('/Imagenes_web/equipo-kuvu-1-1200.jpeg');
+    expect(source().getAttribute('srcset')).toContain('/Imagenes_web/equipo-kuvu-1-640.webp 640w');
   });
 });

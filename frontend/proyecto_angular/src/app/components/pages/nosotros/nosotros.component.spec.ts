@@ -1,3 +1,4 @@
+import { team } from '../../../content';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NosotrosComponent } from './nosotros.component';
@@ -82,14 +83,15 @@ describe('NosotrosComponent', () => {
 
       const img = asElement(root.querySelector('.team figure app-responsive-image picture img'));
       expect(img.classList).not.toContain('responsive-image__img--cover');
-      expect(img.getAttribute('src')).toBe('/Imagenes_web/equipo-ycw-1536.jpeg');
+      expect(img.getAttribute('src')).toBe('/Imagenes_web/equipo-kuvu-1-1200.jpeg');
       expect(img.getAttribute('sizes')).toBe('(min-width: 1152px) 1104px, 100vw');
     });
 
-    it('should describe the photo with an alt text naming YCW and the members', () => {
+    it('should describe the photo with a descriptive alt text that names no member', () => {
       const alt = asElement(root.querySelector('.team picture img')).getAttribute('alt') ?? '';
-      expect(alt).toContain('YCW');
-      expect(alt).toContain('Wilson Solano');
+      expect(alt).toBe(team.photos[0].alt);
+      expect(alt).not.toContain('Wilson');
+      expect(alt).not.toContain('YCW');
     });
 
     it('should caption the photo with the members left to right', () => {

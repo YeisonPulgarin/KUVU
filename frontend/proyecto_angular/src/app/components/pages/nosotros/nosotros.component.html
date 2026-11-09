@@ -22,10 +22,10 @@
       <figure class="team-figure" data-reveal>
         <app-responsive-image
           class="team-photo"
-          [image]="team.image"
+          [image]="team.photos[0]"
           sizes="(min-width: 1152px) 1104px, 100vw"
         ></app-responsive-image>
-        <figcaption class="team-caption">{{ team.image.caption }}</figcaption>
+        <figcaption class="team-caption">{{ team.members.join(" · ") }}</figcaption>
       </figure>
     </div>
   </section>

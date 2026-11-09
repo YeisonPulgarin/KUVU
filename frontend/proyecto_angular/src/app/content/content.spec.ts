@@ -23,7 +23,9 @@ import {
   siteInfo,
   siteNavLinks,
   sitePages,
-  team
+  team,
+  headlines,
+  headlineText
 } from './index';
 import type { LegalDocument, ResponsibleField, RichText } from './index';
 import {
@@ -176,32 +178,65 @@ describe('content modules', () => {
       expect(team.lead.trim().length).toBeGreaterThan(0);
     });
 
-    it('should list the members left to right as they appear in the photo', () => {
+    it('should keep the three members', () => {
       expect(team.members).toEqual(['Wilson Solano', 'Carlos Arciniegas', 'Yeison Pulgarin']);
-      expect(team.image.caption).toBe('Wilson Solano · Carlos Arciniegas · Yeison Pulgarin');
     });
 
-    it('should declare the photo under /Imagenes_web/ without spaces', () => {
-      expect(team.image.basePath).toBe('/Imagenes_web/equipo-ycw');
-      expect(team.image.basePath).not.toMatch(/\s|%20/);
+    it('should declare the three new team photos under /Imagenes_web/ without spaces', () => {
+      expect(team.photos.map((p) => p.basePath)).toEqual([
+        '/Imagenes_web/equipo-kuvu-1',
+        '/Imagenes_web/equipo-kuvu-2',
+        '/Imagenes_web/equipo-kuvu-3'
+      ]);
+      team.photos.forEach((p) => expect(p.basePath).not.toMatch(/\s|%20|equipo-ycw/));
     });
 
-    it('should declare ascending widths that never exceed the intrinsic width', () => {
-      const { widths, width } = team.image;
-      expect(widths.length).toBeGreaterThanOrEqual(2);
-      expect([...widths].sort((a, b) => a - b)).toEqual([...widths]);
-      widths.forEach((w) => expect(w).toBeLessThanOrEqual(width));
-      expect(widths[widths.length - 1]).toBe(width);
+    it('should declare ascending widths that end at the intrinsic width', () => {
+      team.photos.forEach(({ widths, width }) => {
+        expect(widths.length).toBeGreaterThanOrEqual(2);
+        expect([...widths].sort((a, b) => a - b)).toEqual([...widths]);
+        expect(widths[widths.length - 1]).toBe(width);
+      });
     });
 
-    it('should keep the 3:2 aspect ratio of the original photo', () => {
-      expect(team.image.width / team.image.height).toBeCloseTo(1.5, 2);
+    it('should keep the 3:4 portrait aspect ratio of the originals', () => {
+      team.photos.forEach((p) => expect(p.width / p.height).toBeCloseTo(0.75, 2));
     });
 
-    it('should describe the photo naming YCW and the three members', () => {
-      const alt = team.image.alt;
-      expect(alt).toContain('YCW');
-      team.members.forEach((member) => expect(alt).toContain(member));
+    it('should describe each photo without naming the members', () => {
+      const alts = team.photos.map((p) => p.alt);
+      expect(new Set(alts).size).toBe(alts.length);
+      alts.forEach((alt) => {
+        expect(alt.trim().length).toBeGreaterThan(20);
+        team.members.forEach((member) => {
+          member.split(' ').forEach((name) => expect(alt).not.toContain(name));
+        });
+      });
+    });
+  });
+
+  describe('headlines', () => {
+    it('should split every headline without changing its words', () => {
+      Object.values(headlines).forEach((h) => {
+        expect(headlineText(h.parts)).toBe(h.title);
+      });
+    });
+
+    it('should mark exactly one emphasized part per headline', () => {
+      Object.values(headlines).forEach((h) => {
+        const marked = h.parts.filter((p) => typeof p !== 'string');
+        expect(marked.length).toBe(1);
+        marked.forEach((p) => expect(['accent', 'tape']).toContain((p as { em: string }).em));
+      });
+    });
+
+    it('should reuse the titles already declared in content', () => {
+      expect(headlines.origen.title).toBe(origin.title);
+      expect(headlines.equipo.title).toBe(team.title);
+    });
+
+    it('should not use em or en dashes in any headline', () => {
+      Object.values(headlines).forEach((h) => expect(h.title).not.toMatch(/[–—]/));
     });
   });
 

@@ -267,7 +267,7 @@ describe('HomeComponent', () => {
       expect(img.getAttribute('alt')).toBe('');
       expect(img.classList).toContain('responsive-image__img--cover');
       expect(img.getAttribute('sizes')).toBe('100vw');
-      expect(img.getAttribute('src')).toBe('/Imagenes_web/equipo-ycw-1536.jpeg');
+      expect(img.getAttribute('src')).toBe('/Imagenes_web/equipo-kuvu-1-1200.jpeg');
     });
 
     it('should mark the text block for reveal', () => {
