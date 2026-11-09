@@ -7,6 +7,17 @@ Estado verificado: `feat/auth-contrasenas` @ fbcdfa2 (PR 1: backend-orden + intr
 
 **Resultado: VERDE**, con desvíos menores documentados abajo, ninguno bloqueante.
 
+## Re-verificación tras `secure` y `refine`
+
+Estado: `feat/auth-contrasenas` @ 99f8859 (fix de `secure`: el camino de cuenta bloqueada
+verifica contra el hash de relleno). `refine` cerró sin cambios. PR 2 no cambió.
+
+- `npm test`: 79/79 (78 + el test de regresión de tiempo). Karma PR 1: 499/499.
+- CA-1 a CA-13 siguen pasando: el fix no cambia status ni cuerpos (CA-4 y CA-5 cubiertos por los
+  mismos tests); el nuevo test fija que todo camino de rechazo hace una verificación bcrypt.
+- Observación de `secure` sobre el tiempo de la cuenta bloqueada: resuelta. Las otras dos quedan
+  como riesgo residual aceptado por el usuario (`secure-report`).
+
 ## Tests
 
 | Suite | Rama | Resultado |
