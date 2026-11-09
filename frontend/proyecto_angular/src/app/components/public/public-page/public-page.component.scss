@@ -5,8 +5,8 @@
   // `clip`, not `hidden`: `hidden` turns the wrapper into a scroll container and the sticky
   // header would stop sticking.
   overflow-x: clip;
-  background-color: var(--color-home-bg, #f6f7f4);
-  color: var(--color-home-text, #1f2920);
+  background-color: var(--color-home-bg);
+  color: var(--color-home-text);
 }
 
 .container {
@@ -19,8 +19,8 @@
 
 .page-hero {
   @apply text-center;
-  background-color: var(--color-home-surface, #ffffff);
-  border-bottom: 1px solid var(--color-home-border, #cddccd);
+  background-color: var(--color-home-surface);
+  border-bottom: 1px solid var(--color-home-border);
   padding-top: 4.5rem;
   padding-bottom: 4.5rem;
 
@@ -34,12 +34,12 @@
     font-size: clamp(2.25rem, 5vw, 3.5rem);
     font-weight: 800;
     letter-spacing: -0.02em;
-    color: var(--color-home-text, #1f2920);
+    color: var(--color-home-text);
   }
 
   .page-lead {
     @apply m-0 text-base max-w-2xl mx-auto;
-    color: var(--color-home-muted, #4c5a4e);
+    color: var(--color-home-muted);
 
     @media (width >= 768px) {
       @apply text-lg;

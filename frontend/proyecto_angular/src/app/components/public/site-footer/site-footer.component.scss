@@ -1,8 +1,8 @@
 @reference "../../../../styles.css";
 
 .site-footer {
-  background-color: var(--color-home-surface, #ffffff);
-  border-top: 1px solid var(--color-home-border, #cddccd);
+  background-color: var(--color-home-surface);
+  border-top: 1px solid var(--color-home-border);
 }
 
 .container {
@@ -59,12 +59,12 @@
 
   .footer-name {
     @apply m-0 text-xl font-extrabold pb-1;
-    color: var(--color-brand-600, #3e5c40);
+    color: var(--color-brand-600);
   }
 
   .footer-tagline {
     @apply m-0 text-sm leading-relaxed;
-    color: var(--color-home-muted, #4c5a4e);
+    color: var(--color-home-muted);
   }
 }
 
@@ -74,7 +74,7 @@
   font-weight: 700;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--color-brand-600, #3e5c40);
+  color: var(--color-brand-600);
 }
 
 .footer-list {
@@ -86,18 +86,18 @@
 
 .footer-link {
   @apply text-sm font-medium no-underline;
-  color: var(--color-home-text, #1f2920);
+  color: var(--color-home-text);
   overflow-wrap: anywhere;
   transition: color var(--dur-fast) var(--ease-out-expo);
 
   &:hover {
-    color: var(--color-brand-600, #3e5c40);
+    color: var(--color-brand-600);
   }
 }
 
 .footer-email {
   @apply text-sm;
-  color: var(--color-home-text, #1f2920);
+  color: var(--color-home-text);
   overflow-wrap: anywhere;
 }
 
@@ -112,19 +112,19 @@
 }
 
 .footer-bottom {
-  border-top: 1px solid var(--color-home-border, #cddccd);
+  border-top: 1px solid var(--color-home-border);
   padding-block: 1.25rem 2rem;
 }
 
 .footer-academic {
   margin: 0 0 0.5rem;
   font-size: 0.8125rem;
-  color: var(--color-home-muted, #4c5a4e);
+  color: var(--color-home-muted);
 }
 
 .footer-copy {
   @apply m-0 text-xs;
-  color: var(--color-home-muted, #4c5a4e);
+  color: var(--color-home-muted);
 }
 
 @media (prefers-reduced-motion: no-preference) {

@@ -81,7 +81,7 @@ html {
   letter-spacing: 0.18em;
   text-transform: uppercase;
   font-variant-numeric: tabular-nums;
-  color: var(--color-brand-600, #3e5c40);
+  color: var(--color-brand-600);
 }
 
 // CTA link with an arrow that moves on hover/focus.
@@ -90,7 +90,7 @@ html {
   align-items: center;
   gap: 0.4em;
   font-weight: 600;
-  color: var(--color-brand-600, #3e5c40);
+  color: var(--color-brand-600);
 
   .link-arrow-icon {
     display: inline-block;

@@ -1,8 +1,7 @@
 @reference "../../../../styles.css";
 
 // ─── Breadcrumb (páginas públicas internas) ──────────────────
-// Va dentro de .page-hero, arriba del h1. Los colores llevan fallback literal
-// porque Tailwind v4 no emite los tokens de la home al CSS global en modo claro.
+// Va dentro de .page-hero, arriba del h1.
 :host {
   display: block;
   margin-bottom: 1.25rem;
@@ -15,7 +14,7 @@
   row-gap: 0.25rem;
   font-size: 0.875rem;
   line-height: 1.4;
-  color: var(--color-home-muted, #4c5a4e);
+  color: var(--color-home-muted);
 }
 
 .breadcrumb-item {
@@ -25,7 +24,7 @@
 }
 
 .breadcrumb-link {
-  color: var(--color-home-text, #1f2920);
+  color: var(--color-home-text);
   text-decoration: none;
   text-underline-offset: 3px;
 
@@ -35,7 +34,7 @@
 }
 
 .breadcrumb-current {
-  color: var(--color-home-text, #1f2920);
+  color: var(--color-home-text);
   font-weight: 600;
   overflow-wrap: anywhere;
 }

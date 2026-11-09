@@ -14,7 +14,7 @@
    Verde KUVU = acento ÚNICO (Color Consistency Lock).
    Neutros tintados al hue del verde (light + dark).
    Shape Consistency Lock: "botones pill, cards 16, íconos 12". */
-@theme {
+@theme static {
   --font-sans: "Geist", system-ui, sans-serif;
 
   /* Verde de marca */
