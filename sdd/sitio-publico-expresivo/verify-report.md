@@ -1,5 +1,20 @@
 # Verify report — sitio-publico-expresivo
 
+## Re-verificación tras `secure` y `refine` (estado `37467b0`)
+
+- `secure`: sin hallazgos accionables ni cambios de código (`secure-report.md`).
+- `refine`: dos refactors preservadores (`refine-report.md`): borra `.site-container` sin uso
+  y la sección de pasos usa la clase global `.surface-dots`.
+- Karma completo: **verde, 484/484**.
+- `ng build`: initial **446,44 kB** (mejor que los 448,08 kB de la primera corrida); solo el
+  `css-inline-fonts` preexistente de `/acceder`.
+- QA CDP (36 escenarios): 0 fallas en las aserciones automáticas; `/acceder` sigue idéntico a
+  la base en los 4 escenarios. La sección de pasos de la home no cambia contra la captura
+  previa.
+- Los CA1–CA13 siguen pasando; ninguna métrica empeoró.
+
+## Primera corrida (estado `1ea138a`)
+
 Estado verificado: `feat/sitio-publico-expresivo-home` en `1ea138a` (incluye las ramas A y B
 apiladas). Slices completados: `contenido`, `chrome`, `paginas`, `home`, `cierre`. Sin
 slices omitidos. Primera corrida (sin `secure` ni `refine`).

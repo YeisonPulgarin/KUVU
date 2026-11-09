@@ -5,8 +5,8 @@ del `secure-report` no se tocan (no hubo controles nuevos).
 
 ## Red de seguridad
 
-- Suite Karma: 484/484 antes, 485/485 después (se suma una aserción de la clase de trama en
-  la home).
+- Suite Karma: 484/484 antes y después (se suma una aserción de la clase de trama en un test
+  existente de la home).
 - Baseline: initial 448,08 kB y styles 35,7 kB; capturas CDP `spe-home` de las 9 rutas ×
   375/1280 × claro/oscuro.
 
