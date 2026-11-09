@@ -19,7 +19,7 @@
 |---|---|---|---|
 | 1 | `backend-orden` | Rutas del backend Express (`backend/routes/`) + tests `node --test` | Sí, si el cambio toca el backend |
 | 2 | `contenido` | Módulos de contenido del sitio público (`content/*.ts`) + tests de contenido | Sí, si el cambio toca textos o datos del sitio |
-| 3 | `chrome` | Chrome compartido del sitio: `PageMetaService`, `app.config.ts`, `index.html`, `styles.scss`, header, footer, `app-public-page`, `app-rich-text`, `app-service-icon` | Sí, si el cambio toca piezas compartidas |
+| 3 | `chrome` | Chrome compartido del sitio: `PageMetaService`, `app.config.ts`, `app.routes.ts` (flags de ruta como `data.publicSite`), `index.html`, `styles.scss`, `styles/_motion.scss`, `app/motion/`, header, footer, `app-public-page`, `app-rich-text`, `app-service-icon` | Sí, si el cambio toca piezas compartidas |
 | 4 | `paginas` | Páginas públicas internas (`components/pages/*`) + rutas lazy (`app.routes.ts`) | Sí, si el cambio agrega o modifica páginas |
 | 5 | `home` | Home (`components/home/`) y migración de páginas existentes al chrome compartido | Sí, si el cambio toca la home |
 | 6 | `intro` | Frontend Angular del acceso: `/acceder`, intro, `/login`, servicios de `src/app/services/` + tests Karma | Sí, si el cambio toca el acceso o sus servicios |
