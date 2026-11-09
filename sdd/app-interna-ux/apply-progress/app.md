@@ -140,6 +140,13 @@ tests_agregados:
   - specs de locales y dashboard ampliadas (skeleton y cifras)
 ```
 
+## Correcciones de verify (commit `0d2a646`)
+
+- Refinamientos de `.btn-primary`/`.btn-secondary` bajo `.app-layout` (el sitio público usa
+  las clases globales); hosts de toasts y confirmación dentro de `.app-layout`.
+- Contraste AA del botón de menú móvil, "Ver todos" del dashboard y etiquetas de filtros.
+- Karma 584/584 tras la corrección.
+
 ## Pendiente
 
-- `verify` (capturas CDP base vs cambio, CA1–CA20).
+- Gate E (`secure` / `refine`), `document`, `archive`.
