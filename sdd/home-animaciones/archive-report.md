@@ -75,7 +75,7 @@ Todo es nativo, sin dependencias, y queda estático con `prefers-reduced-motion:
 | # | Pendiente | Origen | Sugerencia |
 |---|---|---|---|
 | P-1 | Actualizar `@angular/*` a ≥ 21.2.25 | `secure-report` H-1 | Cambio propio de dependencias; prioridad alta si se adopta SSR |
-| P-2 | Los tokens de tema claro (`--color-home-*`, `--color-brand-100/600`, `--radius-*`) no existen en `:root`: tarjetas de "¿Cómo funciona?", números de paso, íconos de servicios y superficies se ven sin borde ni fondo | `verify-report` F-1 (ya existía antes del cambio) | Cambio visual aparte: `@theme static` o tokens también en `:root`, con revisión de capturas de todo el sitio |
+| P-2 | Los tokens de tema claro (`--color-home-*`, `--color-brand-100/600`, `--radius-*`) no existen en `:root`: tarjetas de "¿Cómo funciona?", números de paso, íconos de servicios y superficies se ven sin borde ni fondo | `verify-report` F-1 (ya existía antes del cambio) | **Resuelto** por el cambio `tema-claro-tokens` (`@theme static`, sin fallbacks; ver `sdd/tema-claro-tokens/archive-report.md`) |
 | P-3 | Ajuste fino de la altura del recorrido (250vh) y del ritmo del párrafo 01 (`--scrub-rate: 1.6`) | `verify-report` | Solo si la experiencia lo pide; es CSS |
 | P-4 | El warning `css-inline-fonts` depende del tamaño de la hoja de Google Fonts y a veces pasa a error (tope de 20 kB) | `apply-progress/home` | Cambio aparte: autoalojar Geist o subir el presupuesto con criterio |
 | P-5 | `sdd/sdd-init.md` dice `expone_api_http: true` y `sdd.config.md` dice que no hay API pública | `apply-progress/cierre` | Corregir la config |
