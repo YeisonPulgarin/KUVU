@@ -1,11 +1,15 @@
 import { Directive, AfterViewInit, OnDestroy, ElementRef } from '@angular/core';
+import { reducedMotion } from '../motion/motion-preferences';
 
+/**
+ * `[data-reveal]`: adds `.is-visible` when the element enters the viewport. The value of the
+ * attribute picks the variant in the global styles: empty (fade-up) or `clip` (clip-path
+ * opening). With reduced motion, or without IntersectionObserver, the element is visible at once.
+ */
 @Directive({ selector: '[data-reveal]', standalone: true })
 export class RevealDirective implements AfterViewInit, OnDestroy {
   private observer?: IntersectionObserver;
-  private readonly prefersReducedMotion = window.matchMedia(
-    '(prefers-reduced-motion: reduce)'
-  ).matches;
+  private readonly prefersReducedMotion = reducedMotion();
 
   constructor(private readonly el: ElementRef<HTMLElement>) {}
 

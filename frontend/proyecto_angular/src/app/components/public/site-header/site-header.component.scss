@@ -3,8 +3,6 @@
 // component-scoped stylesheet without duplicating its CSS output.
 @reference "../../../../styles.css";
 
-$ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
-
 :host {
   display: block;
   position: sticky;
@@ -17,7 +15,7 @@ $ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --header-border: var(--color-home-border, #cddccd);
   background-color: var(--header-surface);
   border-bottom: 1px solid var(--header-border);
-  transition: background-color 0.25s $ease-out-expo, box-shadow 0.25s $ease-out-expo;
+  transition: background-color var(--dur-fast) var(--ease-out-expo), box-shadow var(--dur-fast) var(--ease-out-expo);
 }
 
 // Compact state after scrolling: shorter bar, translucent blurred surface.
@@ -90,7 +88,7 @@ $ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   .nav-item {
     @apply flex items-center gap-1 text-sm font-medium no-underline;
     color: var(--color-home-text);
-    transition: color 0.2s $ease-out-expo;
+    transition: color var(--dur-fast) var(--ease-out-expo);
 
     position: relative;
 
@@ -129,7 +127,7 @@ $ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   .btn-primary {
     @apply text-sm font-semibold px-6 py-2.5 rounded-pill no-underline text-white;
     background-color: var(--color-brand-700);
-    transition: transform 0.2s $ease-out-expo, opacity 0.2s $ease-out-expo;
+    transition: transform var(--dur-fast) var(--ease-out-expo), opacity var(--dur-fast) var(--ease-out-expo);
 
     &:hover {
       transform: translateY(-2px);
@@ -149,7 +147,7 @@ $ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
     background-color: var(--color-home-surface);
     border-color: var(--color-home-border);
     color: var(--color-home-text);
-    transition: transform 0.2s $ease-out-expo, background-color 0.2s $ease-out-expo;
+    transition: transform var(--dur-fast) var(--ease-out-expo), background-color var(--dur-fast) var(--ease-out-expo);
 
     svg { @apply w-[18px] h-[18px]; }
 
@@ -174,7 +172,7 @@ $ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 .hamburger-btn {
   @apply flex items-center justify-center w-11 h-11 rounded-icon cursor-pointer bg-transparent border-0;
   color: var(--color-home-text);
-  transition: background-color 0.2s $ease-out-expo;
+  transition: background-color var(--dur-fast) var(--ease-out-expo);
 
   @media (width >= 1024px) {
     @apply hidden;
@@ -220,7 +218,7 @@ $ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
     font-weight: 600;
     color: var(--color-home-text, #1f2920);
     border-bottom: 1px solid var(--color-home-border, #cddccd);
-    transition: color 0.2s $ease-out-expo;
+    transition: color var(--dur-fast) var(--ease-out-expo);
 
     &.is-active,
     &:hover {
@@ -243,7 +241,7 @@ $ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
       color: var(--color-home-text, #1f2920);
       border: 1px solid var(--color-home-border, #cddccd);
       background-color: transparent;
-      transition: background-color 0.2s $ease-out-expo;
+      transition: background-color var(--dur-fast) var(--ease-out-expo);
 
       &:hover { background-color: var(--color-home-surface-alt, #eef1ec); }
     }
@@ -257,24 +255,24 @@ $ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 // Motion only when the user has not asked for reduced motion.
 @media (prefers-reduced-motion: no-preference) {
   .nav-container {
-    transition: height 0.25s $ease-out-expo;
+    transition: height var(--dur-fast) var(--ease-out-expo);
   }
 
   .nav-links .nav-item::after {
-    transition: transform 0.3s $ease-out-expo;
+    transition: transform var(--dur-base) var(--ease-out-expo);
   }
 
   .mobile-menu {
-    transition: opacity 0.25s $ease-out-expo, visibility 0s linear 0.25s;
+    transition: opacity var(--dur-fast) var(--ease-out-expo), visibility 0s linear var(--dur-fast);
 
     &.is-open {
-      transition: opacity 0.25s $ease-out-expo, visibility 0s;
+      transition: opacity var(--dur-fast) var(--ease-out-expo), visibility 0s;
     }
 
     .mobile-entry {
       opacity: 0;
       transform: translateY(16px);
-      transition: opacity 0.35s $ease-out-expo, transform 0.35s $ease-out-expo;
+      transition: opacity var(--dur-base) var(--ease-out-expo), transform var(--dur-base) var(--ease-out-expo);
     }
 
     &.is-open .mobile-entry {

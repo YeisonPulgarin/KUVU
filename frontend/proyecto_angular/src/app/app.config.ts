@@ -15,7 +15,8 @@ import {
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { routes } from './app.routes';
 import { headerScrollOffset } from './scroll-offset';
-import { skipViewTransitionIntoIntro } from './intro-view-transition';
+import { onRouteViewTransition } from './route-view-transition';
+import { anchorSmoothScroll } from './anchor-smooth-scroll';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -23,8 +24,9 @@ export const appConfig: ApplicationConfig = {
     provideRouter(
       routes,
       withComponentInputBinding(),
-      // Entering the intro skips the router cross-fade (see intro-view-transition.ts).
-      withViewTransitions({ onViewTransitionCreated: skipViewTransitionIntoIntro }),
+      // Entering the intro skips the cross-fade; between public pages the header stays still
+      // and only the content moves (see route-view-transition.ts).
+      withViewTransitions({ onViewTransitionCreated: onRouteViewTransition }),
       // New page → top of the page; `/legal#cookies` → its section.
       withInMemoryScrolling({ scrollPositionRestoration: 'top', anchorScrolling: 'enabled' })
     ),
@@ -34,6 +36,8 @@ export const appConfig: ApplicationConfig = {
     provideAppInitializer(() => {
       const doc = inject(DOCUMENT);
       inject(ViewportScroller).setOffset(() => headerScrollOffset(doc));
-    })
+    }),
+    // Smooth scroll only for anchors of the same public page (see anchor-smooth-scroll.ts).
+    provideAppInitializer(anchorSmoothScroll)
   ]
 };

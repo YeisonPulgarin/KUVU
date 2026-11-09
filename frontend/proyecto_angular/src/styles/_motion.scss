@@ -1,0 +1,18 @@
+/* ============================================================
+   MOTION TOKENS — common motion language of the public site
+   Easing curves, durations and distances as custom properties.
+   Global styles, header, footer, home and the route transition
+   read them with var(...); scripts publish --p / --mx / --my on
+   the same channel.
+   ============================================================ */
+
+:root {
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-fast: 200ms;
+  --dur-base: 350ms;
+  --dur-slow: 700ms;
+  --dist-reveal: 28px;
+  --dist-parallax: 12px;
+  --magnetic-max: 6px;
+}

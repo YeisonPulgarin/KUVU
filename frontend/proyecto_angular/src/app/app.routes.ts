@@ -2,8 +2,14 @@ import { Routes } from '@angular/router';
 import { authGuard, adminGuard } from './guards/auth.guard';
 import { HomeComponent } from './components/home/home.component';
 
+/**
+ * Marks the routes of the public site. The router view-transition hook and the anchor smooth
+ * scroll only act between routes that carry it (route-view-transition.ts).
+ */
+const publicSite = { publicSite: true };
+
 export const routes: Routes = [
-  { path: '', component: HomeComponent },
+  { path: '', component: HomeComponent, data: publicSite },
   // Access flow, lazy: the public home does not pay for it in the initial bundle.
   {
     path: 'acceder',
@@ -22,27 +28,32 @@ export const routes: Routes = [
   {
     path: 'servicios',
     loadComponent: () =>
-      import('./components/pages/servicios/servicios.component').then(m => m.ServiciosComponent)
+      import('./components/pages/servicios/servicios.component').then(m => m.ServiciosComponent),
+    data: publicSite
   },
   {
     path: 'nosotros',
     loadComponent: () =>
-      import('./components/pages/nosotros/nosotros.component').then(m => m.NosotrosComponent)
+      import('./components/pages/nosotros/nosotros.component').then(m => m.NosotrosComponent),
+    data: publicSite
   },
   {
     path: 'preguntas-frecuentes',
     loadComponent: () =>
-      import('./components/pages/preguntas-frecuentes/preguntas-frecuentes.component').then(m => m.PreguntasFrecuentesComponent)
+      import('./components/pages/preguntas-frecuentes/preguntas-frecuentes.component').then(m => m.PreguntasFrecuentesComponent),
+    data: publicSite
   },
   {
     path: 'contacto',
     loadComponent: () =>
-      import('./components/pages/contacto/contacto.component').then(m => m.ContactoComponent)
+      import('./components/pages/contacto/contacto.component').then(m => m.ContactoComponent),
+    data: publicSite
   },
   {
     path: 'legal',
     loadComponent: () =>
-      import('./components/pages/legal/legal.component').then(m => m.LegalComponent)
+      import('./components/pages/legal/legal.component').then(m => m.LegalComponent),
+    data: publicSite
   },
 
   // ── Rutas accesibles para TODOS los usuarios autenticados ──
@@ -89,6 +100,7 @@ export const routes: Routes = [
   {
     path: '**',
     loadComponent: () =>
-      import('./components/pages/not-found/not-found.component').then(m => m.NotFoundComponent)
+      import('./components/pages/not-found/not-found.component').then(m => m.NotFoundComponent),
+    data: publicSite
   }
 ];

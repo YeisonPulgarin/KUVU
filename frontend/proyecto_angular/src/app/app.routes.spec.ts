@@ -22,6 +22,15 @@ describe('app routes', () => {
     });
   });
 
+  it('should flag only the public site routes with data.publicSite', () => {
+    ['', 'servicios', 'nosotros', 'preguntas-frecuentes', 'contacto', 'legal', '**'].forEach((path) => {
+      expect(route(path)!.data?.['publicSite']).withContext(path).toBeTrue();
+    });
+    ['acceder', 'login', 'dashboard', 'contratos', 'pagos', 'mantenimiento', 'locales', 'usuarios'].forEach((path) => {
+      expect(route(path)!.data?.['publicSite']).withContext(path).toBeUndefined();
+    });
+  });
+
   it('should load the access flow lazily', () => {
     expect(route('acceder')!.loadComponent).toEqual(jasmine.any(Function));
     expect(route('login')!.loadComponent).toEqual(jasmine.any(Function));

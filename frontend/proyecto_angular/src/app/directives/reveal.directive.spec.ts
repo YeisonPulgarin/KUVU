@@ -39,6 +39,14 @@ class MockIntersectionObserver {
 })
 class RevealHostComponent {}
 
+@Component({
+  selector: 'app-reveal-clip-host',
+  standalone: true,
+  imports: [RevealDirective],
+  template: `<figure class="item" data-reveal="clip"></figure>`
+})
+class RevealClipHostComponent {}
+
 function matchMediaStub(matches: boolean): MediaQueryList {
   return {
     matches,
@@ -134,6 +142,30 @@ describe('RevealDirective', () => {
       fixture.detectChanges();
       readItems(fixture);
       expect(items.every((item) => item.classList.contains('is-visible'))).toBeTrue();
+    });
+  });
+
+  describe('clip variant', () => {
+    function clipItem(): HTMLElement {
+      const fixture = TestBed.createComponent(RevealClipHostComponent);
+      fixture.detectChanges();
+      return (fixture.nativeElement as HTMLElement).querySelector('.item') as HTMLElement;
+    }
+
+    it('should keep the variant and reveal it when it enters the viewport', () => {
+      spyOn(window, 'matchMedia').and.returnValue(matchMediaStub(false));
+      window.IntersectionObserver =
+        MockIntersectionObserver as unknown as typeof IntersectionObserver;
+      const item = clipItem();
+      expect(item.getAttribute('data-reveal')).toBe('clip');
+      expect(item.classList.contains('is-visible')).toBeFalse();
+      MockIntersectionObserver.instances[0].trigger(true);
+      expect(item.classList.contains('is-visible')).toBeTrue();
+    });
+
+    it('should be visible at once with reduced motion', () => {
+      spyOn(window, 'matchMedia').and.returnValue(matchMediaStub(true));
+      expect(clipItem().classList.contains('is-visible')).toBeTrue();
     });
   });
 });

@@ -1,7 +1,5 @@
 @reference "../../../../styles.css";
 
-$ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
-
 .site-footer {
   background-color: var(--color-home-surface, #ffffff);
   border-top: 1px solid var(--color-home-border, #cddccd);
@@ -90,7 +88,7 @@ $ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   @apply text-sm font-medium no-underline;
   color: var(--color-home-text, #1f2920);
   overflow-wrap: anywhere;
-  transition: color 0.2s $ease-out-expo;
+  transition: color var(--dur-fast) var(--ease-out-expo);
 
   &:hover {
     color: var(--color-brand-600, #3e5c40);
@@ -106,7 +104,7 @@ $ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 .footer-cta {
   @apply inline-flex items-center text-sm font-semibold px-5 py-2.5 rounded-pill no-underline text-white;
   background-color: #1a7a43;
-  transition: background-color 0.2s $ease-out-expo;
+  transition: background-color var(--dur-base) var(--ease-out-expo);
 
   &:hover {
     background-color: #146236;
@@ -135,6 +133,6 @@ $ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .footer-cta {
-    transition: background-color 0.2s $ease-out-expo, transform 0.2s $ease-out-expo;
+    transition: background-color var(--dur-base) var(--ease-out-expo), transform var(--dur-base) var(--ease-out-expo);
   }
 }
