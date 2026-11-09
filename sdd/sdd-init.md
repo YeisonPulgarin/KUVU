@@ -1,8 +1,8 @@
-stack: Angular 21, TypeScript, RxJS
-test_command: ng test
+stack: Angular 21, TypeScript, RxJS (frontend/proyecto_angular) / Node.js 22 + Express 4 + mysql2 + bcryptjs (backend/) / MariaDB 10.4 en Docker
+test_command: ng test (frontend) / npm test (backend, node --test)
 test_mode: test-after
 config_found: true
-slices_declarados: [backend-orden, contenido, chrome, paginas, home, intro, cierre]
+slices_declarados: [backend-orden, contenido, chrome, paginas, home, intro, app, cierre]
 expone_api_http: true
 docs_existentes: docs/
 
@@ -31,3 +31,18 @@ docs_existentes: docs/
   archivo. Los componentes los consumen con `var(--token)`, sin fallback literal, y sus nombres
   pueden escribirse tal cual en `.ts`/`.html` (el escaneo de Tailwind no cambia lo que se emite).
   Un token nuevo de marca va en ese bloque, no en un `:root` aparte.
+
+## Convenciones del backend relevantes para próximos cambios
+
+- `backend/auth/`: contraseñas (`password.js`, bcryptjs costo 12), política (`password-policy.js`,
+  lista negra en `common-passwords.js`), credenciales y bloqueo por intentos (`credentials.js`),
+  autorización de administrador por re-verificación de credenciales (`admin.js`) y logs JSON de
+  autenticación con allowlist de campos (`auth-log.js`). La API no tiene sesión: una operación
+  sensible se autoriza con las credenciales completas de quien la pide.
+- Las consultas de `usuarios` enumeran columnas: nunca `SELECT u.*` (el hash y el estado de bloqueo
+  no salen del servidor).
+- Esquema de BD: `db/init/01-02` son el dump base; los cambios de esquema van en scripts
+  idempotentes y solo aditivos (`03-…`), que corren en una instalación nueva y se aplican a mano a
+  una BD existente después de un respaldo en `db/backups/`.
+- Tests de rutas: `backend/test/helpers/fake-db.js` (doble de `mysql2` que responde por forma de
+  SQL) y `route-harness.js` (Express efímero con el doble instalado en `require.cache`).
