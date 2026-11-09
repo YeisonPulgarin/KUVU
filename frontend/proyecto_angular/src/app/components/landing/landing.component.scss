@@ -304,6 +304,28 @@
   height: 100vh;
   height: 100dvh;
   overflow: hidden;
+
+  // The photo holds its zoom loop until the selector is released.
+  .bg-photo {
+    animation-play-state: paused;
+  }
+}
+
+// While the sheet still covers the page flat (until the lift), the photo, its
+// blurred overlay and the selector are not rendered: their first raster stalled
+// the frames where the house is drawn. They render from the lift on, still under
+// the sheet. The selector uses content-visibility instead of an inherited
+// visibility: Chrome can keep the search input computed as hidden right after
+// its ancestor turns visible again, and the focus at the end of the intro fails.
+.landing-bg.tapado {
+  .bg-photo,
+  .bg-overlay {
+    visibility: hidden;
+  }
+
+  .landing-container {
+    content-visibility: hidden;
+  }
 }
 
 // The selector is already visible under the sheet: it skips the entry fade and

@@ -12,8 +12,12 @@ import {
 import { NgTemplateOutlet } from '@angular/common';
 import { PageTurnSoundService } from '../../../services/page-turn-sound.service';
 
-export const INTRO_DURATION_MS = 2000;
-export const SOUND_START_MS = 950;
+/** Total length of the intro; the CSS choreography uses the same value. */
+export const INTRO_DURATION_MS = 2900;
+/** Moment the sheet starts to lift (end of the presentation). */
+export const TURN_START_MS = 600;
+/** Moment the page-turn sound starts, with the sheet already moving. */
+export const SOUND_START_MS = 1200;
 export const SKIP_FADE_MS = 180;
 export const STRIP_COUNT = 6;
 

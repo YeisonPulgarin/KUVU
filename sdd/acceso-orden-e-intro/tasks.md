@@ -67,6 +67,31 @@ Estrategia de entrega declarada en `sdd.config.md`: **`ask-on-risk`**. Opciones 
 
 Las ramas no las crea esta fase (la extensión `branch` está inactiva).
 
+## Enmienda del slice `intro` — corrección de la intro
+
+Origen: `verify-report.md` (D1–D4, D6) y las decisiones del usuario sobre la spec (R2.2, R2.2.1–R2.2.3,
+R2.5, R2.6, R5, R6.1). Pertenece al slice `intro` y corre en `test-after`. I1 e I2 quedan reemplazadas
+en lo que estas tareas modifican.
+
+| # | Tarea | Archivos | Spec / design |
+|---|---|---|---|
+| I9 | `IntroStateService` usa `sessionStorage` (misma clave, mismo `try/catch` y fallback en memoria). Tests: clave en `sessionStorage` → `false`, `marcar` escribe en `sessionStorage` y no en `localStorage`, storage que lanza → fallback | `services/intro-state.service.ts`, `.spec.ts` | R5, design §8 |
+| I10 | `PageTurnSoundService`: grafo en `buildPageTurnGraph(ctx, destination)` exportado, efecto de 1,4 s, salida ×3,16 + limitador suave a 0,3. Tests: render offline con pico ≤ 0,3, RMS ≥ −27 dBFS y sin señal después de 1,5 s; los tests de degradación siguen | `services/page-turn-sound.service.ts`, `.spec.ts` | R6.1, design §9 |
+| I11 | `AuthIntroComponent`: `INTRO_DURATION_MS = 2900`, `TURN_START_MS = 600`, `SOUND_START_MS = 1200` | `auth-intro.component.ts` | R2.2, design §4 |
+| I12 | SCSS: coreografía de 2900 ms con porcentajes derivados de ms, easing `cubic-bezier(.5,0,.75,1)` en el pase, curvatura máxima `--i × 1,6°`, franjas solapadas 1 px con tajadas alineadas, tinte plano por franja, trazo de la casa sin `non-scaling-stroke` (`stroke-width: .6`), cara de franja con la clase `sheet-face` (no `.page`, que tiene `max-width` en los estilos compartidos) | `auth-intro.component.scss` | R2.2.1–R2.2.3, R2.5, R2.6, design §2–§4 |
+| I13 | Tests de `AuthIntroComponent`: fin a 2899/2900 ms, `play` a `SOUND_START_MS`, animación CSS real de la franja raíz (duración, comienzo del levante ≤ 1 s, cruce de −90° ≥ 1,2 s después del levante y ≤ 250 ms antes del fin) y trazo sin `non-scaling-stroke`. Ajuste de los tiempos en `landing.component.spec.ts` | `auth-intro.component.spec.ts`, `landing.component.spec.ts` | CA3, CA3.1, CA3.2 |
+| I14 | Suite Karma completa y `ng build` | — | CA10 |
+| I15 | D7: descubrimiento ≥ 1,2 s en desktop. Perspectiva proporcional al ancho (`max(2200px, 500vw)`), levante a −12°, easing del pase `cubic-bezier(.3,0,.8,1)`, raíz hasta −91° a los 2880 ms y `fade-page` 2780–2880. Tests: cobertura por caja de la hoja ≥ 1,2 s y perspectiva ≥ 5× el ancho | `auth-intro.component.scss`, `.spec.ts` | R2.2.1, R2.2.2, CA3.1 |
+| I16 | D8: sombreado como una sola rampa continua repartida entre las franjas. Test: cada franja empieza su rampa donde termina la anterior | `auth-intro.component.scss`, `.spec.ts` | R2.6, CA3.2 |
+| I17 | D10: `PageTurnSoundService` no crea el `AudioContext` sin activación previa del usuario (`navigator.userActivation.hasBeenActive`). Tests con la activación simulada por defecto y un caso sin activación | `services/page-turn-sound.service.ts`, `.spec.ts` | R6.2 |
+| I18 | D9: presentación en la capa plana `.presentation` (casa 120–570 ms, logo 120–520 ms) con traspaso a las copias de las franjas a `TURN_START_MS`. Tests: trazo animado solo en la capa plana, con retardo ≥ 100 ms y fin ≤ `TURN_START_MS`; copias sin animación de trazo; traspaso en el mismo instante | `auth-intro.component.html`, `.scss`, `.spec.ts` | R2.5.1, CA3.3 |
+| I19 | D9: `LandingComponent` con la señal `tapado` hasta `TURN_START_MS` o el fin de la intro (foto y overlay con `visibility: hidden`, selector con `content-visibility: hidden`) y zoom de la foto en pausa durante la intro. Tests: ocultos hasta el levante y visibles después; visibles en el acto si se salta antes | `landing.component.ts`, `.html`, `.scss`, `.spec.ts` | R2.5.1, CA3.3 |
+| I20 | D9: `skipViewTransitionIntoIntro` en `onViewTransitionCreated`. Tests: salta el cross-fade solo al entrar a `/acceder` con la intro pendiente | `app/intro-view-transition.ts`, `.spec.ts`, `app.config.ts` | R2.5.1, CA3.3 |
+
+Forecast de la enmienda: 8 archivos de código y unas 500 líneas cambiadas (≈ 330 netas), con los
+tests incluidos. Supera el umbral de 300, y el usuario aprueba el paquete completo en la misma
+entrega.
+
 ## Alcance previsto de `document`
 
 | Flag | Valor | Motivo |

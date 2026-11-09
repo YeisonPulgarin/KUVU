@@ -1,5 +1,5 @@
 import { fakeAsync, tick } from '@angular/core/testing';
-import { PageTurnSoundService } from './page-turn-sound.service';
+import { OUTPUT_CEILING, PageTurnSoundService, SOUND_SECONDS, buildPageTurnGraph } from './page-turn-sound.service';
 
 class FakeParam {
   value = 0;
@@ -22,6 +22,8 @@ class FakeFilter extends FakeNode {
   frequency = new FakeParam();
   Q = new FakeParam();
 }
+
+class FakeWaveShaper extends FakeNode { curve: Float32Array | null = null; }
 
 class FakeSource extends FakeNode {
   buffer: unknown = null;
@@ -49,6 +51,7 @@ class FakeAudioContext {
   constructor() { FakeAudioContext.instances.push(this); }
   createGain(): FakeGain { const g = new FakeGain(); this.gains.push(g); return g; }
   createBiquadFilter(): FakeFilter { return new FakeFilter(); }
+  createWaveShaper(): FakeWaveShaper { return new FakeWaveShaper(); }
   createBufferSource(): FakeSource { const s = new FakeSource(); this.sources.push(s); return s; }
   createBuffer(_channels: number, length: number): { getChannelData: () => Float32Array } {
     const data = new Float32Array(length);
@@ -99,7 +102,14 @@ describe('PageTurnSoundService', () => {
     await new Promise((resolve) => setTimeout(resolve, 20));
   }
 
+  /** Prior user gesture reported by navigator.userActivation; tests that need none flip it. */
+  let hasBeenActive: boolean;
+
   beforeEach(() => {
+    hasBeenActive = true;
+    spyOnProperty(navigator, 'userActivation', 'get').and.callFake(
+      () => ({ hasBeenActive, isActive: false }) as UserActivation
+    );
     originalAudio = w.AudioContext;
     originalWebkit = w.webkitAudioContext;
     FakeAudioContext.instances = [];
@@ -115,6 +125,21 @@ describe('PageTurnSoundService', () => {
     window.removeEventListener('unhandledrejection', onUnhandled);
     w.AudioContext = originalAudio;
     w.webkitAudioContext = originalWebkit;
+  });
+
+  it('sin activacion previa del usuario no crea el AudioContext (R6.2)', () => {
+    setAudio(FakeAudioContext);
+    hasBeenActive = false;
+    const service = new PageTurnSoundService();
+    expect(() => service.play()).not.toThrow();
+    expect(FakeAudioContext.instances.length).toBe(0);
+    expect(() => service.stop()).not.toThrow();
+  });
+
+  it('con activacion previa del usuario crea el AudioContext', () => {
+    setAudio(FakeAudioContext);
+    new PageTurnSoundService().play();
+    expect(FakeAudioContext.instances.length).toBe(1);
   });
 
   it('sin AudioContext ni webkitAudioContext, play() y stop() no lanzan', () => {
@@ -180,16 +205,13 @@ describe('PageTurnSoundService', () => {
     expect(FakeAudioContext.instances.length).toBe(0);
   });
 
-  it('play() arranca las fuentes con ganancias de pico <= 0.3', () => {
+  it('play() arranca las dos fuentes y conecta la salida al master', () => {
     setAudio(FakeAudioContext);
     new PageTurnSoundService().play();
     const ctx = FakeAudioContext.instances[0];
     expect(ctx.sources.length).toBe(2);
     expect(ctx.sources.every((s) => s.started)).toBeTrue();
-    const envelopes = ctx.gains.slice(1);
-    const peak = Math.max(...envelopes.flatMap((g) => g.gain.scheduled));
-    expect(peak).toBeGreaterThan(0);
-    expect(peak).toBeLessThanOrEqual(0.3);
+    expect(ctx.gains[0].connections).toContain(ctx.destination);
   });
 
   it('no se repite: un segundo play() no crea otro contexto', () => {
@@ -219,5 +241,43 @@ describe('PageTurnSoundService', () => {
     const ctx = FakeAudioContext.instances[0];
     ctx.sources[1].onended?.();
     expect(ctx.closeCalls).toBe(1);
+  });
+
+  describe('nivel de salida real (render offline)', () => {
+    const SAMPLE_RATE = 48000;
+
+    async function render(): Promise<Float32Array> {
+      const ctx = new OfflineAudioContext(1, Math.ceil(SAMPLE_RATE * 2), SAMPLE_RATE);
+      buildPageTurnGraph(ctx, ctx.destination);
+      return (await ctx.startRendering()).getChannelData(0);
+    }
+
+    const dbfs = (x: number) => 20 * Math.log10(x);
+
+    it('el pico de muestra no supera 0.3 (R6.1)', async () => {
+      for (let run = 0; run < 3; run++) {
+        const out = await render();
+        let peak = 0;
+        for (const v of out) peak = Math.max(peak, Math.abs(v));
+        expect(peak).toBeGreaterThan(0.1);
+        expect(peak).toBeLessThanOrEqual(OUTPUT_CEILING);
+      }
+    });
+
+    it('el RMS del efecto es audible: >= -27 dBFS (R6.1)', async () => {
+      const out = await render();
+      const n = Math.floor(SAMPLE_RATE * 1.3);
+      let sum = 0;
+      for (let i = 0; i < n; i++) sum += out[i] * out[i];
+      expect(dbfs(Math.sqrt(sum / n))).toBeGreaterThanOrEqual(-27);
+    });
+
+    it('no hay senal despues de 1.5 s (R6.1)', async () => {
+      const out = await render();
+      expect(SOUND_SECONDS).toBeLessThanOrEqual(1.5);
+      let last = 0;
+      out.forEach((v, i) => { if (Math.abs(v) > 1e-4) last = i; });
+      expect(last / SAMPLE_RATE).toBeLessThanOrEqual(1.5);
+    });
   });
 });

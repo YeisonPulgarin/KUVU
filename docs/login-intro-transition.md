@@ -1,10 +1,9 @@
 # login-intro-transition
 
-Rediseño del flujo de acceso al portal KUVU: una intro cinematográfica de ~5 segundos presenta una
-casa moderna que se ensambla en 3D (`CSS3D` exploded view, estética navy + blueprint cian/teal + glow
-ámbar) y da paso a la selección de inmobiliaria y luego a las credenciales. La autenticación
-conserva su contrato (`POST /api/auth/login` con `{correo, documento, empresa_id}`) y su lógica de
-sesión en `AuthService`; nada de esto se modificó.
+Flujo de acceso al portal KUVU en tres pasos: una intro de ~3 s (una hoja que pasa como la página
+de un libro, detallada en `docs/acceso-orden-e-intro.md`), la selección de inmobiliaria y las
+credenciales. La autenticación usa `POST /api/auth/login` con `{correo, documento, empresa_id}` y la
+lógica de sesión de `AuthService`.
 
 ## Cómo funciona
 
@@ -13,30 +12,26 @@ sesión en `AuthService`; nada de esto se modificó.
 ```
 Carga de /acceder
   └─ IntroStateService.debeReproducirse()
-       ├─ true  → AuthIntroComponent (5 fases × 1s) → landing pasa a selección
-       └─ false → selección directa (reduced-motion o intro ya vista)
+       ├─ true  → AuthIntroComponent (hoja que pasa, 2,9 s) → landing pasa a selección
+       └─ false → selección directa (reduced-motion o intro ya vista en la pestaña)
 Selección de inmobiliaria (/acceder) → sessionStorage['empresaPreseleccionada'] → /login
 Credenciales (/login) → POST /api/auth/login → /dashboard
 ```
 
-- **`IntroStateService`** (`src/app/services/intro-state.service.ts`): singleton con flag de vida
-  corta `introVistoEnEstaCarga`. La intro corre una sola vez por carga de app, no se repite al
-  navegar `/login → /acceder`, y vuelve a correr tras un reload (F5). Respeta
-  `prefers-reduced-motion` desde el constructor (lectura única de `matchMedia`).
-- **`AuthIntroComponent`** (`src/app/components/shared/auth-intro/`): máquina de fases dirigida
-  por TS — `fase` signal 1..5 con timers de 1000 ms y `output() completada` al llegar a 5. El
-  template alterna markup por fase (`@if` sobre `fase()`); el SCSS dispara las transiciones:
-  blueprint (fase 1), piezas flotando (fase 2), ensamblaje (fase 3), iluminación ámbar de
-  ventanas (fase 4), casa terminada con sway de cámara y crossfade (fase 5, `.saliendo` de 650 ms).
-  El ensamblaje usa `perspective` + `preserve-3d` con 12 piezas y custom props
-  (`--dx0/--dy0/--dz0/--rot0/--rot1/--z1/--td`); sin three.js ni `@angular/animations`.
-- **`LandingComponent`** (`src/app/components/landing/`): orquesta `INTRO → SELECTION` con señales
-  `estado` y `transicionando`. `completadaIntro()` marca el flag en `IntroStateService` y ejecuta
-  el crossfade de 650 ms. La selección reusa el buscador y la lista de empresas existentes; el
-  fetch de empresas vive en `AuthService.cargarEmpresas()`.
+- **`IntroStateService`** (`src/app/services/intro-state.service.ts`): recuerda la intro por
+  pestaña en `sessionStorage['kuvu.intro.seen']`, con un flag en memoria si el storage falla. No se
+  repite en recargas ni al navegar `/login → /acceder`, y una pestaña nueva vuelve a mostrarla.
+  Respeta `prefers-reduced-motion` desde el constructor (lectura única de `matchMedia`).
+- **`AuthIntroComponent`** (`src/app/components/shared/auth-intro/`): la hoja que pasa, con
+  coreografía CSS, fin por `setTimeout(2900)` y salto por clic, teclado o botón "Saltar". Ver
+  `docs/acceso-orden-e-intro.md`.
+- **`LandingComponent`** (`src/app/components/landing/`): orquesta `INTRO → SELECTION` con la señal
+  `estado`. El selector se renderiza siempre, `inert` mientras dura la intro. `completadaIntro()`
+  marca la intro como vista, pasa a `SELECTION` en el acto y enfoca el buscador. La lista sale de
+  `AuthService.cargarEmpresas()`, en el orden de `id`.
 - **`LoginComponent`** (`src/app/components/login/`): credenciales con correo + documento, badge de
   la empresa seleccionada, mapa `BG_MAP` de fondos por subdominio y trayectoria de navegación SPA
-  (View Transitions activo). "Recordarme" y "¿Olvidaste tu contraseña?" son enlaces decorativos:
+  (View Transitions activo; la entrada a `/acceder` con intro pendiente saltea el cross-fade). "Recordarme" y "¿Olvidaste tu contraseña?" son enlaces decorativos:
   el checkbox togglea una signal local sin persistencia y el enlace no tiene handler.
 
 ### Theming y flujo de empresa
@@ -48,15 +43,8 @@ Credenciales (/login) → POST /api/auth/login → /dashboard
 
 ## Decisiones
 
-- **CSS 3D puro en vez de three.js/WebGL** — la escena es una casa geométrica estilizada de 5 s;
-  `perspective` + `preserve-3d` alcanza el resultado premium sin dependencia nueva ni costo de GPU
-  permanente. Tradeoff: menos detalle que un render WebGL; la complejidad visual se compensa con
-  blueprint, partículas y glow.
-- **Máquina de fases por timers TS (+ señales) en vez de keyframes CSS únicos** — hace la animación
-  testeable en Karma (asserts de `fase()` por tick) y permite omitirla con reduced-motion sin CSS
-  condicional. Tradeoff: el timing vive en TS, el movimiento en CSS (acople deliberado y acotado).
-- **Flag de intro por carga (en servicio, no en storage)** — cumple "una vez por carga" sin
-  persistir nada; la intro se repite al recargar el documento a propósito.
+- Las decisiones de la intro (CSS con franjas, timer en TS, recordado por pestaña, movimiento
+  reducido) están en `docs/acceso-orden-e-intro.md`.
 - **Enlaces decorativos en PANTALLA 2** — por decisión de producto; el backend no tiene
   contraseña ni recuperación. "Recordarme" no persiste nada.
 - **Glassmorphism navy en `/login`** alineado a la referencia visual `Transicion_login.png`,
@@ -64,8 +52,7 @@ Credenciales (/login) → POST /api/auth/login → /dashboard
 
 ## Limitaciones conocidas
 
-- La intro completa el crossfade ~5.65 s desde el load (5 s de intro + 650 ms de fade): el contenido
-  empieza a verse a los 5 s.
+- La intro dura ~2,9 s; el selector empieza a verse bajo la hoja a ~1,4 s.
 - "Recordarme" y "¿Olvidaste tu contraseña?" son decorativos sin acción (ver `spec`).
 - Deuda registrada por `secure`: la API backend no tiene middleware de autorización por request y la
   sesión del SPA es client-side (`localStorage`). Riesgo Alto aceptado por el responsable, pendiente

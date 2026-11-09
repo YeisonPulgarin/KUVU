@@ -69,3 +69,121 @@ excepciones_sin_test: I5 (SCSS: coreografía, curvatura, responsive, safe-area) 
 logs_conforme: sí (no se agregan logs en el frontend; el audio bloqueado se degrada en silencio, según design §11)
 commit: — (sin commit, no pedido)
 ```
+
+## Enmienda — corrección de la intro (I9–I14)
+
+Estado: **completo**. Este bloque se suma al progreso de arriba sin reemplazarlo. Lo origina
+`verify-report.md` (D1–D4, D6), con las decisiones del usuario ya volcadas en `spec.md`, `design.md`
+y `tasks.md`.
+
+| Tarea | Estado | Detalle |
+|---|---|---|
+| I9 | Completa | `IntroStateService` usa `sessionStorage` con la misma clave, el mismo `try/catch` y el fallback en memoria. +2 tests (vive en `sessionStorage` y no en `localStorage`; una clave en `localStorage` no evita la intro) |
+| I10 | Completa | `buildPageTurnGraph(ctx, destination)` exportado. Efecto de 1,4 s con salida ×3,16 (+10 dB) y limitador suave `0,3·tanh(x/0,3)` (`WaveShaperNode`). Tests offline con `OfflineAudioContext`: pico ≤ 0,3 (3 renders), RMS ≥ −27 dBFS, sin señal después de 1,5 s |
+| I11 | Completa | `INTRO_DURATION_MS = 2900`, `TURN_START_MS = 600` (empieza a levantarse), `SOUND_START_MS = 1200` |
+| I12 | Completa | Coreografía de 2900 ms con porcentajes derivados en SCSS (`sass:math`). Easing del pase `cubic-bezier(.5,0,.75,1)`, raíz de −6° a −92°, `fade-page` separado del giro. Curvatura máxima `--i × 1,6°`, solape de 1 px con tajadas alineadas, tinte plano por franja y casa con `stroke-width: .6` sin `non-scaling-stroke`. La cara de franja usa la clase `sheet-face` |
+| I13 | Completa | `auth-intro.component.spec.ts`: fin a 2899/2900, `play` a `SOUND_START_MS`, 4 tests sobre la animación CSS real (pausada y recorrida con `currentTime`: duración, levante ≤ 1 s, pase visible ≥ 1,2 s, cierre ≤ 250 ms tras salir de vista, giro más lento al comienzo), trazo sin `non-scaling-stroke`, geometría de franjas sin costuras y sin clase `.page`. Ajuste de tiempos en `landing.component.spec.ts` |
+| I14 | Completa | Karma 229/229 en verde. `ng build` OK, con el mismo warning `css-inline-fonts` que ya existía |
+
+## Evidencia de la enmienda
+
+- Medición en la franja raíz: se levanta a los 600 ms, sale de vista (−90°) unos 2,7 s después del
+  inicio y la intro cierra a los 2900 ms. Los valores exactos los mide `verify`.
+- **Causa adicional encontrada:** la cara de cada franja usaba la clase `.page`, y
+  `shared/shared.styles.scss` le da a `.page` `max-width: 1280px`, padding y `margin: 0 auto`. En un
+  viewport de 1366 px la hoja medía 1280 px: quedaba una banda oscura de ~88 px a la derecha, la casa
+  descentrada y las tajadas desalineadas en las costuras. Karma no carga los estilos globales, por
+  eso los tests no lo detectaban. Con la clase `sheet-face`, la cara mide lo mismo que el viewport y
+  la franja derecha queda cubierta (0 px oscuros en la captura).
+- Con el ancho de la raíz en `(100% + 5px) / 6` quedaban 3 px sin cubrir por redondeo de subpíxel.
+  Con `(100% + 6px) / 6` quedan 0.
+
+## Desvíos
+
+- `TURN_START_MS` vale 600 (el instante en que la hoja empieza a levantarse) en lugar del 900 que
+  figuraba en un borrador de la enmienda. `design.md` y `tasks.md` quedan alineados.
+- El ángulo final es −92° y no −95°: con −95° la hoja salía de vista 260 ms antes del fin (el test de
+  R2.2.2 lo detectó).
+- No se pre-crea el `AudioContext` en la home (S3d): entrando por "Ingresar" el contexto ya arranca
+  `running` por la activación persistente, así que no cambia lo que se oye (design §9).
+- La enmienda suma unas 500 líneas (≈ 330 netas), por encima de las ~200 previstas. `tasks.md`
+  queda corregido.
+
+```
+test_mode: test-after
+test_command: CHROME_BIN="C:/Program Files/Google/Chrome/Application/chrome.exe" npx ng test --watch=false --browsers=ChromeHeadless (en frontend/proyecto_angular); npx ng build
+tests_status: verde (229/229)
+tests_agregados: services/intro-state.service.spec.ts, services/page-turn-sound.service.spec.ts, components/shared/auth-intro/auth-intro.component.spec.ts, components/landing/landing.component.spec.ts
+excepciones_sin_test: la apariencia visual (página vs persiana) y la audibilidad subjetiva se miden en verify con Chrome headless; los tests cubren la geometría, los tiempos de la animación real y el nivel de salida renderizado
+logs_conforme: sí (sin logs nuevos)
+```
+
+## Corrección de D7, D8 y D10 (I15–I17)
+
+Retoma el slice sobre el working tree de la enmienda (I9–I14). El progreso anterior queda intacto.
+
+| Tarea | Estado | Detalle |
+|---|---|---|
+| I15 | Completa | `perspective: max(2200px, 500vw)`, levante de la raíz a −12° (600–900 ms), pase con `cubic-bezier(.3,0,.8,1)` hasta −91° a los 2880 ms, `fade-page` 2780–2880. Parámetros elegidos con un modelo geométrico de la cadena de franjas (proyección de cada esquina con la perspectiva) que reproduce las mediciones del verify anterior (0,5 s a 1366 y 0,2 s a 1920 con 2200 px fijos) y confirmados en Chrome sobre el build. Tests: el test de cobertura por caja (`getBoundingClientRect` de frentes y dorsos) queda en verde y se suma "perspectiva ≥ 5× el ancho del host" |
+| I16 | Completa | `.strip-shade` con un gradiente de `--i × 0,05` a `(--i + 1) × 0,05`: una rampa continua repartida entre las 6 franjas. Test nuevo: cada franja oscurece hacia el borde libre y empieza donde termina la anterior |
+| I17 | Completa | `play()` sale sin crear contexto si `navigator.userActivation.hasBeenActive` es `false`. El spec simula la activación en `beforeEach` (`hasBeenActive = true` por defecto) porque Chrome headless reporta `false` y 8 tests de la suite fallaban por eso; el caso sin activación pone `false` |
+
+### Evidencia
+
+```
+test_mode: test-after
+test_command: CHROME_BIN="C:/Program Files/Google/Chrome/Application/chrome.exe" npx ng test --watch=false --browsers=ChromeHeadless (en frontend/proyecto_angular); npx ng build
+tests_status: verde (234/234)
+tests_agregados: auth-intro.component.spec.ts (perspectiva proporcional, sombreado continuo), page-turn-sound.service.spec.ts (activación simulada por defecto)
+excepciones_sin_test: la cobertura en viewports de desktop se mide en verify con Chrome sobre el build (Karma corre en un viewport chico y la perspectiva depende de vw)
+logs_conforme: sí (sin logs nuevos)
+```
+
+- Antes de los cambios de esta tanda, la suite estaba en 223/232: el test de cobertura (1070 ms
+  contra 1200) y 8 tests de `PageTurnSoundService` sin activación simulada.
+- `ng build`: OK, initial 497,58 kB / 120,34 kB transfer, con el mismo warning `css-inline-fonts`.
+
+## Corrección de D9 (I18–I20)
+
+Retoma el slice después de I15–I17. El progreso anterior queda intacto.
+
+**Causa.** Con screencast y trace de Chrome sobre el build, entrando por "Ingresar" desde la home, el
+primer cuadro de la intro llegaba a los ~390–460 ms del montaje, con la casa ya dibujada. Había tres
+costos encadenados:
+1. El cross-fade de `withViewTransitions` mantenía la home a la vista los primeros ~340 ms
+   (`ViewTransition::ProcessCurrentState` en el trace).
+2. Sin el cross-fade, la hoja aparecía a los ~10–100 ms, pero después había ~370 ms sin cuadros: el
+   GPU rasterizaba y componía el selector de abajo (foto de fondo con zoom en loop, overlay y tarjeta
+   con `backdrop-filter`). Con el selector oculto el hueco bajaba a ~90 ms. Pre-decodificar el logo no
+   cambiaba nada.
+3. El trazo de la casa se repintaba en las 6 capas 3D de las franjas.
+
+| Tarea | Estado | Detalle |
+|---|---|---|
+| I18 | Completa | `ng-template #faceContent` (casa y logo) usado en las 6 caras y en `.presentation`, una capa plana sobre la hoja (`inset: 0 -1px 0 0`). Solo la capa plana anima el trazo (450 ms desde 120 ms; `draw-house` lleva el `stroke-dasharray` en sus keyframes) y el logo (400 ms desde 120 ms). A `TURN_START_MS`, `hand-over-out` / `hand-over-in` (`step-end`) cambian la capa plana por las copias de las franjas en el mismo cuadro. 2 tests nuevos |
+| I19 | Completa | `LandingComponent`: señal `tapado` (true hasta `TURN_START_MS` o `completadaIntro()`, timer limpio con `DestroyRef`) y clase `tapado`: foto y overlay con `visibility: hidden`, selector con `content-visibility: hidden`. Con `visibility` heredada sobre el selector, Chrome dejaba el buscador computado como `hidden` después de volver a visible y el test de foco fallaba. Zoom de la foto en pausa mientras la intro está activa. 2 tests nuevos |
+| I20 | Completa | `app/intro-view-transition.ts`: `skipViewTransitionIntoIntro`, conectado en `withViewTransitions({ onViewTransitionCreated })`. 3 tests nuevos |
+
+### Evidencia
+
+```
+test_mode: test-after
+test_command: CHROME_BIN="C:/Program Files/Google/Chrome/Application/chrome.exe" npx ng test --watch=false --browsers=ChromeHeadless (en frontend/proyecto_angular); npx ng build
+tests_status: verde (241/241)
+tests_agregados: auth-intro.component.spec.ts (presentación en capa plana, traspaso), landing.component.spec.ts (tapado hasta el levante, tapado al saltar), intro-view-transition.spec.ts (3)
+excepciones_sin_test: la llegada del primer cuadro y el dibujo visible se miden en verify con screencast de Chrome sobre el build
+logs_conforme: sí (sin logs nuevos)
+```
+
+- `ng build`: OK. Initial 499,98 kB / 120,82 kB transfer, 20 bytes por debajo del warning de
+  presupuesto de 500 kB. Para entrar se recortó CSS de la intro (sin reglas redundantes con el
+  `fill` de las animaciones) y se usaron nombres cortos (`tapado`). Sigue el warning
+  `css-inline-fonts` de siempre.
+
+### Desvíos
+
+- El raster del selector pasa al levante: en headless hay ~250–300 ms sin cuadros entre los 600 y los
+  ~870 ms, con la hoja casi plana (levante de 0 a −12°). La diferencia visual entre el cuadro de
+  antes y el de después es del orden de dos cuadros normales de movimiento.
+- El margen contra el presupuesto de 500 kB queda en 20 bytes.
+

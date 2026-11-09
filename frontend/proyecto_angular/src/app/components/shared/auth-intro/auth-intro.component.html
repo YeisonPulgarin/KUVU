@@ -3,6 +3,12 @@
   <div class="sheet">
     <ng-container *ngTemplateOutlet="strip; context: { $implicit: 0 }" />
   </div>
+  <!-- Flat copy of the face, above the sheet, that animates the presentation
+       (house drawn, logo revealed) in a single small layer. The strip copies
+       stay static and take over when the sheet starts to lift. -->
+  <div class="presentation">
+    <ng-container *ngTemplateOutlet="faceContent" />
+  </div>
 </div>
 
 <button
@@ -18,23 +24,8 @@
 <ng-template #strip let-i>
   <div class="strip" [class.strip-root]="i === 0" [style.--i]="i">
     <div class="strip-front">
-      <div class="page">
-        <svg
-          class="page-house"
-          viewBox="0 0 120 100"
-          fill="none"
-          stroke="currentColor"
-          stroke-linecap="round"
-          stroke-linejoin="round">
-          <path pathLength="1" d="M8 50 L60 10 L112 50" />
-          <path pathLength="1" d="M20 41 V92 H100 V41" />
-          <path pathLength="1" d="M84 28 V16 H94 V36" />
-          <path pathLength="1" d="M50 92 V66 H70 V92" />
-          <path pathLength="1" d="M30 54 H44 V68 H30 Z M37 54 V68 M30 61 H44" />
-          <path pathLength="1" d="M76 54 H90 V68 H76 Z M83 54 V68 M76 61 H90" />
-          <path pathLength="1" d="M4 92 H116" />
-        </svg>
-        <img class="page-logo" src="/logo-rediseno/Logo_Kuvu.png" alt="" draggable="false" />
+      <div class="sheet-face">
+        <ng-container *ngTemplateOutlet="faceContent" />
       </div>
       <div class="strip-shade"></div>
     </div>
@@ -43,4 +34,24 @@
       <ng-container *ngTemplateOutlet="strip; context: { $implicit: i + 1 }" />
     }
   </div>
+</ng-template>
+
+<!-- House and logo of the page face. -->
+<ng-template #faceContent>
+  <svg
+    class="page-house"
+    viewBox="0 0 120 100"
+    fill="none"
+    stroke="currentColor"
+    stroke-linecap="round"
+    stroke-linejoin="round">
+    <path pathLength="1" d="M8 50 L60 10 L112 50" />
+    <path pathLength="1" d="M20 41 V92 H100 V41" />
+    <path pathLength="1" d="M84 28 V16 H94 V36" />
+    <path pathLength="1" d="M50 92 V66 H70 V92" />
+    <path pathLength="1" d="M30 54 H44 V68 H30 Z M37 54 V68 M30 61 H44" />
+    <path pathLength="1" d="M76 54 H90 V68 H76 Z M83 54 V68 M76 61 H90" />
+    <path pathLength="1" d="M4 92 H116" />
+  </svg>
+  <img class="page-logo" src="/logo-rediseno/Logo_Kuvu.png" alt="" draggable="false" />
 </ng-template>

@@ -12,9 +12,12 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com) y este proyecto 
 - La página de inicio muestra la foto del equipo YCW Systems (Wilson Solano, Carlos Arciniegas y Yeison Pulgarin) en una banda a ancho completo, "El equipo detrás de KUVU", entre "Compañías que confían" y "El origen de KUVU", con un botón hacia Nosotros. En móvil la foto se ve completa con el texto debajo.
 - La página **Nosotros** muestra la foto completa del equipo con sus nombres al pie.
 - Las imágenes del sitio se sirven en WebP con respaldo JPEG y en el tamaño adecuado a cada pantalla, con carga diferida; un script (`scripts/generate-image-variants.py`) genera las variantes de nuevas imágenes de `public/Imagenes_web/`.
-- Intro cinematográfica de ~5 segundos al entrar a `/acceder`: una casa moderna se ensambla en 3D
-  (estética navy + blueprint cian/teal + glow ámbar), una vez por carga de la app y respetando la
-  preferencia `prefers-reduced-motion`.
+- Intro de ~3 segundos al entrar a `/acceder`: una hoja de papel con el logo KUVU y una casa que se
+  dibuja en trazo fino se curva y pasa como la página de un libro, con un sonido suave de hoja, y
+  revela el selector de inmobiliaria. Se puede saltar con un clic o toque, con Escape, Enter o
+  Espacio, o con el botón "Saltar". Se muestra una vez por pestaña (no se repite al recargar ni al
+  volver del login), se omite si el sistema pide movimiento reducido y, entrando directo por URL,
+  corre sin sonido.
 - Nueva pantalla de selección de inmobiliaria (`/acceder`) con copy de bienvenida, reutilizando el
   buscador y la lista de empresas.
 - Se incorpora el logo real de KUVU (`Logo_Kuvu.png`) en la página de inicio, el login, la selección de empresa y el navbar interno, reemplazando los cuadros CSS y el emoji anteriores.
@@ -28,6 +31,9 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com) y este proyecto 
 
 ### Changed
 
+- El selector de inmobiliarias (`/acceder`) lista las empresas en un orden fijo, el de su
+  identificador (Amarilo, Nido Rent, Balcones de San Soucci, Mi Inmueble), y la búsqueda lo
+  conserva.
 - La pantalla de credenciales (`/login`) se rediseñó como PANTALLA 2 del flujo de acceso: título
   "Inicia sesión", botón `Iniciar sesión →` y `← Cambiar de inmobiliaria`, sobre un overlay navy
   acorde a la estética de la referencia. "Recordarme" y "¿Olvidaste tu contraseña?" son enlaces

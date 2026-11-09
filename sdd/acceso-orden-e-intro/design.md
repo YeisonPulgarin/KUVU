@@ -8,7 +8,7 @@ Referencias: `propose.md` (alcance, no-objetivos), `spec.md` (R1–R8, CA1–CA1
 |---|---|
 | `backend/routes/empresas.js` | `ORDER BY nombre` → `ORDER BY id` en `GET /` |
 | `backend/test/empresas.route.test.js` (nuevo) | Test de la ruta con `db` falso |
-| `frontend/.../services/intro-state.service.ts` | Recordado persistente (`localStorage` + fallback en memoria) |
+| `frontend/.../services/intro-state.service.ts` | Recordado por sesión (`sessionStorage` + fallback en memoria) |
 | `frontend/.../services/page-turn-sound.service.ts` (nuevo) | Sonido sintetizado con Web Audio |
 | `frontend/.../components/shared/auth-intro/*` | Escena "hoja que pasa": reemplaza por completo markup, SCSS y lógica de la casa 3D |
 | `frontend/.../components/landing/*` | Selector renderizado debajo de la intro desde el inicio, `inert` mientras la intro está activa, foco al buscador al terminar |
@@ -30,14 +30,20 @@ error del `db` produce 500 con `{ error }`. Así se prueba la ruta real sin Mari
 
 **Elegida: CSS 3D por franjas anidadas.** La hoja es un `div` a pantalla completa dividido en
 **6 franjas verticales anidadas**: cada franja es hija de la anterior, tiene
-`transform-origin: left center` y queda a `left: 100%` de su madre. El giro de la franja raíz sobre
-el lomo (borde izquierdo) da la vuelta de página. Cada franja suma una rotación `rotateY` pequeña y
-creciente hacia el borde libre, así la hoja se **curva** de verdad en vez de girar como un cartón
-rígido. Cada franja muestra su tajada del mismo contenido: una copia del frente desplazada con
-`left: -k·(100%/6)` dentro de un `overflow: hidden`.
+`transform-origin: left center` y queda a `left: calc(100% - 1px)` de su madre, así cada franja
+**solapa 1 px** a la anterior y no hay costura por antialiasing. El giro de la franja raíz sobre el
+lomo (borde izquierdo) da la vuelta de página. Cada franja suma una rotación `rotateY` pequeña
+(`--i × 1,6°` como máximo, unos 24° acumulados en el borde libre), así la hoja se **curva**
+suavemente en vez de girar como un cartón rígido o plegarse como persiana. Cada franja muestra su
+tajada del mismo contenido: una copia del frente desplazada `--i × (100% − 1px)` dentro de un
+`overflow: hidden`, alineada con el solape. La raíz mide `(100% + 6px) / 6`, de modo que las 6
+franjas cubren el viewport completo con 1 px de margen para el redondeo.
 
-- Sombreado: cada franja tiene una capa `linear-gradient` (oscuro hacia el pliegue, brillo especular
-  en la cresta) cuya `opacity` acompaña la curvatura.
+- Sombreado: cada franja lleva su tramo de una única rampa que cruza la hoja entera: un gradiente
+  horizontal que va de `--i × 0,05` a `(--i + 1) × 0,05` de opacidad. El final de una franja coincide
+  con el comienzo de la siguiente, así que el sombreado aumenta de forma continua hacia el borde
+  libre, sin escalones de tono en los bordes de franja (R2.6). La `opacity` de la capa acompaña la
+  curvatura.
 - Dorso: `backface-visibility: hidden` en el frente, con un dorso de tono papel levemente más oscuro.
 - Sombra proyectada: una capa de gradiente sobre el selector, debajo de la hoja, que se desplaza y se
   desvanece con `transform` y `opacity`.
@@ -53,35 +59,56 @@ rígido. Cada franja muestra su tajada del mismo contenido: una copia del frente
   esquina, no como paso de página.
 - *Canvas/WebGL o librerías (turn.js, GSAP, three.js)*: fuera de alcance por no-objetivo.
 
-Perspectiva: `perspective: 2200px` en el escenario, con `perspective-origin` en el lomo, de modo que
-el borde libre se acerca al espectador al levantarse. La hoja gira de derecha a izquierda, como al
-leer.
+Perspectiva: `perspective: max(2200px, 500vw)` en el escenario, con `perspective-origin` en el lomo.
+La cámara queda a unas 5 veces el ancho del viewport en cualquier pantalla: el borde libre se acerca
+al espectador al levantarse, pero su proyección apenas se agranda, y el selector empieza a
+descubrirse en cuanto la hoja gira unos 20°. Con una perspectiva fija, en desktop el borde libre
+proyectado seguiría fuera del viewport hasta −63° (1366 px) o −83° (1920 px) y el descubrimiento se
+reduciría a 0,2–0,5 s. La hoja gira de derecha a izquierda, como al leer.
 
 ## 3. Contenido de la hoja
 
 Fondo papel cálido muy claro (no blanco puro), con textura sutil por gradiente y sin imagen. En el
-centro va una casa SVG inline en trazo fino (`stroke-width` ~1.25 con
-`vector-effect: non-scaling-stroke`, color navy de marca) sobre el logo
-`/logo-rediseno/Logo_Kuvu.png`. El SVG y el logo son decorativos (`aria-hidden="true"`, `alt=""` en
+centro va una casa SVG inline en trazo fino (`stroke-width: .6` en unidades del `viewBox`, entre
+~0,75 y ~1,8 px según el tamaño; color navy de marca) sobre el logo `/logo-rediseno/Logo_Kuvu.png`.
+El trazo **no** usa `vector-effect: non-scaling-stroke`: combinado con `pathLength="1"` y
+`stroke-dasharray: 1`, Chrome mide el dash en px de pantalla y la casa queda dibujada a medias
+cuando el SVG escala más de 1×. La cara de cada franja usa la clase `sheet-face` y no `page`,
+porque los estilos compartidos del sitio (`shared.styles.scss`) le dan a `.page` un `max-width` de
+1280 px y padding, que acortan la hoja y desalinean las tajadas. El SVG y el logo son decorativos (`aria-hidden="true"`, `alt=""` en
 las copias por franja).
 
-## 4. Coreografía y easing (R2.2, total 2000 ms)
+**Presentación en una capa plana (R2.5.1).** La casa y el logo salen de un solo `ng-template`
+(`faceContent`) que se usa 7 veces: en las 6 caras de franja y en `.presentation`, una copia plana que
+va encima de la hoja con el mismo layout que la cara completa (`inset: 0 -1px 0 0`). Solo
+`.presentation` anima el trazo y el logo. Las copias de las franjas están dibujadas desde el inicio y
+ocultas con una animación de `opacity` (`hand-over-in`, `step-end`, que además les da su propia capa
+chica). A los 600 ms, en el mismo cuadro, `.presentation` pasa a `opacity 0` (`hand-over-out`) y las
+copias a `opacity 1`: con la hoja todavía plana, el cambio no se nota. Así el repintado del trazo
+ocurre en una sola capa chica y no en las 6 capas 3D de las franjas.
+
+## 4. Coreografía y easing (R2.2, total 2900 ms)
 
 | Tramo | ms | Qué pasa | Easing |
 |---|---|---|---|
-| Presentación | 0–700 | La casa se dibuja (`stroke-dashoffset`); el logo pasa de `opacity 0→1` y `scale 1.02→1` (0–450) | `cubic-bezier(.22,1,.36,1)` |
-| Anticipación | 700–950 | La esquina se levanta: raíz `rotateY 0→-10°`, curvatura leve de franjas | `cubic-bezier(.33,0,.2,1)` |
-| Paso de hoja | 950–1750 | La raíz va de `-10°` a `-180°`; la curvatura crece hasta el 50 % y se relaja al aterrizar; la sombra proyectada barre y se desvanece | `cubic-bezier(.65,.05,.36,1)` |
-| Asentamiento | 1750–2000 | La hoja sale de vista; el selector hace `translateY 8px→0` (ya visible debajo) | ease-out |
+| Presentación | 0–600 | En la capa plana: la casa se dibuja (`stroke-dashoffset`, 120–570) y el logo pasa de `opacity 0→1` y `scale 1.02→1` (120–520). Los primeros ~100 ms son el primer raster de la hoja. A los 600 la capa plana cede a las copias de las franjas | `cubic-bezier(.22,1,.36,1)` |
+| Anticipación | 600–900 | La esquina se levanta: raíz `rotateY 0→-12°`, curvatura leve de franjas | `cubic-bezier(.33,0,.2,1)` |
+| Paso de hoja | 900–2880 | La raíz va de `-12°` a `-91°`; la curvatura crece hasta la mitad del tramo y se relaja; la sombra proyectada barre y se desvanece. El selector empieza a descubrirse a ~1,4 s y la hoja queda fuera de vista a ~2,75 s; la raíz cruza `-90°` a ~2,8 s | `cubic-bezier(.3,0,.8,1)`: lento al comienzo del tramo visible y más rápido al salir |
+| Salida | 2780–2880 | La raíz baja `opacity` a 0 como resguardo | lineal |
+| Fin | 2900 | `completed`; el selector se libera de `inert` y hace su asentamiento de 8 px | ease-out |
 
-El sonido arranca a los 950 ms, sincronizado con el paso. El selector está debajo desde el instante 0
-(§7), así que al llegar a 2000 ms ya es interactivo: no hay crossfade adicional y desaparece el fade de
-650 ms de `LandingComponent`.
+El pase visible dura ≥ 1,2 s medido de las dos formas (R2.2.1): por rotación (del levante a los
+600 ms al cruce de −90°, ~2,2 s) y por descubrimiento (desde que el selector empieza a verse hasta que
+la hoja sale por completo de la vista, ~1,3–1,4 s en todos los viewports de CA9). Entre la salida de vista y el fin pasan ≤ 250 ms (R2.2.2). El sonido arranca a los
+1200 ms, ya con la hoja en movimiento, y dura 1,4 s.
 
-**Control del tiempo:** el movimiento son keyframes CSS con `animation-delay`, aplicados por una clase
-`is-playing`. El fin lo marca **un solo `setTimeout(2000)`** en TS que emite `completed`. Se usa timer
-y no `animationend` para que la duración sea determinista y testeable con `fakeAsync`, como el patrón
-vigente del proyecto. El sonido usa otro `setTimeout(950)`.
+**Control del tiempo:** el movimiento son keyframes CSS sobre la duración total (`$duration: 2900ms`),
+con los porcentajes derivados en SCSS de los ms de la tabla, aplicados por una clase `is-playing`.
+El fin lo marca **un solo `setTimeout(INTRO_DURATION_MS)`** en TS que emite `completed`. Se usa timer
+y no `animationend` para que la duración sea determinista y testeable con `fakeAsync`. El sonido usa
+otro `setTimeout(SOUND_START_MS)`. Las constantes de TS (`INTRO_DURATION_MS = 2900`,
+`TURN_START_MS = 600`, el instante en que la hoja empieza a levantarse; `SOUND_START_MS = 1200`) coinciden con las variables de SCSS; un test sobre la
+animación CSS real lo verifica (§13).
 
 ## 5. Salto (R3)
 
@@ -116,42 +143,65 @@ claro (contraste muy superior a 4,5:1), `min-width/min-height: 44px` y `:focus-v
 - `estado` conserva `INTRO | SELECTION`. `completadaIntro()` marca la intro como vista, pasa a
   `SELECTION` en el acto (sin timeout de 650 ms; `transicionando` deja de ser necesario) y enfoca el
   buscador.
-- El fetch de empresas arranca en `ngOnInit`, en paralelo a la intro: en 2 s la lista suele estar
+- El fetch de empresas arranca en `ngOnInit`, en paralelo a la intro: en 3 s la lista suele estar
   cargada; si no, se ve el skeleton existente.
+- **Selector sin renderizar durante la presentación (R2.5.1).** Mientras la hoja cubre la página
+  plana, la foto de fondo (con su zoom en loop y el overlay con `backdrop-filter`) y la tarjeta con
+  blur cuestan unos 250–350 ms de raster en el primer cuadro, y eso congelaba justo el dibujo de la
+  casa. La señal `tapado` vale `true` desde el montaje hasta `TURN_START_MS` (un `setTimeout`, limpio
+  en `DestroyRef`) o hasta `completadaIntro()`, lo que llegue primero. Con la clase `tapado`,
+  `.bg-photo` y `.bg-overlay` van con `visibility: hidden` y `.landing-container` con
+  `content-visibility: hidden`. El selector no usa `visibility` heredada: Chrome puede dejar el
+  buscador computado como oculto justo después de que su ancestro vuelve a ser visible, y el foco del
+  fin de la intro falla. El raster pasa al levante, todavía bajo la hoja, donde la hoja casi no se
+  mueve. Mientras la intro está activa, el zoom de la foto queda en pausa.
+- **Sin cross-fade del router al entrar a la intro (R2.5.1).** `withViewTransitions` hace un cross-fade
+  de ~250 ms entre páginas, y al entrar a `/acceder` mantenía la home a la vista durante los primeros
+  ~350 ms de la intro. `skipViewTransitionIntoIntro` (`app/intro-view-transition.ts`, en
+  `onViewTransitionCreated`) llama a `transition.skipTransition()` cuando el destino es `acceder` y
+  `IntroStateService.debeReproducirse()` es `true`. Las demás navegaciones conservan el cross-fade.
 
 ## 8. Recordado persistente (R5)
 
 `IntroStateService` conserva su API pública (`debeReproducirse()`, `marcarComoReproducida()`), que
 `LandingComponent` y sus tests ya consumen.
-- Clave `localStorage`: `kuvu.intro.seen` = `"1"`.
+- Clave `sessionStorage`: `kuvu.intro.seen` = `"1"`. El recordado dura lo que la sesión de la
+  pestaña: sobrevive a F5 y a la navegación interna, y una pestaña o sesión nueva vuelve a mostrar la
+  intro.
 - `debeReproducirse()` devuelve `!reducedMotion && !vistoEnMemoria && !vistoEnStorage`.
 - `marcarComoReproducida()` pone el flag en memoria e intenta escribir en storage.
-- Toda lectura o escritura de `localStorage` va en `try/catch`. Si falla, queda solo el flag en
+- Toda lectura o escritura de `sessionStorage` va en `try/catch`. Si falla, queda solo el flag en
   memoria: como mucho una vez por carga (R5.3).
 - Reduced-motion se sigue leyendo una vez en el constructor (R7.1). No marca la intro como vista.
 
 ## 9. Sonido (R6) — Web Audio sintetizado
 
-**Elegido: síntesis con Web Audio API en `PageTurnSoundService`** (0 bytes de asset, ~60 líneas de
-TS, muy por debajo del presupuesto de 30 kB).
-- `play()`: crea un `AudioContext` y un buffer de ruido blanco de ~0,9 s. Lo pasa por un `highpass` de
-  ~400 Hz y un `bandpass` con barrido de frecuencia de ~900 a ~2600 Hz (el "frrr" del papel). La
-  envolvente de ganancia sube a 0,18 en 60 ms, ondula y cae a 0 a los ~850 ms. Agrega un golpe corto
-  final de ~40 ms (la hoja que asienta) con pico ≤ 0,25. Así el pico global queda ≤ 0,3 (R6.1).
+**Elegido: síntesis con Web Audio API en `PageTurnSoundService`** (0 bytes de asset, muy por debajo
+del presupuesto de 30 kB). El grafo vive en una función exportada,
+`buildPageTurnGraph(ctx: BaseAudioContext, destination: AudioNode)`, que usan el servicio (con
+`AudioContext`) y los tests (con `OfflineAudioContext`).
+- Ruido blanco de 1,4 s → `highpass` de 400 Hz → `bandpass` con barrido de 900 a 2600 Hz (el "frrr"
+  del papel) → envolvente que sube en 80 ms, ondula y cae a 0 a los 1,3 s. Un golpe corto final
+  low-pass de 40 ms (la hoja que asienta) arranca a 1,32 s.
+- **Nivel de salida:** ganancia de salida ×3,16 (+10 dB) seguida de un limitador suave
+  (`WaveShaperNode`, curva `0,3·tanh(x/0,3)`). El limitador garantiza un pico de muestra ≤ 0,3 aunque
+  el ruido aleatorio genere un pico mayor, y deja el RMS del efecto por encima de −27 dBFS (R6.1).
 - Si el contexto está `suspended`, intenta `resume()` con `.catch(() => {})`.
 - `stop()`: rampa de ganancia a 0 en 60 ms y `close()` del contexto.
 - **Degradación silenciosa (R6.2):** sin `AudioContext`/`webkitAudioContext`, con un constructor que
   lanza o con un `resume()` que se rechaza, `play()` y `stop()` no hacen nada y nunca propagan
   excepciones ni dejan promesas rechazadas sin capturar.
-- `play()` lo llama solo `AuthIntroComponent` a los 950 ms, una vez por intro (R6.3).
+- `play()` lo llama solo `AuthIntroComponent` a los `SOUND_START_MS`, una vez por intro (R6.3).
 
 **Descartado: asset (OGG/MP3 corto con licencia libre).** Entra en 30 kB, pero exige curar la licencia
 y suma una request en el camino crítico. La política de autoplay lo bloquea igual, así que no da
 ventaja funcional. La síntesis además permite cortar el sonido en el instante del salto.
 
 **Autoplay:** si el usuario llega a `/acceder` navegando dentro del SPA después de un clic (por
-ejemplo, desde la home), hay activación de usuario y el sonido suena. Si llega en una carga directa de
-URL, el contexto queda suspendido y la intro corre muda. Es el comportamiento esperado por R6.2.
+ejemplo, "Ingresar" en la home), el documento tiene activación de usuario persistente y el
+`AudioContext` arranca en `running`. Por eso no se pre-crea el contexto en la home: no cambia lo que
+se oye y sumaría acoplamiento entre la home y la intro. Si llega en una carga directa de URL, el
+contexto queda suspendido y la intro corre muda. Es el comportamiento esperado por R6.2.
 
 ## 10. Responsive y safe-area (R4)
 
@@ -190,15 +240,17 @@ guidelines mencione Vitest):
 
 | Suite | Casos |
 |---|---|
-| `AuthIntroComponent` | `completed` no se emite a los 1999 ms y sí a los 2000 ms (`fakeAsync`); `click` en host, `Escape`/`Enter`/`Space` y botón saltan y emiten en ≤ 300 ms; emite una sola vez (salto + timer, doble salto); `sound.play` una vez a los 950 ms y `sound.stop` al saltar (stub del servicio); botón con `type=button` y `aria-label` correcto; capas decorativas con `aria-hidden` |
-| `PageTurnSoundService` | Sin `AudioContext` no lanza; con un constructor que lanza no lanza; con `resume()` rechazado no deja una promesa rechazada sin capturar; `stop()` antes de `play()` no lanza |
-| `IntroStateService` | Storage con `seen` → `false`; `marcar` escribe la clave; `getItem`/`setItem` que lanzan → fallback en memoria; reduced-motion → `false` |
+| `AuthIntroComponent` | `completed` no se emite a los 2899 ms y sí a los 2900 ms (`fakeAsync`); la animación CSS real de la franja raíz (pausada y recorrida con `currentTime`) dura `INTRO_DURATION_MS`, empieza a levantarse a ≤ 1 s, cruza −90° ≥ 1,2 s después y a ≤ 250 ms del fin; el trazo de la casa no usa `non-scaling-stroke`; `click` en host, `Escape`/`Enter`/`Space` y botón saltan y emiten en ≤ 300 ms; emite una sola vez (salto + timer, doble salto); `sound.play` una vez a los `SOUND_START_MS` y `sound.stop` al saltar (stub del servicio); botón con `type=button` y `aria-label` correcto; capas decorativas con `aria-hidden` |
+| `PageTurnSoundService` | Render offline de `buildPageTurnGraph`: pico ≤ 0,3, RMS ≥ −27 dBFS, sin señal después de 1,5 s; sin `AudioContext` no lanza; con un constructor que lanza no lanza; con `resume()` rechazado no deja una promesa rechazada sin capturar; `stop()` antes de `play()` no lanza |
+| `IntroStateService` | `sessionStorage` con `seen` → `false`; `marcar` escribe la clave en `sessionStorage` y no en `localStorage`; `getItem`/`setItem` que lanzan → fallback en memoria; reduced-motion → `false` |
 | `LandingComponent` | Renderiza las empresas en el orden recibido (ids 1–4 con nombres no alfabéticos); el filtro preserva el orden; el selector está `inert` con la intro activa y se libera al completar; foco en el buscador al completar; pasa a `SELECTION` sin el retardo de 650 ms |
 
 **`node --test`**: `empresas.route.test.js` según §1.
 
-**Manual en `verify`**: los 6 viewports de referencia (CA9), Safari/iOS si hay dispositivo, y el
-sonido con y sin activación previa.
+**Medición en `verify` (Chrome headless sobre el build)**: los viewports de referencia (CA9), casa
+completa a 1280 y 360 px y hoja sin costuras (CA3.2), pase visible por cobertura de píxeles en el
+screencast (CA3.1) y nivel de salida real entrando por clic en "Ingresar". Safari/iOS si hay
+dispositivo.
 
 ## Riesgos
 
@@ -210,5 +262,6 @@ sonido con y sin activación previa.
 | Ghost click o tecla que llega al selector | `inert` + salto en `click` con `preventDefault/stopPropagation` + overlay presente durante el fade |
 | Storage bloqueado | `try/catch` + fallback en memoria |
 | Usuarios que ya vieron la intro vieja la ven una vez más (la clave es nueva) | Esperado: es la primera vez de la intro nueva |
+| Navegadores que tienen `kuvu.intro.seen` en `localStorage` | La clave de `sessionStorage` es independiente: la intro se muestra en su próxima sesión, que es lo pedido |
 | Tamaño del diff: TS/HTML/SCSS de la intro + servicio + tests ≈ 600–700 líneas, por encima del umbral de 300 | `tasks` lo marca como riesgo alto; se aplica `ask-on-risk` (los slices `backend-orden` e `intro` permiten PRs separados) |
 | Doc vigente (`docs/login-intro-transition.md`) describe la casa 3D | `document` la actualiza al comportamiento nuevo |

@@ -35,7 +35,7 @@ ng serve
 | wilsonsolano96@gmail.com | 1234 | Administrador |
 | yeisonpulgarin@gmail.com | 1234 | Arrendatario |
 
-> 1. Al cargar la app aparece una intro de ~5s (una vez por carga) en `/acceder`; seleccionar una
+> 1. La primera vez en la pestaña, `/acceder` muestra una intro de ~3 s (se puede saltar); seleccionar una
 >    empresa y luego ingresar el correo y el número de documento correspondientes a esa empresa.
 
 ---
@@ -88,7 +88,8 @@ src/
     ├── services/
     │   ├── auth.service.ts           # Autenticación, sesión, theming por empresa
     │   ├── data.service.ts           # Datos mock + CRUD con signals
-    │   ├── intro-state.service.ts    # Flag de intro "una vez por carga" + reduced-motion
+    │   ├── intro-state.service.ts    # Intro recordada por pestaña (sessionStorage) + reduced-motion
+    │   ├── page-turn-sound.service.ts # Sonido de la intro (Web Audio, sin archivos)
     │   ├── theme.service.ts          # Tema claro/oscuro del sitio público
     │   └── page-meta.service.ts      # title + meta description por página
     │
@@ -109,7 +110,7 @@ src/
     │   ├── home/                     # Página pública / (hero + secciones de content/)
     │   │   └── team-band/            # Banda "El equipo detrás de KUVU"
     │   ├── shared/
-    │   │   ├── auth-intro/           # Intro cinematográfica CSS 3D (casa en ensamblaje)
+    │   │   ├── auth-intro/           # Intro "hoja que pasa" (CSS 3D, ~3 s)
     │   │   ├── navbar/               # Barra de navegación dinámica por empresa
     │   │   └── shared.styles.scss    # Estilos compartidos (modals, tablas, forms, badges)
     │   │

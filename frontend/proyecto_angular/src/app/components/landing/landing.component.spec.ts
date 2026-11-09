@@ -4,6 +4,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { LandingComponent } from './landing.component';
+import { INTRO_DURATION_MS, TURN_START_MS } from '../shared/auth-intro/auth-intro.component';
 import { IntroStateService } from '../../services/intro-state.service';
 
 function asElement(node: unknown): HTMLElement {
@@ -97,7 +98,37 @@ describe('LandingComponent', () => {
       expect(el.querySelectorAll('.empresa-row').length).toBe(4);
       expect(asElement(el.querySelector('.landing-bg')).classList).toContain('is-intro-active');
       f2.destroy();
-      tick(2000);
+      tick(INTRO_DURATION_MS);
+    }));
+
+    it('keeps the photo, its overlay and the selector unrendered until the lift (D9)', fakeAsync(() => {
+      const { f2, el } = createWithIntro();
+      const [photo, overlay, container] = ['.bg-photo', '.bg-overlay', '.landing-container']
+        .map((sel) => asElement(el.querySelector(sel)));
+      const rendered = () => [
+        getComputedStyle(photo).visibility,
+        getComputedStyle(overlay).visibility,
+        getComputedStyle(container).getPropertyValue('content-visibility')
+      ];
+      expect(rendered()).toEqual(['hidden', 'hidden', 'hidden']);
+      tick(TURN_START_MS - 1);
+      f2.detectChanges();
+      expect(rendered()).toEqual(['hidden', 'hidden', 'hidden']);
+      tick(1);
+      f2.detectChanges();
+      expect(rendered()).toEqual(['visible', 'visible', 'visible']);
+      f2.destroy();
+      tick(INTRO_DURATION_MS);
+    }));
+
+    it('renders the selector at once when the intro is skipped before the lift (D9)', fakeAsync(() => {
+      const { f2, c2, el } = createWithIntro();
+      tick(100);
+      c2.completadaIntro();
+      f2.detectChanges();
+      expect(getComputedStyle(asElement(el.querySelector('.landing-container'))).getPropertyValue('content-visibility')).toBe('visible');
+      f2.destroy();
+      tick(INTRO_DURATION_MS);
     }));
 
     it('completadaIntro goes to SELECTION at once, releases inert and marks the intro as seen', fakeAsync(() => {
@@ -124,9 +155,9 @@ describe('LandingComponent', () => {
       f2.destroy();
     }));
 
-    it('completes when the intro emits completed after 2000 ms', fakeAsync(() => {
+    it('completes when the intro emits completed after INTRO_DURATION_MS', fakeAsync(() => {
       const { f2, c2 } = createWithIntro();
-      tick(1999);
+      tick(INTRO_DURATION_MS - 1);
       expect(c2.estado()).toBe('INTRO');
       tick(1);
       expect(c2.estado()).toBe('SELECTION');
