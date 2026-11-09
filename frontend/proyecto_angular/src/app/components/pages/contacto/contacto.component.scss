@@ -32,7 +32,7 @@
   margin: 0 0 1.5rem;
   font-weight: 800;
   letter-spacing: -0.02em;
-  color: var(--color-home-text, #1f2920);
+  color: var(--color-home-text);
 }
 
 .section-title {
@@ -58,7 +58,7 @@
   label {
     font-size: 0.875rem;
     font-weight: 600;
-    color: var(--color-home-text, #1f2920);
+    color: var(--color-home-text);
   }
 
   input,
@@ -69,9 +69,9 @@
     padding: 0.625rem 0.875rem;
     font-size: 1rem;
     border-radius: 12px;
-    color: var(--color-home-text, #1f2920);
-    background-color: var(--color-home-surface, #ffffff);
-    border: 1px solid var(--color-home-border, #cddccd);
+    color: var(--color-home-text);
+    background-color: var(--color-home-surface);
+    border: 1px solid var(--color-home-border);
 
     &[aria-invalid='true'] {
       border-color: #b42318;
@@ -93,7 +93,7 @@
       min-height: 20px;
       height: 20px;
       margin-top: 2px;
-      accent-color: var(--color-brand-700, #2f4a2f);
+      accent-color: var(--color-brand-700);
     }
 
     label {
@@ -127,7 +127,7 @@
 .field-hint {
   margin: -0.75rem 0 0;
   font-size: 0.8125rem;
-  color: var(--color-home-muted, #4c5a4e);
+  color: var(--color-home-muted);
 }
 
 :host-context(.dark) .field-error {
@@ -158,8 +158,8 @@
   font-size: 0.9375rem;
 
   &--ok {
-    color: var(--color-home-text, #1f2920);
-    background-color: var(--color-home-surface-alt, #eef1ec);
+    color: var(--color-home-text);
+    background-color: var(--color-home-surface-alt);
   }
 
   &--warn {
@@ -184,8 +184,8 @@
 .aside-block {
   padding: 1.75rem;
   border-radius: 16px;
-  background-color: var(--color-home-surface, #ffffff);
-  border: 1px solid var(--color-home-border, #cddccd);
+  background-color: var(--color-home-surface);
+  border: 1px solid var(--color-home-border);
 }
 
 .channel-list {
@@ -199,7 +199,7 @@
 
 .channel-wa {
   font-weight: 600;
-  color: var(--color-brand-600, #3e5c40);
+  color: var(--color-brand-600);
   text-decoration: underline;
 }
 
@@ -219,13 +219,13 @@
     margin: 0 0 0.25rem;
     font-size: 1rem;
     font-weight: 700;
-    color: var(--color-home-text, #1f2920);
+    color: var(--color-home-text);
   }
 
   p {
     margin: 0;
     font-size: 0.875rem;
-    color: var(--color-home-muted, #4c5a4e);
+    color: var(--color-home-muted);
   }
 }
 
@@ -238,5 +238,5 @@
   font-size: 0.875rem;
   font-weight: 700;
   color: #ffffff;
-  background-color: var(--color-brand-700, #2f4a2f);
+  background-color: var(--color-brand-700);
 }

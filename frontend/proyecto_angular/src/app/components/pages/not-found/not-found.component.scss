@@ -26,7 +26,7 @@
   font-weight: 800;
   line-height: 1;
   letter-spacing: -0.04em;
-  color: var(--color-brand-300, #a3bfa3);
+  color: var(--color-brand-300);
 }
 
 .btn-home {
@@ -34,7 +34,7 @@
   padding: 0.75rem 1.75rem;
   border-radius: 9999px;
   color: #ffffff;
-  background-color: var(--color-brand-700, #2f4a2f);
+  background-color: var(--color-brand-700);
 }
 
 .not-found-links ul {
@@ -46,7 +46,7 @@
 
   a {
     font-weight: 500;
-    color: var(--color-brand-600, #3e5c40);
+    color: var(--color-brand-600);
     text-decoration: underline;
     text-underline-offset: 3px;
   }

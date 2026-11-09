@@ -10,15 +10,15 @@
 
 .section {
   padding-block: 4.5rem;
-  background-color: var(--color-home-bg, #f6f7f4);
+  background-color: var(--color-home-bg);
 
   @media (width >= 768px) {
     padding-block: 6rem;
   }
 
   &--alt {
-    background-color: var(--color-home-surface, #ffffff);
-    border-block: 1px solid var(--color-home-border, #cddccd);
+    background-color: var(--color-home-surface);
+    border-block: 1px solid var(--color-home-border);
   }
 }
 
@@ -27,13 +27,13 @@
   font-size: clamp(1.75rem, 3.5vw, 2.5rem);
   font-weight: 800;
   letter-spacing: -0.02em;
-  color: var(--color-home-text, #1f2920);
+  color: var(--color-home-text);
 }
 
 .section-lead {
   margin: 0 0 2.5rem;
   max-width: 40rem;
-  color: var(--color-home-muted, #4c5a4e);
+  color: var(--color-home-muted);
 }
 
 .service-grid,
@@ -64,26 +64,26 @@
 .role-card {
   padding: 1.75rem;
   border-radius: 16px;
-  background-color: var(--color-home-surface, #ffffff);
-  border: 1px solid var(--color-home-border, #cddccd);
+  background-color: var(--color-home-surface);
+  border: 1px solid var(--color-home-border);
 
   h3 {
     margin: 0 0 0.5rem;
     font-size: 1.125rem;
     font-weight: 700;
-    color: var(--color-home-text, #1f2920);
+    color: var(--color-home-text);
   }
 
   p {
     margin: 0;
     font-size: 0.9375rem;
     line-height: 1.6;
-    color: var(--color-home-muted, #4c5a4e);
+    color: var(--color-home-muted);
   }
 }
 
 .role-card {
-  background-color: var(--color-home-bg, #f6f7f4);
+  background-color: var(--color-home-bg);
 
   .role-role {
     margin-bottom: 0.5rem;
@@ -91,7 +91,7 @@
     font-weight: 700;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: var(--color-brand-600, #3e5c40);
+    color: var(--color-brand-600);
   }
 
   .role-description {
@@ -105,8 +105,8 @@
   padding: 10px;
   margin-bottom: 1rem;
   border-radius: 12px;
-  color: var(--color-brand-600, #3e5c40);
-  background-color: var(--color-home-surface-alt, #eef1ec);
+  color: var(--color-brand-600);
+  background-color: var(--color-home-surface-alt);
 }
 
 .role-points {
@@ -115,7 +115,7 @@
   gap: 0.5rem;
   padding-left: 1.1rem;
   font-size: 0.9375rem;
-  color: var(--color-home-text, #1f2920);
+  color: var(--color-home-text);
 }
 
 .cta-inner {
@@ -132,6 +132,6 @@
   min-height: 44px;
   padding: 0.75rem 1.5rem;
   border-radius: 9999px;
-  border: 1.5px solid var(--color-brand-600, #3e5c40);
+  border: 1.5px solid var(--color-brand-600);
   background-color: transparent;
 }
