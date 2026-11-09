@@ -29,8 +29,10 @@ app.get('/', (req, res) => {
     version: '1.0.0',
     endpoints: [
       'POST /api/auth/login',
+      'POST /api/auth/cambiar-password',
       'GET  /api/empresas',
       'GET  /api/usuarios?empresa_id=1',
+      'POST /api/usuarios/:id/restablecer-password',
       'GET  /api/locales?empresa_id=1',
       'GET  /api/contratos?empresa_id=1',
       'GET  /api/pagos?empresa_id=1',
