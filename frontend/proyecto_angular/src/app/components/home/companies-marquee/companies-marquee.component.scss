@@ -53,12 +53,13 @@
   font-weight: 600;
   cursor: pointer;
   min-height: 44px;
-  color: var(--color-home-text);
+  // Literal fallbacks: Tailwind v4 does not emit the light theme tokens on :root.
+  color: var(--color-home-text, #1f2920);
   background-color: transparent;
-  border: 1px solid var(--color-home-border);
+  border: 1px solid var(--color-home-border, #cddccd);
 
   &:hover {
-    background-color: var(--color-home-surface-alt);
+    background-color: var(--color-home-surface-alt, #eef1ec);
   }
 }
 

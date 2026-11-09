@@ -87,6 +87,15 @@ describe('StepsJourneyComponent', () => {
       });
     });
 
+    // The light theme tokens are not emitted on :root (Tailwind v4): the line must resolve
+    // its colours from literal fallbacks or it is invisible.
+    it('draws the progress line and its track with the brand colours', () => {
+      const line = section.querySelector('.steps-line') as HTMLElement;
+      const track = section.querySelector('.steps-track') as HTMLElement;
+      expect(getComputedStyle(line).backgroundColor).toBe('rgb(62, 92, 64)');
+      expect(getComputedStyle(track, '::before').backgroundColor).toBe('rgb(205, 220, 205)');
+    });
+
     it('drops the journey when the viewport goes below 1024 px', () => {
       media.set('desktop', false);
       fixture.detectChanges();

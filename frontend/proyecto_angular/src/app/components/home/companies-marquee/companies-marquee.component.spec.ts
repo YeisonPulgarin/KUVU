@@ -93,6 +93,10 @@ describe('CompaniesMarqueeComponent', () => {
       expect(band().classList).not.toContain('is-paused');
     });
 
+    it('outlines the pause button even without the light theme tokens on :root', () => {
+      expect(getComputedStyle(toggle()!).borderTopColor).toBe('rgb(205, 220, 205)');
+    });
+
     it('marks the band off screen while it is out of view', () => {
       const observer = marqueeObserver();
       observer.trigger(band(), false);
