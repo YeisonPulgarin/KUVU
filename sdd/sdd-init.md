@@ -25,3 +25,9 @@ docs_existentes: docs/
 - Estilos de componentes: evitá `@apply` de Tailwind cuando el componente va en el bundle
   inicial. Tailwind v4 lo expande con fallbacks y un bloque `@layer properties` en cada
   componente, y el presupuesto inicial es ajustado.
+- Tokens de marca del sitio público (`--color-brand-*`, `--color-home-*`, `--radius-*`): se
+  declaran en el bloque `@theme static` de `src/styles.css`, así que Tailwind los emite siempre
+  en `:root` aunque ninguna utilidad los use. Los overrides oscuros están en `.dark` del mismo
+  archivo. Los componentes los consumen con `var(--token)`, sin fallback literal, y sus nombres
+  pueden escribirse tal cual en `.ts`/`.html` (el escaneo de Tailwind no cambia lo que se emite).
+  Un token nuevo de marca va en ese bloque, no en un `:root` aparte.
