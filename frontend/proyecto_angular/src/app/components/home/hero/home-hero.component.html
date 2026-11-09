@@ -1,7 +1,7 @@
 <div class="hero-stage" appScrollProgress="exit" desktopOnly>
   <div class="container hero-inner">
     <p class="hero-brand hero-enter">KUVU.</p>
-    <h1 class="hero-title"><app-split-text [text]="title" mode="enter" /></h1>
+    <h1 class="hero-title display-title display-title--xl hero-enter"><app-headline [parts]="headline.parts" [title]="headline.title" /></h1>
     <p class="hero-subtitle hero-enter">
       Gestiona locales, contratos, pagos y mantenimientos de múltiples compañías
       desde un solo sistema.
@@ -13,5 +13,4 @@
       </a>
     </div>
   </div>
-  <span class="hero-scroll-cue" aria-hidden="true"></span>
 </div>

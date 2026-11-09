@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HOME_JSONLD_ID, HomeComponent } from './home.component';
 import { pageMeta } from '../../content/pages';
+import { headlines, team } from '../../content';
 import { ScrollMotionService } from '../../motion/scroll-motion.service';
 
 function asElement(node: unknown): HTMLElement {
@@ -268,11 +269,11 @@ describe('HomeComponent', () => {
       expect(link.getAttribute('aria-label')).toContain('Nosotros');
     });
 
-    it('should render the photo as a decorative cover background', () => {
+    it('should render the featured photo as content, with a descriptive alt and no names', () => {
       const img = asElement(band.querySelector('.team-band-media app-responsive-image picture img'));
-      expect(img.getAttribute('alt')).toBe('');
+      expect(img.getAttribute('alt')).toBe(team.photos[0].alt);
+      expect(img.getAttribute('alt')).not.toContain('Wilson');
       expect(img.classList).toContain('responsive-image__img--cover');
-      expect(img.getAttribute('sizes')).toBe('100vw');
       expect(img.getAttribute('src')).toBe('/Imagenes_web/equipo-kuvu-1-1200.jpeg');
     });
 
@@ -378,10 +379,27 @@ describe('HomeComponent', () => {
       expect(contact.classList).not.toContain('btn-primary');
     });
 
-    it('should number its sections correlatively from 01, hidden from assistive tech', () => {
-      const eyebrows = Array.from(root.querySelectorAll('.home-layout .section-eyebrow'));
-      expect(eyebrows.map((e) => e.textContent?.trim())).toEqual(['01', '02', '03', '04', '05', '06', '07']);
-      eyebrows.forEach((e) => expect(e.getAttribute('aria-hidden')).toBe('true'));
+    it('should drop the numbered eyebrows and the scroll cue', () => {
+      expect(root.querySelectorAll('.home-layout .section-eyebrow').length).toBe(0);
+      expect(root.querySelector('.hero-scroll-cue')).toBeNull();
+    });
+
+    it('should keep a single h1 and title every section in display type', () => {
+      expect(root.querySelectorAll('h1').length).toBe(1);
+      const titles = Array.from(root.querySelectorAll('.home-layout > section h2'));
+      expect(titles.length).toBeGreaterThanOrEqual(9);
+      titles.forEach((h2) => expect(getComputedStyle(h2).textTransform).toBe('uppercase'));
+    });
+
+    it('should split the section titles without changing their text', () => {
+      expect(asElement(root.querySelector('#que-es h2')).textContent).toBe(headlines.queEs.title);
+      expect(asElement(root.querySelector('#seguridad h2')).textContent).toBe(headlines.seguridad.title);
+      expect(asElement(root.querySelector('.cta-final h2')).textContent).toBe(headlines.ctaFinal.title);
+      expect(root.querySelector('.cta-final h2 .tape')?.textContent).toBe('inmobiliarias');
+    });
+
+    it('should end on a full-bleed brand block', () => {
+      expect(root.querySelector('.home-layout > section:last-of-type')?.classList).toContain('block-brand');
     });
 
     it('should hide the arrows of the CTA links from assistive tech', () => {

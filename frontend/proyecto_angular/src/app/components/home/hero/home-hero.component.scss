@@ -3,33 +3,24 @@
   display: flex;
   align-items: stretch;
   overflow: hidden;
-  text-align: center;
   min-height: calc(100dvh - 64px);
-  background-color: var(--color-home-bg);
-  border-bottom: 1px solid var(--color-home-border);
-
-  // Subtle brand grid (pattern, not a decorative gradient).
-  background-image:
-    radial-gradient(circle at 15% 20%, var(--color-brand-100) 0 2px, transparent 3px),
-    radial-gradient(circle at 85% 70%, var(--color-brand-100) 0 2px, transparent 3px);
-  background-size: 240px 240px;
-  background-position: 0 0, 120px 120px;
+  border-bottom: 2px solid var(--color-home-text);
 
   @media (width >= 768px) {
     min-height: calc(100dvh - 80px);
   }
 }
 
-// Fills the hero: carries `--p` (exit progress) for the content and the scroll cue.
+// Fills the hero: carries `--p` (exit progress) for the content.
 .hero-stage {
   position: relative;
   display: flex;
   flex: 1;
   align-items: center;
-  justify-content: center;
 }
 
 .container {
+  width: 100%;
   max-width: 72rem;
   margin-inline: auto;
   padding-inline: 1rem;
@@ -39,61 +30,45 @@
   }
 }
 
+// Manifiesto tipográfico alineado a la izquierda.
 .hero-inner {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   gap: 1.5rem;
-  padding-block: 5rem;
+  padding-block: 3.5rem 4rem;
+
+  @media (width >= 768px) {
+    padding-block: 4rem 5rem;
+  }
 }
 
 .hero-brand {
   margin: 0;
-  font-size: 3rem;
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  font-weight: 900;
   line-height: 1;
-  font-weight: 800;
-  letter-spacing: -0.025em;
-  color: var(--color-brand-500);
-
-  @media (width >= 768px) {
-    font-size: 3.75rem;
-  }
+  color: var(--color-brand-600);
 }
 
 .hero-title {
-  margin: 0;
-  font-weight: 800;
-  line-height: 1.25;
-  text-wrap: balance;
-  font-size: clamp(2.25rem, 6vw, 4rem);
-  max-width: 22ch;
+  max-width: 13ch;
   color: var(--color-home-text);
-
-  @media (width >= 768px) {
-    font-size: clamp(3rem, 5.5vw, 4.5rem);
-  }
 }
 
 .hero-subtitle {
   margin: 0;
-  max-width: 36rem;
-  font-size: 1rem;
-  line-height: 1.5;
-  font-weight: 400;
-  text-wrap: pretty;
+  max-width: 34ch;
+  font-size: var(--text-lead);
+  line-height: 1.4;
   color: var(--color-home-muted);
-
-  @media (width >= 768px) {
-    font-size: 1.25rem;
-    line-height: 1.4;
-  }
 }
 
 .hero-actions {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: center;
   gap: 1rem 1.75rem;
 }
 
@@ -117,62 +92,21 @@
   &:active { transform: translateY(0); }
 }
 
-// Decorative mouse-shaped cue at the bottom of the hero; fades out as the hero leaves.
-.hero-scroll-cue {
-  position: absolute;
-  bottom: 1.5rem;
-  left: 50%;
-  translate: -50% 0;
-  width: 1.5rem;
-  height: 2.5rem;
-  border: 2px solid currentColor;
-  border-radius: 999px;
-  color: var(--color-home-muted);
-  opacity: calc(1 - var(--p, 0) * 4);
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0.45rem;
-    left: 50%;
-    translate: -50% 0;
-    width: 4px;
-    height: 8px;
-    border-radius: 2px;
-    background-color: currentColor;
-  }
-
-  // Short viewports: the cue would overlap the CTAs.
-  @media (height < 640px) {
-    display: none;
-  }
-}
-
 @media (prefers-reduced-motion: no-preference) {
-  // The h1 words take ~6 × 60 ms + 700 ms; the rest follows them and ends before 1.5 s.
+  // Brand, h1, subtitle and CTAs rise in sequence and end before 1.2 s.
   .hero-enter {
     animation: hero-rise var(--dur-slow) var(--ease-out-expo) both;
   }
 
-  .hero-subtitle { animation-delay: 360ms; }
-  .hero-actions { animation-delay: 480ms; }
-
-  // Three pulses (~4.5 s): no continuous motion longer than 5 s.
-  .hero-scroll-cue::before {
-    animation: hero-cue 1.5s var(--ease-in-out) 1s 3;
-  }
+  .hero-title { animation-delay: 80ms; }
+  .hero-subtitle { animation-delay: 240ms; }
+  .hero-actions { animation-delay: 360ms; }
 
   @keyframes hero-rise {
     from {
       opacity: 0;
       transform: translateY(var(--dist-reveal));
     }
-  }
-
-  @keyframes hero-cue {
-    0% { transform: translateY(0); opacity: 1; }
-    70% { transform: translateY(12px); opacity: 0; }
-    100% { transform: translateY(0); opacity: 0; }
   }
 }
 

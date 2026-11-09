@@ -3,7 +3,14 @@
 
 :host {
   display: block;
-  background-color: var(--color-home-surface);
+  // Cinta de marca a sangre completa (mismos tokens que .block-brand).
+  background-color: var(--color-brand-700);
+  color: var(--color-on-brand);
+}
+
+.section-title,
+.section-lead {
+  color: var(--color-on-brand);
 }
 
 .marquee {
@@ -28,19 +35,26 @@
   list-style: none;
 }
 
-// Typographic wordmarks (no pills, no logos).
+// Typographic wordmarks in display type, separated by a decorative asterisk.
 .company-item {
-  font-size: 1.5rem;
-  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 3.5rem;
+  font-family: var(--font-display);
+  font-size: clamp(2.25rem, 1.6rem + 2.6vw, 4rem);
+  font-weight: 900;
+  line-height: 1;
   white-space: nowrap;
-  letter-spacing: -0.01em;
-  color: var(--color-home-text);
-}
+  text-transform: uppercase;
+  color: var(--color-on-brand);
 
-.company-amarilo  { font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; font-size: 1.3rem; }
-.company-nido     { font-weight: 700; }
-.company-balcones { font-weight: 600; }
-.company-mi       { font-weight: 800; }
+  // Decorative: the empty alternative text keeps it out of the accessible name.
+  &::after {
+    content: '✳' / '';
+    font-size: 0.6em;
+    color: var(--color-brand-300);
+  }
+}
 
 .marquee-toggle {
   display: inline-flex;
@@ -53,12 +67,17 @@
   font-weight: 600;
   cursor: pointer;
   min-height: 44px;
-  color: var(--color-home-text);
+  color: var(--color-on-brand);
   background-color: transparent;
-  border: 1px solid var(--color-home-border);
+  border: 2px solid var(--color-on-brand);
 
   &:hover {
-    background-color: var(--color-home-surface-alt);
+    background-color: color-mix(in oklab, var(--color-on-brand) 12%, transparent);
+  }
+
+  &:focus-visible {
+    outline: 3px solid var(--color-on-brand);
+    outline-offset: 3px;
   }
 }
 
@@ -100,6 +119,7 @@
   }
 
   .company-item {
+    gap: 1.25rem;
     white-space: normal;
   }
 

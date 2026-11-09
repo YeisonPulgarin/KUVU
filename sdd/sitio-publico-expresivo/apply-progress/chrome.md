@@ -15,7 +15,7 @@
 
 - Contenedor de 72rem en header, footer, hero de página y `.site-container` (D2/D5 no fijaban
   ancho): coincide con el contenedor de las páginas, así hero y contenido alinean su borde.
-- Breadcrumb alineado a la izquierda, a juego con el hero (antes centrado).
+- Breadcrumb alineado a la izquierda, a juego con el hero.
 - El grano va por encima del contenido (`z-index: 60`, `pointer-events: none`) para texturar
   también bloques y superficies.
 

@@ -4,6 +4,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { TeamBandComponent } from './team-band.component';
 import { ScrollMotionService } from '../../../motion/scroll-motion.service';
 import { MatchMediaStub } from '../../../motion/testing/match-media.stub';
+import { team } from '../../../content';
 
 @Component({
   standalone: true,
@@ -13,7 +14,6 @@ import { MatchMediaStub } from '../../../motion/testing/match-media.stub';
 })
 class HostComponent {}
 
-const BRAND_GREEN = 'rgb(47, 74, 47)';
 
 describe('TeamBandComponent', () => {
   let fixture: ComponentFixture<HostComponent>;
@@ -29,35 +29,26 @@ describe('TeamBandComponent', () => {
     band = (fixture.nativeElement as HTMLElement).querySelector('#equipo') as HTMLElement;
   });
 
-  // La banda toma su verde de --color-brand-700, que el bloque @theme static de styles.css
-  // declara en :root. Sin ese token el fondo queda transparente, el texto blanco es invisible
-  // en mobile y el velo desaparece en desktop.
-  it('should resolve the brand green from the global --color-brand-700 token', () => {
-    const style = getComputedStyle(band);
-    expect(style.getPropertyValue('--team-band-green').trim()).toBe('#2f4a2f');
-    expect(style.backgroundColor).toBe(BRAND_GREEN);
+  it('should show the featured team photo with its descriptive alt text', () => {
+    const img = band.querySelector('.team-band-media app-responsive-image picture img') as HTMLImageElement;
+    expect(img.getAttribute('src')).toBe('/Imagenes_web/equipo-kuvu-1-1200.jpeg');
+    expect(img.getAttribute('alt')).toBe(team.photos[0].alt);
+    expect(img.getAttribute('loading')).toBe('lazy');
   });
 
-  it('should keep the text white over the band', () => {
-    const title = band.querySelector('.team-band-title') as HTMLElement;
-    expect(getComputedStyle(title).color).toBe('rgb(255, 255, 255)');
+  it('should frame the photo with a border and a hard shadow over the tinted surface', () => {
+    const media = getComputedStyle(band.querySelector('.team-band-media') as HTMLElement);
+    expect(media.borderTopWidth).toBe('2px');
+    expect(media.boxShadow).toContain('8px 8px 0px');
+    expect(getComputedStyle(band).backgroundColor).toBe('rgb(232, 239, 232)');
   });
 
-  it('should frame the photo high enough to keep the YCW logo inside the crop', () => {
-    const media = band.querySelector('.team-band-media') as HTMLElement;
-    expect(getComputedStyle(media).getPropertyValue('--responsive-image-position').trim()).toBe(
-      'center 10%'
-    );
-  });
-
-  it('should draw the brand overlay on wide viewports', () => {
-    const media = band.querySelector('.team-band-media') as HTMLElement;
-    const overlay = getComputedStyle(media, '::after').backgroundImage;
-    if (window.matchMedia('(min-width: 768px)').matches) {
-      expect(overlay).toContain('linear-gradient');
-    } else {
-      expect(overlay).toBe('none');
-    }
+  it('should title the section in display type, emphasizing KUVU, and list the members', () => {
+    const title = band.querySelector('h2#equipo-title') as HTMLElement;
+    expect(title.textContent).toBe(team.title);
+    expect(title.querySelector('.tape')?.textContent).toBe('KUVU');
+    expect(band.querySelector('.team-band-caption')?.textContent?.trim()).toBe(team.members.join(' · '));
+    expect(band.querySelector('a.team-band-link')?.getAttribute('href')).toBe('/nosotros');
   });
 
   // home-animaciones, slice home (RF-05, RF-09, CA-12b).
@@ -81,13 +72,13 @@ describe('TeamBandComponent', () => {
       expect(photo.getAttribute('data-reveal')).toBe('clip');
     });
 
-    it('tracks the photo for parallax on desktop without reduced motion', () => {
+    it('tracks the photo on desktop without reduced motion', () => {
       const photo = renderWith({ desktop: true, reducedMotion: false });
       expect(register).toHaveBeenCalledTimes(1);
       expect(register.calls.mostRecent().args[0].element).toBe(photo);
     });
 
-    it('has no parallax below 1024 px or with reduced motion', () => {
+    it('does not track the photo below 1024 px or with reduced motion', () => {
       renderWith({ desktop: false, reducedMotion: false });
       expect(register).not.toHaveBeenCalled();
       media.restore();
@@ -99,7 +90,7 @@ describe('TeamBandComponent', () => {
       expect(register).not.toHaveBeenCalled();
     });
 
-    it('turns the parallax on and off when the viewport crosses 1024 px, back to neutral', () => {
+    it('turns the tracking on and off when the viewport crosses 1024 px, back to neutral', () => {
       const photo = renderWith({ desktop: false, reducedMotion: false });
       media.set('desktop', true);
       expect(register).toHaveBeenCalledTimes(1);

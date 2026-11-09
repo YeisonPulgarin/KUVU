@@ -1,9 +1,11 @@
-<div class="team-band-media" data-reveal="clip" appScrollProgress desktopOnly>
-  <app-responsive-image [image]="team.photos[0]" [decorative]="true" fit="cover" sizes="100vw"></app-responsive-image>
-</div>
-<div class="container team-band-content" data-reveal>
-  <h2 id="equipo-title" class="team-band-title">{{ team.title }}</h2>
-  <p class="team-band-lead">{{ team.lead }}</p>
-  <p class="team-band-caption">{{ team.members.join(" · ") }}</p>
-  <a routerLink="/nosotros" class="team-band-link" aria-label="Conoce al equipo de KUVU en Nosotros">{{ team.linkLabel }}</a>
+<div class="container team-band-grid">
+  <div class="team-band-media" data-reveal="clip" appScrollProgress desktopOnly>
+    <app-responsive-image [image]="photo" fit="cover" sizes="(min-width: 768px) 40vw, 92vw"></app-responsive-image>
+  </div>
+  <div class="team-band-content" data-reveal>
+    <h2 id="equipo-title" class="team-band-title display-title display-title--l"><app-headline [parts]="headline.parts" [title]="headline.title" /></h2>
+    <p class="team-band-lead">{{ team.lead }}</p>
+    <p class="team-band-caption">{{ members }}</p>
+    <a routerLink="/nosotros" class="team-band-link btn-site btn-site--ghost" aria-label="Conoce al equipo de KUVU en Nosotros">{{ team.linkLabel }}</a>
+  </div>
 </div>

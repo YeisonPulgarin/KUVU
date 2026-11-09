@@ -93,8 +93,16 @@ describe('CompaniesMarqueeComponent', () => {
       expect(band().classList).not.toContain('is-paused');
     });
 
-    it('outlines the pause button even without the light theme tokens on :root', () => {
-      expect(getComputedStyle(toggle()!).borderTopColor).toBe('rgb(205, 220, 205)');
+    it('outlines the pause button with the on-brand token over the brand ribbon', () => {
+      expect(getComputedStyle(toggle()!).borderTopColor).toBe('rgb(246, 247, 244)');
+    });
+
+    it('paints the ribbon with the brand green and display wordmarks', () => {
+      const host = toggle()!.closest('section') as HTMLElement;
+      expect(getComputedStyle(host).backgroundColor).toBe('rgb(47, 74, 47)');
+      const item = host.querySelector('.company-item') as HTMLElement;
+      expect(getComputedStyle(item).textTransform).toBe('uppercase');
+      expect(getComputedStyle(item, '::after').content).toContain('✳');
     });
 
     it('marks the band off screen while it is out of view', () => {

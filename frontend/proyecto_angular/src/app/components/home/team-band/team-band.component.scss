@@ -1,137 +1,17 @@
-// ─── Equipo (banda full-bleed) ───────────────────────────────
-// Banda oscura en ambos temas: texto blanco fijo sobre velo de marca.
-// Mobile: foto completa 3:2 + texto sobre verde de marca (un recorte cover
-// dejaría afuera a los integrantes laterales). Desktop: foto de fondo.
+// ─── Equipo: foto destacada en marco + texto ─────────────────
+// Superficie tintada de marca. La foto (vertical 3:4) va en un marco con borde y sombra dura,
+// levemente girado; al lado, titular display, lead, nombres y enlace a Nosotros.
 :host {
-  --team-band-green: var(--color-brand-700);
   display: block;
-  position: relative;
-  overflow: hidden;
-  background-color: var(--team-band-green);
-  color: #fff;
-
-  .team-band-media {
-    aspect-ratio: 3 / 2;
-    --responsive-image-position: center 10%;
-
-    > app-responsive-image {
-      height: 100%;
-    }
-  }
-
-  .team-band-content {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
-    padding-block: 3rem;
-  }
-
-  .team-band-title {
-    margin: 0;
-    font-weight: 800;
-    text-wrap: balance;
-    font-size: clamp(1.875rem, 4.5vw, 3.25rem);
-    letter-spacing: -0.02em;
-    line-height: 1.1;
-    max-width: 18ch;
-    color: #fff;
-  }
-
-  .team-band-lead {
-    margin: 0;
-    max-width: 36rem;
-    font-size: 1rem;
-    line-height: 1.625;
-    text-wrap: pretty;
-    color: rgb(255 255 255 / 0.9);
-
-    @media (width >= 768px) {
-      font-size: 1.125rem;
-    }
-  }
-
-  .team-band-caption {
-    margin: 0;
-    font-size: 0.875rem;
-    line-height: 1.43;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: rgb(255 255 255 / 0.85);
-  }
-
-  .team-band-link {
-    display: inline-flex;
-    align-items: center;
-    margin-top: 0.5rem;
-    border-radius: var(--radius-pill);
-    padding: 0.75rem 2rem;
-    font-size: 1rem;
-    line-height: 1.5;
-    font-weight: 700;
-    text-decoration: none;
-    color: #fff;
-    border: 2px solid #fff;
-    transition: transform var(--dur-fast) var(--ease-out-expo), background-color var(--dur-fast) var(--ease-out-expo);
-
-    &:hover {
-      transform: translateY(-2px);
-      background-color: var(--color-brand-500);
-    }
-
-    &:active { transform: translateY(0); }
-  }
+  padding-block: 4.5rem;
+  background-color: var(--color-brand-100);
+  color: var(--color-home-text);
 
   @media (width >= 768px) {
-    display: flex;
-    align-items: flex-end;
-    min-height: clamp(28rem, 72vh, 44rem);
-
-    .team-band-media {
-      position: absolute;
-      inset: 0;
-      aspect-ratio: auto;
-
-      // Velo: denso en el 0-60 % inferior (bloque de texto, >= 4.5:1 aun
-      // sobre las camisas blancas) y liviano arriba (caras y logo).
-      &::after {
-        content: '';
-        position: absolute;
-        inset: 0;
-        pointer-events: none;
-        background: linear-gradient(
-          to top,
-          color-mix(in srgb, var(--team-band-green) 88%, #000) 0%,
-          color-mix(in srgb, var(--team-band-green) 90%, transparent) 30%,
-          color-mix(in srgb, var(--team-band-green) 84%, transparent) 60%,
-          rgb(0 0 0 / 0.2) 80%,
-          rgb(0 0 0 / 0.15) 100%
-        );
-      }
-    }
-
-    .team-band-content {
-      width: 100%;
-      padding-block: 4rem;
-    }
+    padding-block: 7rem;
   }
 }
 
-// Parallax de la foto, solo en desktop sin movimiento reducido (la directiva publica --p solo
-// ahí). scale(1.06) deja ~3 % de sobrante por lado, más que los ±12 px de recorrido: nunca se ven
-// bordes vacíos. Con --p = 0,5 (banda centrada) la foto queda en su posición neutra.
-@media (prefers-reduced-motion: no-preference) and (width >= 1024px) {
-  :host .team-band-media > app-responsive-image {
-    display: block;
-    transform:
-      translateY(calc((var(--p, 0.5) - 0.5) * -2 * var(--dist-parallax)))
-      scale(1.06);
-  }
-}
-
-// Contenedor equivalente al de la home (max-w-6xl + gutters).
 .container {
   max-width: 72rem;
   margin-inline: auto;
@@ -139,5 +19,68 @@
 
   @media (width >= 768px) {
     padding-inline: 1.5rem;
+  }
+}
+
+.team-band-grid {
+  display: grid;
+  gap: 3rem;
+  align-items: center;
+  grid-template-columns: minmax(0, 1fr);
+
+  @media (width >= 768px) {
+    gap: 4rem;
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr);
+  }
+}
+
+.team-band-media {
+  aspect-ratio: 3 / 4;
+  max-width: 28rem;
+  overflow: hidden;
+  border: 2px solid var(--color-home-text);
+  border-radius: var(--radius-card);
+  box-shadow: 8px 8px 0 var(--color-home-text);
+  rotate: -2deg;
+
+  > app-responsive-image {
+    height: 100%;
+  }
+}
+
+.team-band-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.25rem;
+}
+
+.team-band-title {
+  max-width: 12ch;
+}
+
+.team-band-lead {
+  margin: 0;
+  max-width: 38ch;
+  font-size: var(--text-lead);
+  line-height: 1.45;
+  color: var(--color-home-muted);
+}
+
+.team-band-caption {
+  margin: 0;
+  font-weight: 600;
+  color: var(--color-home-text);
+}
+
+.team-band-link {
+  margin-top: 0.5rem;
+}
+
+// La foto se endereza a medida que la banda cruza la pantalla (desktop sin movimiento
+// reducido: la directiva publica --p solo ahí).
+@media (prefers-reduced-motion: no-preference) and (width >= 1024px) {
+  .team-band-media {
+    rotate: calc(-3deg + var(--p, 0.5) * 3deg);
   }
 }

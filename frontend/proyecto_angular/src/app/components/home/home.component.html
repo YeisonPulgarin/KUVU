@@ -1,30 +1,28 @@
-<div class="home-layout">
+<div class="home-layout site-root">
 
   <app-scroll-progress />
 
   <app-site-header></app-site-header>
 
-  <!-- ── Hero ────────────────────────────────────────────── -->
+  <!-- ── Hero: manifiesto tipográfico ─────────────────────── -->
   <section id="inicio" class="hero" app-home-hero></section>
 
-  <!-- ── ¿Qué es KUVU? ──────────────────────────────────── -->
+  <!-- ── ¿Qué es KUVU?: statement que se enciende con el scroll ── -->
   <section id="que-es" class="section about" appScrollProgress>
     <div class="container">
-      <span class="section-eyebrow" aria-hidden="true">01</span>
-      <h2 class="section-title">¿Qué es KUVU?</h2>
-      <p class="section-lead"><app-split-text mode="scrub" text="KUVU es un sistema de administración de inmobiliarias que brinda servicio a distintas compañías. Unificamos la gestión de propiedades, contratos y operaciones diarias para que cada empresa administradora trabaje desde una sola plataforma, con datos centralizados y acceso por rol." /></p>
+      <h2 class="section-title display-title display-title--l"><app-headline [parts]="titles.queEs.parts" [title]="titles.queEs.title" /></h2>
+      <p class="section-lead about-statement"><app-split-text mode="scrub" text="KUVU es un sistema de administración de inmobiliarias que brinda servicio a distintas compañías. Unificamos la gestión de propiedades, contratos y operaciones diarias para que cada empresa administradora trabaje desde una sola plataforma, con datos centralizados y acceso por rol." /></p>
     </div>
   </section>
 
-  <!-- ── Cómo funciona ──────────────────────────────────── -->
+  <!-- ── Cómo funciona: recorrido sticky ──────────────────── -->
   <section id="como-funciona" class="section steps" app-steps-journey></section>
 
-  <!-- ── Servicios ──────────────────────────────────────── -->
+  <!-- ── Servicios: bento de cinco celdas ─────────────────── -->
   <section id="servicios" class="section services">
-    <div class="container services-inner">
+    <div class="container">
       <div class="services-heading">
-        <span class="section-eyebrow" aria-hidden="true">03</span>
-        <h2 class="section-title">Servicios</h2>
+        <h2 class="section-title display-title display-title--l"><app-headline [parts]="titles.servicios.parts" [title]="titles.servicios.title" /></h2>
         <p class="section-lead">Todo lo que tu inmobiliaria necesita administrar, en un solo lugar.</p>
         <a routerLink="/servicios" class="link-arrow services-link">
           Ver servicios <span class="link-arrow-icon" aria-hidden="true">→</span>
@@ -43,11 +41,10 @@
     </div>
   </section>
 
-  <!-- ── Seguridad y soporte ────────────────────────────── -->
-  <section id="seguridad" class="section security">
-    <div class="container">
-      <span class="section-eyebrow" aria-hidden="true">04</span>
-      <h2 class="section-title">Seguridad y soporte</h2>
+  <!-- ── Seguridad y soporte: lista definida sobre trama ──── -->
+  <section id="seguridad" class="section security surface-dots">
+    <div class="container security-inner">
+      <h2 class="section-title display-title display-title--l"><app-headline [parts]="titles.seguridad.parts" [title]="titles.seguridad.title" /></h2>
       <p class="section-lead">Cuidamos la información de tus inmobiliarias.</p>
 
       <div class="security-list">
@@ -59,28 +56,28 @@
     </div>
   </section>
 
-  <!-- ── Compañías que confían ──────────────────────────── -->
+  <!-- ── Compañías: cinta de marca ────────────────────────── -->
   <section id="companias" class="section companies" app-companies-marquee></section>
 
-  <!-- ── Equipo (banda full-bleed) ─────────────────────── -->
+  <!-- ── Equipo ───────────────────────────────────────────── -->
   <section id="equipo" class="team-band" app-team-band aria-labelledby="equipo-title"></section>
 
-  <!-- ── Origen de KUVU ─────────────────────────────────── -->
-  <section id="origen" class="section origin">
+  <!-- ── Origen de KUVU: editorial ────────────────────────── -->
+  <section id="origen" class="section origin" appScrollProgress>
     <div class="container">
-      <span class="section-eyebrow" aria-hidden="true">06</span>
-      <h2 class="section-title">{{ origin.title }}</h2>
-      <p class="origin-paragraph" data-reveal *ngFor="let paragraph of origin.paragraphs">{{ paragraph }}</p>
+      <h2 class="section-title display-title display-title--l origin-title"><app-split-text mode="scrub" [text]="origin.title" /></h2>
+      <div class="origin-text">
+        <p class="origin-paragraph" data-reveal *ngFor="let paragraph of origin.paragraphs">{{ paragraph }}</p>
+      </div>
       <a routerLink="/nosotros" class="origin-link link-arrow" data-reveal>Conoce más sobre KUVU <span class="link-arrow-icon" aria-hidden="true">→</span></a>
     </div>
   </section>
 
-  <!-- ── FAQ corto ──────────────────────────────────────── -->
+  <!-- ── FAQ corto ────────────────────────────────────────── -->
   <section id="faq" class="section faq">
     <div class="container faq-inner">
       <div class="faq-header">
-        <span class="section-eyebrow" aria-hidden="true">07</span>
-        <h2 class="section-title">Preguntas frecuentes</h2>
+        <h2 class="section-title display-title display-title--l"><app-headline [parts]="titles.faq.parts" [title]="titles.faq.title" /></h2>
         <p class="section-lead">Las dudas más comunes sobre cómo funciona KUVU.</p>
       </div>
 
@@ -95,10 +92,10 @@
     </div>
   </section>
 
-  <!-- ── CTA Final ──────────────────────────────────────── -->
-  <section class="cta-final">
+  <!-- ── CTA final: bloque de marca a sangre completa ─────── -->
+  <section class="cta-final block-brand">
     <div class="container cta-final-inner">
-      <h2>¿Listo para administrar tus inmobiliarias?</h2>
+      <h2 class="display-title display-title--xl"><app-headline [parts]="titles.ctaFinal.parts" [title]="titles.ctaFinal.title" /></h2>
       <p>Ingresa a tu cuenta y gestiona todas tus compañías desde un solo lugar.</p>
       <div class="cta-final-actions">
         <a routerLink="/acceder" class="btn-primary cta-button" appMagnetic>Ingresar</a>

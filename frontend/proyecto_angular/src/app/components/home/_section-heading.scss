@@ -12,23 +12,25 @@
     }
   }
 
+  // Display headline of every home section (also the extracted ones). Same rules as the
+  // global .display-title--l, repeated here because component styles win over globals.
   .section-title {
     margin: 0 0 1rem;
-    font-size: clamp(1.875rem, 3.5vw, 2.75rem);
-    font-weight: 800;
-    letter-spacing: -0.02em;
+    font-family: var(--font-display);
+    font-size: var(--text-display-l);
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -0.005em;
+    text-transform: uppercase;
+    text-wrap: balance;
     color: var(--color-home-text);
   }
 
   .section-lead {
     margin: 0;
-    max-width: 42rem;
-    font-size: 1rem;
-    line-height: 1.625;
+    max-width: 40ch;
+    font-size: var(--text-lead);
+    line-height: 1.45;
     color: var(--color-home-muted);
-
-    @media (width >= 768px) {
-      font-size: 1.125rem;
-    }
   }
 }

@@ -31,3 +31,18 @@ docs_existentes: docs/
   archivo. Los componentes los consumen con `var(--token)`, sin fallback literal, y sus nombres
   pueden escribirse tal cual en `.ts`/`.html` (el escaneo de Tailwind no cambia lo que se emite).
   Un token nuevo de marca va en ese bloque, no en un `:root` aparte.
+- Sitio público expresivo: los titulares usan `--font-display` (Big Shoulders Display,
+  autohospedada en `public/fonts/` con `@font-face` en `styles.css`). Una fuente display nueva
+  se autohospeda; nunca se agrega con `@import` de Google en un componente (se incrusta y
+  dispara `css-inline-fonts`). La escala fluida (`--text-display-xl/l/m`, `--text-lead`,
+  `--text-body-site`) está en `@theme static`.
+- `src/styles/_site.scss` concentra las primitivas del sitio público: `.site-root` (raíz de
+  home y `app-public-page`: cuerpo fluido y grano fijo), `.surface-dots`, `.surface-tint`,
+  `.block-brand` (texto en el alias `--color-on-brand`), `.display-title(--xl|l|m)`, `.tape`,
+  `.btn-site(--ghost)`, `.site-section`, `.site-cta`. Los botones "Ingresar" conservan
+  `.btn-primary` azul.
+- Titulares con énfasis: `content/headlines.ts` (`Headline`, `HeadlinePart`) y
+  `<app-headline>`. La invariante `headlineText(parts) === title` está testeada: partir un
+  titular no cambia sus palabras.
+- Las páginas rediseñadas no usan eyebrows numerados (`.section-eyebrow` queda solo en
+  `/legal`). Los specs que cambian el tema limpian `kuvu-theme` y `.dark` en `afterEach`.

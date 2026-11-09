@@ -36,11 +36,13 @@ describe('HomeHeroComponent', () => {
   describe('content and accessibility', () => {
     beforeEach(() => (media = new MatchMediaStub({ reducedMotion: false }).install()));
 
-    it('announces the h1 as its full text, not word by word', () => {
+    it('announces the h1 as its full text, with one word inside a tape', () => {
       const { hero } = render();
       const h1 = hero.querySelector('h1') as HTMLElement;
       expect(accessibleText(h1)).toBe(HERO_TITLE);
-      expect(h1.querySelectorAll('.w').length).toBe(HERO_TITLE.split(' ').length);
+      expect(h1.textContent).toBe(HERO_TITLE);
+      expect(h1.querySelector('.tape')?.textContent).toBe('empresas');
+      expect(h1.classList).toContain('display-title--xl');
     });
 
     it('keeps the brand line, the subtitle and both CTAs', () => {
@@ -60,12 +62,9 @@ describe('HomeHeroComponent', () => {
       expect(hero.querySelector('a.hero-cta')?.classList).toContain('magnetic');
     });
 
-    it('renders the scroll cue as decoration', () => {
+    it('renders no scroll cue', () => {
       const { hero } = render();
-      const cue = hero.querySelector('.hero-scroll-cue') as HTMLElement;
-      expect(cue.getAttribute('aria-hidden')).toBe('true');
-      expect(cue.children.length).toBe(0);
-      expect(cue.textContent?.trim()).toBe('');
+      expect(hero.querySelector('.hero-scroll-cue')).toBeNull();
     });
   });
 

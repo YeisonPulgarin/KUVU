@@ -14,8 +14,10 @@ import { MagneticDirective } from '../../motion/magnetic.directive';
 import { ScrollMotionService } from '../../motion/scroll-motion.service';
 import { ScrollProgressDirective } from '../../motion/scroll-progress.directive';
 import { SplitTextComponent } from '../../motion/split-text.component';
+import { HeadlineComponent } from '../public/headline/headline.component';
 import { PageMetaService } from '../../services/page-meta.service';
 import {
+  headlines,
   homeFaqItems,
   logo,
   origin,
@@ -45,7 +47,8 @@ export const HOME_JSONLD_ID = 'kuvu-home-jsonld';
     CompaniesMarqueeComponent,
     MagneticDirective,
     ScrollProgressDirective,
-    SplitTextComponent
+    SplitTextComponent,
+    HeadlineComponent
   ],
   // Scroll-linked motion lives only while the home does: leaving it destroys the service and
   // releases its listeners, observer and pending frame.
@@ -62,6 +65,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly securityHighlights = securityHighlights;
   readonly origin = origin;
   readonly homeFaqItems = homeFaqItems;
+  readonly titles = headlines;
 
   ngOnInit(): void {
     this.meta.setPage(pageMeta.home);
