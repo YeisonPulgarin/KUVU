@@ -1,8 +1,8 @@
 # 🏢 ArrendApp — Sistema de Gestión de Arriendos
 
 Proyecto Angular 21 (standalone, signals) para la gestión multi-empresa de arriendos. Incluye
-el sitio público de marketing de KUVU (`/`, `/nosotros`, `/preguntas-frecuentes`) y la app
-autenticada de gestión.
+el sitio público de marketing de KUVU (`/`, `/servicios`, `/nosotros`, `/preguntas-frecuentes`,
+`/contacto`, `/legal` y una página 404) y la app autenticada de gestión.
 
 ---
 
@@ -91,7 +91,7 @@ src/
     │   ├── intro-state.service.ts    # Intro recordada por pestaña (sessionStorage) + reduced-motion
     │   ├── page-turn-sound.service.ts # Sonido de la intro (Web Audio, sin archivos)
     │   ├── theme.service.ts          # Tema claro/oscuro del sitio público
-    │   └── page-meta.service.ts      # title + meta description por página
+    │   └── page-meta.service.ts      # title, description, Open Graph, canonical y JSON-LD por página
     │
     ├── directives/
     │   └── reveal.directive.ts       # Reveals [data-reveal] del sitio público
@@ -102,11 +102,19 @@ src/
     ├── components/
     │   ├── public/
     │   │   ├── site-header/          # Header compartido (nav, tema, WhatsApp)
-    │   │   ├── site-footer/          # Footer compartido
+    │   │   ├── site-footer/          # Footer compartido por columnas
+    │   │   ├── public-page/          # Layout de las páginas internas (header, breadcrumb, footer)
+    │   │   ├── breadcrumb/           # "Inicio › Página" + JSON-LD BreadcrumbList
+    │   │   ├── rich-text/            # Texto con datos del responsable y enlaces (textos legales)
+    │   │   ├── service-icon/         # Ícono SVG de cada servicio
     │   │   └── responsive-image/     # <picture> WebP + JPEG para imágenes de content/
     │   ├── pages/
+    │   │   ├── servicios/            # Página pública /servicios
     │   │   ├── nosotros/             # Página pública /nosotros
-    │   │   └── preguntas-frecuentes/ # Página pública /preguntas-frecuentes
+    │   │   ├── preguntas-frecuentes/ # Página pública /preguntas-frecuentes
+    │   │   ├── contacto/             # Página pública /contacto (formulario → WhatsApp)
+    │   │   ├── legal/                # Página pública /legal (datos, privacidad, términos, cookies)
+    │   │   └── not-found/            # Página 404 pública
     │   ├── home/                     # Página pública / (hero + secciones de content/)
     │   │   └── team-band/            # Banda "El equipo detrás de KUVU"
     │   ├── shared/
@@ -125,6 +133,7 @@ src/
     │
     ├── app.routes.ts                 # Rutas con lazy loading y authGuard
     ├── app.config.ts                 # Configuración de providers Angular
+    ├── scroll-offset.ts              # Offset de anclas bajo el header sticky
     └── app.ts                        # Componente raíz
 ```
 

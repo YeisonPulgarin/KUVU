@@ -5,7 +5,7 @@ const members = ['Wilson Solano', 'Carlos Arciniegas', 'Yeison Pulgarin'] as con
 export const team: TeamSection = {
   title: 'El equipo detrás de KUVU',
   lead: 'Somos YCW Systems, los tres estudiantes universitarios que crearon KUVU en la biblioteca de su universidad.',
-  linkLabel: 'Conocé al equipo',
+  linkLabel: 'Conoce al equipo',
   members,
   image: {
     basePath: '/Imagenes_web/equipo-ycw',

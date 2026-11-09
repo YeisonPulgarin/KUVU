@@ -112,6 +112,5 @@ silencio). `stop()` baja la ganancia en 60 ms y cierra el contexto. Ningún rech
 - Entrando directo por URL (sin un gesto previo en la página) no hay sonido.
 - En Chrome headless con render por software hay ~250–300 ms sin cuadros al levante (600–870 ms),
   cuando se renderiza el selector bajo la hoja; con la hoja casi plana, el salto visual es chico.
-- El bundle inicial queda a 20 bytes del warning de presupuesto de 500 kB (`angular.json`).
 - Sigue el warning `css-inline-fonts`: la hoja de Google Fonts de `landing.component.scss` supera el
   presupuesto de 17 kB por 2,13 kB.

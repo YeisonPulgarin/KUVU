@@ -5,7 +5,7 @@ export const benefitsByRole: readonly BenefitRole[] = [
     role: 'Dueño o gerente',
     title: 'Vista consolidada y control',
     description:
-      'Tomás decisiones con la operación de todas tus compañías en un solo lugar.',
+      'Tomas decisiones con la operación de todas tus compañías en un solo lugar.',
     points: [
       'Control de pagos y mora con la información centralizada',
       'Visibilidad de locales, contratos y mantenimientos por compañía',

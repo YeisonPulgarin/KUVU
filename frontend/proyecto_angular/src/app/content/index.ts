@@ -10,3 +10,6 @@ export * from './origin';
 export * from './about';
 export * from './faq';
 export * from './team';
+export * from './responsible';
+export * from './legal-index';
+export * from './pages';

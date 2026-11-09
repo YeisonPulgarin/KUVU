@@ -1,45 +1,34 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { SiteHeaderComponent } from '../../public/site-header/site-header.component';
-import { BreadcrumbComponent } from '../../public/breadcrumb/breadcrumb.component';
-import { breadcrumbFor } from '../../../content/site';
-import { SiteFooterComponent } from '../../public/site-footer/site-footer.component';
+import { PublicPageComponent } from '../../public/public-page/public-page.component';
 import { RevealDirective } from '../../../directives/reveal.directive';
 import { ResponsiveImageComponent } from '../../public/responsive-image/responsive-image.component';
 import { PageMetaService } from '../../../services/page-meta.service';
+import { pageMeta as metaByPage } from '../../../content/pages';
 import { aboutOrigin, aboutSections, team } from '../../../content';
-import { contactWhatsAppLink, pageNavLinks, siteInfo } from '../../../content/site';
+import { breadcrumbFor, contactWhatsAppLink } from '../../../content/site';
 
 @Component({
   selector: 'app-nosotros',
   standalone: true,
-  imports: [
-    CommonModule,
-    RouterModule,
-    BreadcrumbComponent,
-    SiteHeaderComponent,
-    SiteFooterComponent,
-    RevealDirective,
-    ResponsiveImageComponent
-  ],
+  imports: [RouterModule, PublicPageComponent, RevealDirective, ResponsiveImageComponent],
   templateUrl: './nosotros.component.html',
   styleUrls: ['./nosotros.component.scss']
 })
 export class NosotrosComponent implements OnInit {
   readonly pageMeta = inject(PageMetaService);
   readonly breadcrumb = breadcrumbFor('/nosotros');
-  readonly brandName = siteInfo.name;
-  readonly navLinks = pageNavLinks;
   readonly sections = aboutSections;
   readonly origin = aboutOrigin;
   readonly team = team;
   readonly whatsappLink = contactWhatsAppLink;
 
   ngOnInit(): void {
-    this.pageMeta.setPage(
-      'Nosotros | KUVU',
-      'Conocé quién es KUVU, cómo opera, con quién trabaja y el origen del proyecto.'
-    );
+    this.pageMeta.setPage(metaByPage.nosotros);
+  }
+
+  /** Two-digit section number ("01", "02"…). */
+  number(index: number): string {
+    return String(index + 1).padStart(2, '0');
   }
 }

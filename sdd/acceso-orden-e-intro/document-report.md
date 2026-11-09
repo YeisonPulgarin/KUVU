@@ -23,7 +23,6 @@ desvios: ninguno entre design y código. design.md queda alineado con I15–I20
 En "Limitaciones conocidas" de `docs/acceso-orden-e-intro.md`:
 - sin sonido entrando directo por URL;
 - ~250–300 ms sin cuadros al levante en headless;
-- bundle inicial a 20 bytes del warning de 500 kB;
 - warning `css-inline-fonts`.
 
 Extensión `git` inactiva: no hay commit en esta fase.

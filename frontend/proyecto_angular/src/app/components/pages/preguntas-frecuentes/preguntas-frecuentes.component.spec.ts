@@ -34,10 +34,14 @@ describe('PreguntasFrecuentesComponent', () => {
       expect(root.querySelector('app-site-footer')).toBeTruthy();
     });
 
-    it('should pass the page navigation links to the header', () => {
+    it('should show the single site navigation in the header', () => {
       const links = Array.from(root.querySelectorAll('.nav-links .nav-item')) as HTMLElement[];
       const hrefs = links.map((l) => l.getAttribute('href'));
-      expect(hrefs).toEqual(['/', '/nosotros', '/preguntas-frecuentes']);
+      expect(hrefs).toEqual(['/', '/servicios', '/nosotros', '/preguntas-frecuentes', '/contacto']);
+    });
+
+    it('should use the shared public page layout', () => {
+      expect(root.querySelector('app-public-page main')).toBeTruthy();
     });
   });
 
@@ -84,6 +88,22 @@ describe('PreguntasFrecuentesComponent', () => {
         const expected = faqGroups[index]?.items.map((i) => i.q);
         expect(questions.map((q) => q.textContent?.trim())).toEqual(expected);
       });
+    });
+  });
+
+  describe('contact and data group', () => {
+    it('should show the "Contacto y datos" questions', () => {
+      expect(root.textContent).toContain('¿Cómo me contacto con KUVU?');
+      expect(root.textContent).toContain('¿KUVU usa cookies?');
+    });
+
+    it('should number the groups from 01 and link to contact and the data policy', () => {
+      const eyebrows = Array.from(root.querySelectorAll('.faq-group .section-eyebrow'));
+      expect(eyebrows.map((e) => e.textContent?.trim())).toEqual(
+        faqGroups.map((_, i) => String(i + 1).padStart(2, '0'))
+      );
+      const hrefs = Array.from(root.querySelectorAll('.faq-more a')).map((a) => a.getAttribute('href'));
+      expect(hrefs).toEqual(['/contacto', '/legal#tratamiento-datos']);
     });
   });
 

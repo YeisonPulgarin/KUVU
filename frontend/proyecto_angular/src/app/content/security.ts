@@ -14,6 +14,6 @@ export const securityHighlights: readonly SecurityHighlight[] = [
   {
     title: 'Acompañamiento',
     description:
-      'Contás con soporte del equipo KUVU para tu operación diaria y para resolver dudas.'
+      'Cuentas con soporte del equipo KUVU para tu operación diaria y para resolver dudas.'
   }
 ];

@@ -1,0 +1,151 @@
+@reference "../../../../styles.css";
+
+.container {
+  @apply max-w-6xl mx-auto px-4;
+
+  @media (width >= 768px) {
+    @apply px-6;
+  }
+}
+
+.section {
+  padding-block: 3.5rem 5rem;
+
+  @media (width >= 768px) {
+    padding-block: 4.5rem 6rem;
+  }
+}
+
+.legal-layout {
+  display: grid;
+  gap: 2.5rem;
+  grid-template-columns: minmax(0, 1fr);
+
+  @media (width >= 1024px) {
+    grid-template-columns: minmax(0, 18rem) minmax(0, 1fr);
+    gap: 4rem;
+    align-items: start;
+  }
+}
+
+.legal-intro {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+
+  @media (width >= 1024px) {
+    position: sticky;
+    top: 88px;
+  }
+}
+
+.legal-notice {
+  margin: 0;
+  padding: 1rem 1.125rem;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: #5c3b00;
+  background-color: #fff4d6;
+  border: 1px solid #f0c674;
+}
+
+:host-context(.dark) .legal-notice {
+  color: #fde7b0;
+  background-color: #3a2a0c;
+  border-color: #7a5b1c;
+}
+
+.legal-updated {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--color-home-muted, #4c5a4e);
+}
+
+.legal-index {
+  padding: 1.25rem;
+  border-radius: 16px;
+  background-color: var(--color-home-surface, #ffffff);
+  border: 1px solid var(--color-home-border, #cddccd);
+
+  ol {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+}
+
+.legal-index-title {
+  margin: 0 0 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-brand-600, #3e5c40);
+}
+
+.legal-index-link {
+  display: flex;
+  gap: 0.625rem;
+  padding: 0.5rem 0;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--color-home-text, #1f2920);
+
+  &:hover {
+    color: var(--color-brand-600, #3e5c40);
+  }
+}
+
+.legal-index-number {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  color: var(--color-brand-600, #3e5c40);
+}
+
+.legal-docs {
+  display: flex;
+  flex-direction: column;
+  gap: 3.5rem;
+  min-width: 0;
+}
+
+.legal-doc {
+  color: var(--color-home-text, #1f2920);
+  line-height: 1.7;
+
+  h3 {
+    margin: 1.75rem 0 0.5rem;
+    font-size: 1.0625rem;
+    font-weight: 700;
+  }
+
+  p {
+    margin: 0 0 0.75rem;
+    color: var(--color-home-muted, #4c5a4e);
+  }
+
+  ul {
+    margin: 0 0 0.75rem;
+    padding-left: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+    color: var(--color-home-muted, #4c5a4e);
+  }
+}
+
+.legal-doc-title {
+  margin: 0 0 0.5rem;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+// Printing a policy prints the text, not the site chrome.
+@media print {
+  .legal-intro .legal-index {
+    display: none;
+  }
+}

@@ -1,0 +1,9 @@
+:host {
+  display: inline;
+}
+
+.rich-link {
+  color: var(--color-brand-600, #3e5c40);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}

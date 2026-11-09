@@ -49,12 +49,24 @@ I15–I20) y `cierre` (C1–C3). Tests: backend 10/10, Karma 241/241. Build OK, 
 
 ## Pendientes y riesgo residual
 
-- **Presupuesto del bundle:** el bundle inicial queda a 20 bytes del warning de 500 kB. El próximo
-  cambio que sume código a la carga inicial lo va a disparar.
 - **Levante:** en headless hay ~250–300 ms sin cuadros al levante (600–870 ms) mientras se renderiza el
   selector bajo la hoja casi plana.
-- **Integración con `home-profesional` (PR #1):**
-  - agregar "intro vista (por sesión)" a la política de cookies de `content/legal.ts`;
-  - resolver el conflicto de slices en `sdd.config.md`.
 - **Deuda transversal:** el `console.error` del backend en `routes/empresas.js` sigue fuera de la
   política de logs.
+
+## Integración con `home-profesional` (PR #1)
+
+La rama integra `feat/home-profesional` con un merge commit:
+- `app.config.ts` une `withInMemoryScrolling` + `provideAppInitializer` (offset bajo el header) con
+  `withViewTransitions({ onViewTransitionCreated: skipViewTransitionIntoIntro })`.
+- `sdd.config.md` y `sdd-init.md` unen las dos tablas de slices
+  (`backend-orden, contenido, chrome, paginas, home, intro, cierre`) y declaran `expone_api_http: true`.
+- `CHANGELOG.md` y `docs/architecture.md` conservan las entradas de los dos cambios.
+- La política de cookies (`content/legal.ts`) lista "Intro vista" (almacenamiento de la sesión del
+  navegador), con fecha de vigencia 8 de noviembre de 2026.
+
+Con `/acceder` lazy, el landing y la intro salen del bundle inicial: **424,49 kB** (112,09 kB
+transfer), contra 499,98 kB antes de integrar. Tests después de integrar: backend 10/10, Karma
+372/372, `ng build` OK (solo el warning `css-inline-fonts`). En Chrome sobre el build integrado: la
+casa se ve dibujarse (~215–450 ms) y el pase visible es de 1336–1399 ms en 360, 1366 y 1920 px.
+
