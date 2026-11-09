@@ -263,7 +263,7 @@ indicada. `verify` los recorre uno por uno.
 | # | Criterio | Cubre | Verificación |
 |---|---|---|---|
 | CA-01 | Las animaciones nuevas toman easing/duración/distancia del conjunto común | RF-01, RF-12 | Revisión de código |
-| CA-02 | `html` tiene scroll suave y pasa a `auto` con movimiento reducido | RF-02 | Test de estilos o manual con emulación de reduced motion |
+| CA-02 | Un ancla de la misma página pública desplaza con scroll suave nativo; el cambio de página mantiene el salto instantáneo arriba y con movimiento reducido no hay scroll suave | RF-02 | Test unitario del initializer + manual con emulación de reduced motion |
 | CA-03 | La barra de progreso existe solo en la home, refleja 0 arriba y completo al final, y es `aria-hidden` sin foco | RF-03 | Test unitario (progreso simulado) + manual |
 | CA-04 | El h1 del hero se anuncia como texto completo (nombre accesible = texto de contenido) aunque esté partido en palabras | RF-04, RNF-04 | Test unitario |
 | CA-04b | El parallax del hero solo se activa con viewport ≥ 1024 px y sin movimiento reducido; por debajo de 1024 px o con reduced motion el contenido del hero no recibe desplazamiento ligado al scroll | RF-04 | Test unitario con `matchMedia` simulado + manual en ambos anchos |
