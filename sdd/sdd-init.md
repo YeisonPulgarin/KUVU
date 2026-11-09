@@ -31,3 +31,8 @@ docs_existentes: docs/
   archivo. Los componentes los consumen con `var(--token)`, sin fallback literal, y sus nombres
   pueden escribirse tal cual en `.ts`/`.html` (el escaneo de Tailwind no cambia lo que se emite).
   Un token nuevo de marca va en ese bloque, no en un `:root` aparte.
+- Flujo de acceso (`/acceder`, `/login`): las salidas son enlaces o botones de texto chico con
+  chevron (`.back-btn` en `/login` → `/acceder`; `.back-home` y el logo `.brand-link` en
+  `/acceder` → `/`). En `/acceder` viven dentro de `.landing-container`, así heredan el `inert`
+  de la intro sin lógica propia. Sobre la foto oscurecida, el foco visible usa el celeste
+  `rgba(140, 215, 255, .9)` en lugar del `--color-brand-500` global.
