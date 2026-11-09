@@ -52,3 +52,43 @@ excepciones_sin_test: estilos de shared.styles.scss (sin comportamiento; se veri
 logs_conforme: sí (no se agregan logs; la política de DEVELOPMENT_GUIDELINES.md es de backend)
 build: ng build OK; solo el warning previo de css-inline-fonts (P-4)
 ```
+
+## Grupo B — gestión (rama `feat/app-interna-ux-gestion`, apilada sobre la base)
+
+Estado: completo.
+
+| Tarea | Estado | Nota |
+|---|---|---|
+| T-12 | hecho | sidebar: `aria-label`/`aria-expanded` en colapsar, `aria-label` en cerrar sesión, logout con confirmación neutral, avatares con `--color-primario-contraste`, textos grises a `#a0aec0` (≈ 6.5:1 sobre `#133937`) |
+| T-13 | hecho | locales: `<app-layout pagina="Locales">`, `<app-modal>` con `<form (ngSubmit)>`, editar (info) y eliminar (danger) con confirmación y toasts, error de validación visible con `aria-invalid` (R4.3), "Guardando…", columna Administrador con nombre |
+| T-14 | hecho | contratos: eliminar con confirmación que nombra contrato, arrendatario y local; "Nuevo" siempre limpio (R4.2); validación de fechas (fin ≥ inicio); fechas `dd/mm/aaaa`; badge de vigencia semántico |
+| T-15 | hecho | usuarios: botones de solo ícono con `aria-label`, eliminar propio deshabilitado con explicación (`aria-describedby`), confirmación y toasts; `.btn-icon` eliminado; hover de tarjeta con guardia de movimiento |
+
+### Desvíos
+
+- **D-18:** los íconos de navegación del sidebar ya eran SVG inline; se dejan como están en
+  lugar de migrarlos a `<app-icon>` (mismo resultado visual, menos diff).
+- Nuevo `components/shared/formato.ts` (`formatFecha`, `formatMoneda`): las fechas de la API
+  se muestran `dd/mm/aaaa` sin desplazar el día por zona horaria (contratos ahora; dashboard
+  en el grupo C).
+- Nuevo `components/shared/testing/app-doubles.ts`: dobles de `AuthService`, `DataService`,
+  `ConfirmService` y `ToastService` para las specs de pantallas.
+- `ng build`: el total inicial pasa de ~449 kB a ~458 kB (presupuesto de warning: 500 kB).
+  Se revisa en verify.
+
+```
+tests_status: verde (553/553)
+tests_agregados:
+  - src/app/components/shared/sidebar/sidebar.component.spec.ts
+  - src/app/components/locales/locales.component.spec.ts
+  - src/app/components/contratos/contratos.component.spec.ts
+  - src/app/components/usuarios/usuarios.component.spec.ts
+  - src/app/components/shared/formato.spec.ts
+excepciones_sin_test: ninguna nueva
+```
+
+## Pendiente
+
+- Grupo C (T-16…T-19): pagos, mantenimiento, dashboard, limpieza de clases viejas.
+- Grupo D (T-20…T-24): skeleton, escalonado, conteo, view transitions, verificación.
+- `cierre` (T-25).

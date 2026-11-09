@@ -1,89 +1,104 @@
-<div class="app-layout">
-  <app-sidebar></app-sidebar>
-  <main class="main-content" [class.collapsed]="sidebarColapsado()">
-<div class="page">
-  <div class="page__header">
-    <div>
-      <h1>🏗️ Locales</h1>
-      <p>Gestión de locales de <strong>{{ empresa()?.nombre }}</strong></p>
+<app-layout pagina="Locales">
+  <div class="page">
+    <div class="page__header">
+      <div>
+        <h1>Locales</h1>
+        <p>Gestión de locales de <strong>{{ empresa()?.nombre }}</strong></p>
+      </div>
+      <button type="button" class="btn-primary" (click)="abrirFormulario()">
+        <app-icon name="plus" /> Nuevo local
+      </button>
     </div>
-    <button class="btn-primary" (click)="abrirFormulario()">+ Nuevo Local</button>
+
+    <div class="filtro-bar">
+      <label class="sr-only" for="locales-buscar">Buscar por dirección</label>
+      <input
+        id="locales-buscar"
+        type="search"
+        placeholder="Buscar por dirección"
+        [ngModel]="filtroDireccion()"
+        (ngModelChange)="filtroDireccion.set($event)" />
+    </div>
+
+    <div class="card">
+      <table class="tabla">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Dirección</th>
+            <th scope="col">Área (m²)</th>
+            <th scope="col">Valor arriendo</th>
+            <th scope="col">Administrador</th>
+            <th scope="col">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (local of locales(); track local.idLocal) {
+            <tr>
+              <td>{{ local.idLocal }}</td>
+              <td>{{ local.direccion }}</td>
+              <td>{{ local.area ?? '—' }}{{ local.area ? ' m²' : '' }}</td>
+              <td class="monto">{{ formatCurrency(local.valorArriendo ?? 0) }}</td>
+              <td>{{ nombreAdministrador(local.idAdministrador) }}</td>
+              <td>
+                <div class="row-actions">
+                  <button type="button" class="btn-action btn-action--info" (click)="abrirFormulario(local)">
+                    <app-icon name="pencil" /> Editar
+                  </button>
+                  <button type="button" class="btn-action btn-action--danger"
+                          [disabled]="eliminandoId() !== null"
+                          [attr.aria-busy]="eliminandoId() === local.idLocal ? 'true' : null"
+                          (click)="eliminar(local)">
+                    <app-icon name="trash" /> Eliminar
+                  </button>
+                </div>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="6" class="empty">
+                {{ filtroDireccion() ? 'Ningún local coincide con la búsqueda' : 'No hay locales registrados' }}
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
   </div>
 
-  <!-- Filtro -->
-  <div class="filtro-bar">
-    <input
-      type="text"
-      placeholder="🔍 Buscar por dirección..."
-      [ngModel]="filtroDireccion()"
-      (ngModelChange)="filtroDireccion.set($event)" />
-  </div>
+  @if (mostrarFormulario()) {
+    <app-modal [titulo]="localEditando() ? 'Editar local' : 'Nuevo local'" (closed)="cerrarFormulario()">
+      <form (ngSubmit)="guardar()" novalidate>
+        <div class="form-grid">
+          <div class="form-group form-group--full">
+            <label for="local-direccion">Dirección <span aria-hidden="true">*</span></label>
+            <input id="local-direccion" name="direccion" type="text" required aria-required="true"
+                   placeholder="Ej: Calle 10 #20-30"
+                   [attr.aria-invalid]="faltaDireccion() ? 'true' : null"
+                   [(ngModel)]="form.direccion" />
+          </div>
+          <div class="form-group">
+            <label for="local-area">Área (m²)</label>
+            <input id="local-area" name="area" type="number" min="0" placeholder="0" [(ngModel)]="form.area" />
+          </div>
+          <div class="form-group">
+            <label for="local-valor">Valor arriendo (COP)</label>
+            <input id="local-valor" name="valorArriendo" type="number" min="0" placeholder="0" [(ngModel)]="form.valorArriendo" />
+          </div>
+        </div>
 
-  <!-- Tabla -->
-  <div class="card">
-    <table class="tabla">
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Dirección</th>
-          <th>Área (m²)</th>
-          <th>Valor Arriendo</th>
-          <th>Administrador</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (local of locales(); track local.idLocal) {
-          <tr>
-            <td>{{ local.idLocal }}</td>
-            <td>{{ local.direccion }}</td>
-            <td>{{ local.area }} m²</td>
-            <td class="monto">{{ formatCurrency(local.valorArriendo ?? 0) }}</td>
-            <td>Admin {{ local.idAdministrador }}</td>
-            <td>
-              <button class="btn-sm btn-edit" (click)="abrirFormulario(local)">✏️ Editar</button>
-            </td>
-          </tr>
-        } @empty {
-          <tr>
-            <td colspan="6" class="empty">No hay locales registrados</td>
-          </tr>
+        @if (errorMsg()) {
+          <p class="error-msg" role="alert">{{ errorMsg() }}</p>
         }
-      </tbody>
-    </table>
-  </div>
-</div>
 
-<!-- Modal formulario -->
-@if (mostrarFormulario()) {
-  <div class="modal-overlay" (click)="cerrarFormulario()">
-    <div class="modal" (click)="$event.stopPropagation()">
-      <div class="modal__header">
-        <h2>{{ localEditando() ? '✏️ Editar Local' : '➕ Nuevo Local' }}</h2>
-        <button class="modal__close" (click)="cerrarFormulario()">✕</button>
-      </div>
-
-      <div class="form-grid">
-        <div class="form-group form-group--full">
-          <label>Dirección *</label>
-          <input type="text" placeholder="Ej: Calle 10 #20-30" [(ngModel)]="form.direccion" />
+        <div class="modal__footer">
+          <button type="button" class="btn-secondary" (click)="modal()?.cerrar()">Cancelar</button>
+          <button type="submit" class="btn-primary" [disabled]="guardando()"
+                  [attr.aria-busy]="guardando() ? 'true' : null">
+            {{ guardando() ? 'Guardando…' : 'Guardar' }}
+          </button>
         </div>
-        <div class="form-group">
-          <label>Área (m²)</label>
-          <input type="number" placeholder="0" [(ngModel)]="form.area" />
-        </div>
-        <div class="form-group">
-          <label>Valor Arriendo (COP)</label>
-          <input type="number" placeholder="0" [(ngModel)]="form.valorArriendo" />
-        </div>
-      </div>
-
-      <div class="modal__footer">
-        <button class="btn-secondary" (click)="cerrarFormulario()">Cancelar</button>
-        <button class="btn-primary" (click)="guardar()">Guardar</button>
-      </div>
-    </div>
-  </div>
-}
-  </main>
-</div>
+      </form>
+    </app-modal>
+  }
+</app-layout>

@@ -1,114 +1,127 @@
-<div class="app-layout">
-  <app-sidebar></app-sidebar>
-  <main class="main-content" [class.collapsed]="sidebarColapsado()">
-<div class="page">
-  <div class="page__header">
-    <div>
-      <h1>📄 {{ esAdmin() ? 'Contratos de Arrendamiento' : 'Mi Contrato' }}</h1>
-      <p>{{ empresa()?.nombre }}</p>
+<app-layout [pagina]="esAdmin() ? 'Contratos' : 'Mi contrato'">
+  <div class="page">
+    <div class="page__header">
+      <div>
+        <h1>{{ esAdmin() ? 'Contratos de arrendamiento' : 'Mi contrato' }}</h1>
+        <p>{{ empresa()?.nombre }}</p>
+      </div>
+      <!-- Solo el administrador puede crear contratos -->
+      @if (esAdmin()) {
+        <button type="button" class="btn-primary" (click)="abrirFormulario()">
+          <app-icon name="plus" /> Nuevo contrato
+        </button>
+      }
     </div>
-    <!-- Solo el administrador puede crear contratos -->
-    @if (esAdmin()) {
-      <button class="btn-primary" (click)="mostrarFormulario.set(true)">+ Nuevo Contrato</button>
-    }
-  </div>
 
-  <div class="card">
-    <table class="tabla">
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Local</th>
-          <th>Arrendatario</th>
-          <th>Inicio</th>
-          <th>Fin</th>
-          <th>Estado</th>
-          <th>Condiciones</th>
-          <!-- Solo admin ve acciones de edición -->
-          @if (esAdmin()) {
-            <th>Acciones</th>
-          }
-        </tr>
-      </thead>
-      <tbody>
-        @for (c of contratos(); track c.idContrato) {
+    <div class="card">
+      <table class="tabla">
+        <thead>
           <tr>
-            <td>{{ c.idContrato }}</td>
-            <td>{{ getDireccionLocal(c.idLocal) }}</td>
-            <td>{{ getNombreArrendatario(c.idArrendatario) }}</td>
-            <td>{{ c.fechaInicio }}</td>
-            <td>{{ c.fechaFin }}</td>
-            <td>
-              <span class="badge" [class.badge--green]="estaVigente(c.fechaFin)" [class.badge--red]="!estaVigente(c.fechaFin)">
-                {{ estaVigente(c.fechaFin) ? 'Vigente' : 'Vencido' }}
-              </span>
-            </td>
-            <td>{{ c.condiciones || '—' }}</td>
+            <th scope="col">#</th>
+            <th scope="col">Local</th>
+            <th scope="col">Arrendatario</th>
+            <th scope="col">Inicio</th>
+            <th scope="col">Fin</th>
+            <th scope="col">Estado</th>
+            <th scope="col">Condiciones</th>
             @if (esAdmin()) {
-              <td>
-                <button class="btn-sm btn-blue" (click)="editarContrato(c)">✏️ Editar</button>
-              </td>
+              <th scope="col">Acciones</th>
             }
           </tr>
-        } @empty {
-          <tr><td [attr.colspan]="esAdmin() ? 8 : 7" class="empty">No hay contratos registrados</td></tr>
-        }
-      </tbody>
-    </table>
-  </div>
-</div>
-
-<!-- Modal: solo administrador -->
-@if (mostrarFormulario() && esAdmin()) {
-  <div class="modal-overlay" (click)="mostrarFormulario.set(false)">
-    <div class="modal" (click)="$event.stopPropagation()">
-      <div class="modal__header">
-        <h2>📄 {{ contratoEditando() ? 'Editar Contrato' : 'Nuevo Contrato' }}</h2>
-        <button class="modal__close" (click)="cerrarFormulario()">✕</button>
-      </div>
-      <div class="form-grid">
-        <div class="form-group">
-          <label>Local *</label>
-          <select [(ngModel)]="form.idLocal">
-            <option [ngValue]="undefined">Seleccionar...</option>
-            @for (l of locales(); track l.idLocal) {
-              <option [ngValue]="l.idLocal">{{ l.direccion }}</option>
-            }
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Arrendatario *</label>
-          <select [(ngModel)]="form.idArrendatario">
-            <option [ngValue]="undefined">Seleccionar...</option>
-            @for (u of arrendatarios(); track u.idUsuario) {
-              <option [ngValue]="u.idUsuario">{{ u.nombre }}</option>
-            }
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Fecha Inicio *</label>
-          <input type="date" [(ngModel)]="form.fechaInicio" />
-        </div>
-        <div class="form-group">
-          <label>Fecha Fin *</label>
-          <input type="date" [(ngModel)]="form.fechaFin" />
-        </div>
-        <div class="form-group form-group--full">
-          <label>Condiciones</label>
-          <textarea rows="3" [(ngModel)]="form.condiciones" placeholder="Condiciones del contrato..."></textarea>
-        </div>
-      </div>
-      @if (errorMsg()) {
-        <p class="error-msg">{{ errorMsg() }}</p>
-      }
-      <div class="modal__footer">
-        <button class="btn-secondary" (click)="cerrarFormulario()">Cancelar</button>
-        <button class="btn-primary" [disabled]="guardando()" (click)="guardar()">
-          {{ guardando() ? 'Guardando...' : 'Guardar' }}
-        </button>
-      </div>
+        </thead>
+        <tbody>
+          @for (c of contratos(); track c.idContrato) {
+            <tr>
+              <td>{{ c.idContrato }}</td>
+              <td>{{ getDireccionLocal(c.idLocal) }}</td>
+              <td>{{ getNombreArrendatario(c.idArrendatario) }}</td>
+              <td>{{ formatFecha(c.fechaInicio) }}</td>
+              <td>{{ formatFecha(c.fechaFin) }}</td>
+              <td>
+                @let vigencia = badgeVigencia(estaVigente(c.fechaFin));
+                <span class="badge {{ vigencia.clase }}">{{ vigencia.etiqueta }}</span>
+              </td>
+              <td>{{ c.condiciones || '—' }}</td>
+              @if (esAdmin()) {
+                <td>
+                  <div class="row-actions">
+                    <button type="button" class="btn-action btn-action--info" (click)="abrirFormulario(c)">
+                      <app-icon name="pencil" /> Editar
+                    </button>
+                    <button type="button" class="btn-action btn-action--danger"
+                            [disabled]="eliminandoId() !== null"
+                            [attr.aria-busy]="eliminandoId() === c.idContrato ? 'true' : null"
+                            (click)="eliminar(c)">
+                      <app-icon name="trash" /> Eliminar
+                    </button>
+                  </div>
+                </td>
+              }
+            </tr>
+          } @empty {
+            <tr><td [attr.colspan]="esAdmin() ? 8 : 7" class="empty">No hay contratos registrados</td></tr>
+          }
+        </tbody>
+      </table>
     </div>
   </div>
-}
-  </main>
-</div>
+
+  <!-- Modal: solo administrador -->
+  @if (mostrarFormulario() && esAdmin()) {
+    <app-modal [titulo]="contratoEditando() ? 'Editar contrato' : 'Nuevo contrato'" (closed)="cerrarFormulario()">
+      <form (ngSubmit)="guardar()" novalidate>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="contrato-local">Local <span aria-hidden="true">*</span></label>
+            <select id="contrato-local" name="idLocal" required aria-required="true"
+                    [attr.aria-invalid]="intentoInvalido() && !form.idLocal ? 'true' : null"
+                    [(ngModel)]="form.idLocal">
+              <option [ngValue]="undefined">Seleccionar…</option>
+              @for (l of locales(); track l.idLocal) {
+                <option [ngValue]="l.idLocal">{{ l.direccion }}</option>
+              }
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="contrato-arrendatario">Arrendatario <span aria-hidden="true">*</span></label>
+            <select id="contrato-arrendatario" name="idArrendatario" required aria-required="true"
+                    [attr.aria-invalid]="intentoInvalido() && !form.idArrendatario ? 'true' : null"
+                    [(ngModel)]="form.idArrendatario">
+              <option [ngValue]="undefined">Seleccionar…</option>
+              @for (u of arrendatarios(); track u.idUsuario) {
+                <option [ngValue]="u.idUsuario">{{ u.nombre }}</option>
+              }
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="contrato-inicio">Fecha de inicio <span aria-hidden="true">*</span></label>
+            <input id="contrato-inicio" name="fechaInicio" type="date" required aria-required="true"
+                   [attr.aria-invalid]="intentoInvalido() && !form.fechaInicio ? 'true' : null"
+                   [(ngModel)]="form.fechaInicio" />
+          </div>
+          <div class="form-group">
+            <label for="contrato-fin">Fecha de fin <span aria-hidden="true">*</span></label>
+            <input id="contrato-fin" name="fechaFin" type="date" required aria-required="true"
+                   [attr.aria-invalid]="intentoInvalido() && !form.fechaFin ? 'true' : null"
+                   [(ngModel)]="form.fechaFin" />
+          </div>
+          <div class="form-group form-group--full">
+            <label for="contrato-condiciones">Condiciones</label>
+            <textarea id="contrato-condiciones" name="condiciones" rows="3"
+                      placeholder="Condiciones del contrato…" [(ngModel)]="form.condiciones"></textarea>
+          </div>
+        </div>
+        @if (errorMsg()) {
+          <p class="error-msg" role="alert">{{ errorMsg() }}</p>
+        }
+        <div class="modal__footer">
+          <button type="button" class="btn-secondary" (click)="modal()?.cerrar()">Cancelar</button>
+          <button type="submit" class="btn-primary" [disabled]="guardando()"
+                  [attr.aria-busy]="guardando() ? 'true' : null">
+            {{ guardando() ? 'Guardando…' : 'Guardar' }}
+          </button>
+        </div>
+      </form>
+    </app-modal>
+  }
+</app-layout>

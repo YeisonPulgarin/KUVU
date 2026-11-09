@@ -353,6 +353,13 @@
 .btn-gray  { background: #f7fafc; color: #718096; }
 .btn-red   { background: #fff5f5; color: #c53030; }
 
+// Actions cell of a table row.
+.row-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .4rem;
+}
+
 // FILTROS BAR
 .filtros-bar {
   display: flex;

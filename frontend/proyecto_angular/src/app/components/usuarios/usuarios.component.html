@@ -1,110 +1,132 @@
-<div class="app-layout">
-  <app-sidebar></app-sidebar>
-  <main class="main-content" [class.collapsed]="sidebarColapsado()">
-<div class="page">
-  <div class="page__header">
-    <div>
-      <h1>👥 Usuarios</h1>
-      <p>{{ empresa()?.nombre }} · {{ admins().length }} administradores · {{ arrendatarios().length }} arrendatarios</p>
+<app-layout pagina="Usuarios">
+  <div class="page">
+    <div class="page__header">
+      <div>
+        <h1>Usuarios</h1>
+        <p>{{ empresa()?.nombre }} · {{ admins().length }} administradores · {{ arrendatarios().length }} arrendatarios</p>
+      </div>
+      <button type="button" class="btn-primary" (click)="abrirFormulario()">
+        <app-icon name="plus" /> Nuevo usuario
+      </button>
     </div>
-    <button class="btn-primary" (click)="abrirFormulario()">+ Nuevo Usuario</button>
-  </div>
 
-  <!-- Filtros -->
-  <div class="filtros-bar">
-    <div class="filtros-bar__left">
-      <input
-        type="text"
-        placeholder="🔍 Buscar nombre o correo..."
-        [ngModel]="filtroBusqueda()"
-        (ngModelChange)="filtroBusqueda.set($event)" />
+    <div class="filtros-bar">
+      <div class="filtros-bar__left">
+        <label class="sr-only" for="usuarios-buscar">Buscar por nombre, correo o documento</label>
+        <input
+          id="usuarios-buscar"
+          type="search"
+          placeholder="Buscar nombre, correo o documento"
+          [ngModel]="filtroBusqueda()"
+          (ngModelChange)="filtroBusqueda.set($event)" />
 
-      <select [ngModel]="filtroRol()" (ngModelChange)="filtroRol.set(+$event)">
-        <option [ngValue]="0">Todos los roles</option>
-        <option [ngValue]="1">Administradores</option>
-        <option [ngValue]="2">Arrendatarios</option>
-      </select>
+        <label class="sr-only" for="usuarios-rol">Filtrar por rol</label>
+        <select id="usuarios-rol" [ngModel]="filtroRol()" (ngModelChange)="filtroRol.set(+$event)">
+          <option [ngValue]="0">Todos los roles</option>
+          <option [ngValue]="1">Administradores</option>
+          <option [ngValue]="2">Arrendatarios</option>
+        </select>
+      </div>
     </div>
-  </div>
 
-  <!-- Tarjetas de usuarios -->
-  <div class="usuarios-grid">
-    @for (u of usuarios(); track u.idUsuario) {
-      <div class="usuario-card">
-        <div class="usuario-card__avatar" [style.background]="getAvatarColor(u.idUsuario)">
-          {{ getInicial(u.nombre) }}
+    <div class="usuarios-grid">
+      @for (u of usuarios(); track u.idUsuario) {
+        <div class="usuario-card">
+          <div class="usuario-card__avatar" [style.background]="getAvatarColor(u.idUsuario)" aria-hidden="true">
+            {{ getInicial(u.nombre) }}
+          </div>
+          <div class="usuario-card__info">
+            <div class="usuario-card__nombre">{{ u.nombre }}</div>
+            <div class="usuario-card__doc">CC {{ u.documento }}</div>
+            @if (u.correo) {
+              <div class="usuario-card__correo"><app-icon name="mail" /> {{ u.correo }}</div>
+            }
+            @if (u.telefono) {
+              <div class="usuario-card__tel"><app-icon name="phone" /> {{ u.telefono }}</div>
+            }
+          </div>
+          <div class="usuario-card__rol">
+            <!-- idRol 1 = Admin  |  idRol 2 = Arrendatario -->
+            <span class="badge" [class.badge--info]="u.idRol === 1" [class.badge--success]="u.idRol === 2">
+              <app-icon [name]="u.idRol === 1 ? 'shield' : 'home'" />
+              {{ u.idRol === 1 ? 'Administrador' : 'Arrendatario' }}
+            </span>
+          </div>
+          <div class="usuario-card__actions">
+            <button type="button" class="btn-action btn-action--info btn-action--icon"
+                    [attr.aria-label]="'Editar a ' + u.nombre" [title]="'Editar a ' + u.nombre"
+                    (click)="abrirFormulario(u)">
+              <app-icon name="pencil" />
+            </button>
+            @if (esYo(u)) {
+              <button type="button" class="btn-action btn-action--danger btn-action--icon"
+                      disabled [attr.aria-describedby]="'usuario-yo-' + u.idUsuario"
+                      [attr.aria-label]="'Eliminar a ' + u.nombre" title="No puedes eliminar tu propio usuario">
+                <app-icon name="trash" />
+              </button>
+              <span class="sr-only" [id]="'usuario-yo-' + u.idUsuario">No puedes eliminar tu propio usuario.</span>
+            } @else {
+              <button type="button" class="btn-action btn-action--danger btn-action--icon"
+                      [attr.aria-label]="'Eliminar a ' + u.nombre" [title]="'Eliminar a ' + u.nombre"
+                      [disabled]="eliminandoId() !== null"
+                      [attr.aria-busy]="eliminandoId() === u.idUsuario ? 'true' : null"
+                      (click)="eliminar(u)">
+                <app-icon name="trash" />
+              </button>
+            }
+          </div>
         </div>
-        <div class="usuario-card__info">
-          <div class="usuario-card__nombre">{{ u.nombre }}</div>
-          <div class="usuario-card__doc">CC: {{ u.documento }}</div>
-          @if (u.correo) {
-            <div class="usuario-card__correo">✉️ {{ u.correo }}</div>
-          }
-          @if (u.telefono) {
-            <div class="usuario-card__tel">📱 {{ u.telefono }}</div>
-          }
-        </div>
-        <div class="usuario-card__rol">
-          <!-- idRol 1 = Admin  |  idRol 2 = Arrendatario -->
-          <span class="badge" [class.badge--blue]="u.idRol === 1" [class.badge--green]="u.idRol === 2">
-            {{ u.idRol === 1 ? '🛡️ Admin' : '🏠 Arrendatario' }}
-          </span>
-        </div>
-        <div class="usuario-card__actions">
-          <button class="btn-icon" (click)="abrirFormulario(u)" title="Editar">✏️</button>
-          <button class="btn-icon btn-icon--danger" (click)="eliminar(u)" title="Eliminar">🗑️</button>
-        </div>
-      </div>
-    } @empty {
-      <div class="empty-state">No se encontraron usuarios con los filtros aplicados.</div>
-    }
-  </div>
-</div>
-
-<!-- Modal -->
-@if (mostrarFormulario()) {
-  <div class="modal-overlay" (click)="cerrarFormulario()">
-    <div class="modal" (click)="$event.stopPropagation()">
-      <div class="modal__header">
-        <h2>👤 {{ usuarioEditando() ? 'Editar Usuario' : 'Nuevo Usuario' }}</h2>
-        <button class="modal__close" (click)="cerrarFormulario()">✕</button>
-      </div>
-      <div class="form-grid">
-        <div class="form-group form-group--full">
-          <label>Nombre completo *</label>
-          <input type="text" placeholder="Nombres y apellidos" [(ngModel)]="form.nombre" />
-        </div>
-        <div class="form-group">
-          <label>Documento *</label>
-          <input type="text" placeholder="Cédula de ciudadanía" [(ngModel)]="form.documento" />
-        </div>
-        <div class="form-group">
-          <label>Rol</label>
-          <select [(ngModel)]="form.idRol">
-            <option [ngValue]="1">Administrador</option>
-            <option [ngValue]="2">Arrendatario</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Teléfono</label>
-          <input type="text" placeholder="3001234567" [(ngModel)]="form.telefono" />
-        </div>
-        <div class="form-group">
-          <label>Correo electrónico</label>
-          <input type="email" placeholder="correo@gmail.com" [(ngModel)]="form.correo" />
-        </div>
-      </div>
-      @if (errorMsg()) {
-        <div class="error-msg">⚠️ {{ errorMsg() }}</div>
+      } @empty {
+        <div class="empty-state">No se encontraron usuarios con los filtros aplicados.</div>
       }
-      <div class="modal__footer">
-        <button class="btn-secondary" (click)="cerrarFormulario()">Cancelar</button>
-        <button class="btn-primary" [disabled]="guardando()" (click)="guardar()">
-          {{ guardando() ? 'Guardando...' : 'Guardar' }}
-        </button>
-      </div>
     </div>
   </div>
-}
-  </main>
-</div>
+
+  @if (mostrarFormulario()) {
+    <app-modal [titulo]="usuarioEditando() ? 'Editar usuario' : 'Nuevo usuario'" (closed)="cerrarFormulario()">
+      <form (ngSubmit)="guardar()" novalidate>
+        <div class="form-grid">
+          <div class="form-group form-group--full">
+            <label for="usuario-nombre">Nombre completo <span aria-hidden="true">*</span></label>
+            <input id="usuario-nombre" name="nombre" type="text" required aria-required="true"
+                   placeholder="Nombres y apellidos"
+                   [attr.aria-invalid]="intentoInvalido() && !form.nombre ? 'true' : null"
+                   [(ngModel)]="form.nombre" />
+          </div>
+          <div class="form-group">
+            <label for="usuario-documento">Documento <span aria-hidden="true">*</span></label>
+            <input id="usuario-documento" name="documento" type="text" required aria-required="true"
+                   placeholder="Cédula de ciudadanía"
+                   [attr.aria-invalid]="intentoInvalido() && !form.documento ? 'true' : null"
+                   [(ngModel)]="form.documento" />
+          </div>
+          <div class="form-group">
+            <label for="usuario-rol">Rol</label>
+            <select id="usuario-rol" name="idRol" [(ngModel)]="form.idRol">
+              <option [ngValue]="1">Administrador</option>
+              <option [ngValue]="2">Arrendatario</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="usuario-telefono">Teléfono</label>
+            <input id="usuario-telefono" name="telefono" type="tel" placeholder="3001234567" [(ngModel)]="form.telefono" />
+          </div>
+          <div class="form-group">
+            <label for="usuario-correo">Correo electrónico</label>
+            <input id="usuario-correo" name="correo" type="email" placeholder="correo@empresa.co" [(ngModel)]="form.correo" />
+          </div>
+        </div>
+        @if (errorMsg()) {
+          <p class="error-msg" role="alert">{{ errorMsg() }}</p>
+        }
+        <div class="modal__footer">
+          <button type="button" class="btn-secondary" (click)="modal()?.cerrar()">Cancelar</button>
+          <button type="submit" class="btn-primary" [disabled]="guardando()"
+                  [attr.aria-busy]="guardando() ? 'true' : null">
+            {{ guardando() ? 'Guardando…' : 'Guardar' }}
+          </button>
+        </div>
+      </form>
+    </app-modal>
+  }
+</app-layout>

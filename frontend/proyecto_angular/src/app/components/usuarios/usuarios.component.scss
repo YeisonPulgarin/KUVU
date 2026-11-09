@@ -13,9 +13,12 @@
   display: flex;
   align-items: center;
   gap: 1rem;
-  transition: transform .2s, box-shadow .2s;
+  &:hover { box-shadow: 0 8px 24px rgba(0,0,0,.1); }
 
-  &:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,.1); }
+  @media (prefers-reduced-motion: no-preference) {
+    transition: transform var(--dur-fast) var(--ease-out-expo), box-shadow var(--dur-fast) ease;
+    &:hover { transform: translateY(-2px); }
+  }
 
   &__avatar {
     width: 46px; height: 46px;
@@ -37,32 +40,15 @@
     margin-bottom: .2rem;
   }
 
-  &__doc  { font-size: .75rem; color: #a0aec0; font-weight: 500; }
-  &__correo { font-size: .75rem; color: #718096; margin-top: .15rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  &__tel  { font-size: .75rem; color: #718096; }
+  &__doc  { font-size: .75rem; color: #667085; font-weight: 500; }
+  &__correo, &__tel { display: flex; align-items: center; gap: .3rem; --icon-size: .85rem; }
+  &__correo { font-size: .75rem; color: #475467; margin-top: .15rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  &__tel  { font-size: .75rem; color: #475467; }
 
-  &__rol { flex-shrink: 0; }
+  &__rol { flex-shrink: 0; .badge { gap: .3rem; --icon-size: .8rem; } }
 
   &__actions {
     display: flex; flex-direction: column; gap: .4rem; flex-shrink: 0;
-  }
-}
-
-.btn-icon {
-  background: #f7fafc;
-  border: 1.5px solid #e2e8f0;
-  border-radius: 8px;
-  width: 36px; height: 36px;
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer;
-  font-size: .9rem;
-  transition: all .15s;
-
-  &:hover { background: #ebf8ff; border-color: #bee3f8; transform: scale(1.1); }
-  &--danger:hover { background: #fff5f5; border-color: #fed7d7; }
-
-  @media (max-width: 639px) {
-    width: 44px; height: 44px;
   }
 }
 
