@@ -53,7 +53,14 @@ Sitio multipágina con una sola navegación: `/`, `/servicios`, `/nosotros`,
   almacenamiento), `legal` (4 documentos con índice y anclas) y `not-found` (404 con
   `noindex`).
 - `src/app/components/home/` — la home como escaparate: hero + resúmenes que derivan a cada
-  página, header y footer compartidos, JSON-LD `Organization` + `WebSite`.
+  página, header y footer compartidos, JSON-LD `Organization` + `WebSite`. Provee
+  `ScrollMotionService` para sus efectos ligados al scroll. Las secciones con estructura y
+  movimiento propios son componentes con selector de atributo sobre su `<section>`:
+  `hero/` (`app-home-hero`), `steps-journey/` (recorrido sticky de "¿Cómo funciona?"),
+  `companies-marquee/` (banda infinita con botón de pausa) y `team-band/`; además,
+  `scroll-progress/` (barra de progreso de lectura). `_section-heading.scss` comparte
+  `.container`, `.section-title` y `.section-lead` entre la home y esas secciones. Detalle en
+  `docs/home-animaciones.md`.
 - `src/app/services/theme.service.ts` — tema claro/oscuro persistido en `kuvu-theme`.
 - `src/app/services/page-meta.service.ts` — `setPage(meta)`: title, description, Open Graph,
   Twitter card, un único canonical y `robots: noindex` cuando corresponde, todo actualizado en
@@ -69,8 +76,25 @@ Sitio multipágina con una sola navegación: `/`, `/servicios`, `/nosotros`,
 - `src/app/components/public/breadcrumb/` — `app-breadcrumb`: "Inicio › {Página}" en el hero
   de `app-public-page`. Los ítems salen de `breadcrumbFor(href)` (`content/site.ts`, sobre
   `sitePages`). El componente publica el JSON-LD al montarse y lo retira al destruirse.
-- `src/app/directives/reveal.directive.ts` — reveals `[data-reveal]` con
-  `IntersectionObserver` y respeto de `prefers-reduced-motion`.
+- `src/app/directives/reveal.directive.ts` — reveals `[data-reveal]` (fade-up) y
+  `[data-reveal="clip"]` (apertura con `clip-path`) con `IntersectionObserver` y respeto de
+  `prefers-reduced-motion`.
+- `src/app/motion/` — piezas de movimiento reutilizables, sin dependencias:
+  `motion-preferences.ts` (única fuente en TS de las media queries de reduced motion, puntero
+  fino y desktop ≥ 1024 px, con emisión de cambios), `ScrollMotionService` (bucle único de
+  scroll con rAF e `IntersectionObserver`, no `providedIn: 'root'`), `[appScrollProgress]`
+  (publica `--p`), `<app-split-text>` (texto por palabra con copia accesible) y `[appMagnetic]`
+  (publica `--mx` / `--my`). `motion/testing/` tiene los dobles de `matchMedia`,
+  `requestAnimationFrame` e `IntersectionObserver` para specs.
+- `src/styles/_motion.scss` — tokens de movimiento en `:root` (curvas, duraciones, distancias),
+  incluidos por `styles.scss`, que también define las reglas globales de reveal, `.hover-lift`,
+  `.magnetic`, la transición `html.vt-public` y `html.smooth-anchors`.
+- `src/app/route-view-transition.ts` — hook `onViewTransitionCreated` del router
+  (`onRouteViewTransition`): compone el salteo de la intro (`intro-view-transition.ts`) con la
+  transición entre dos rutas públicas, marcadas con `data: { publicSite: true }` en
+  `app.routes.ts`. El flag es de presentación y no interviene en autorización.
+- `src/app/anchor-smooth-scroll.ts` — initializer: scroll suave solo mientras el router lleva a
+  un ancla de la misma página pública.
 - `frontend/proyecto_angular/public/Imagenes_web/` — imágenes del sitio público en variantes
   responsive `{nombre-base}-{ancho}.{webp|jpeg}` (640/1024/1536), generadas con
   `scripts/generate-image-variants.py` (Python + Pillow, fuera del build). Cada imagen se declara
@@ -88,8 +112,9 @@ Sitio multipágina con una sola navegación: `/`, `/servicios`, `/nosotros`,
   orquesta la intro.
 - `components/shared/auth-intro/` — intro "hoja que pasa" (~2,9 s, CSS 3D con 6 franjas anidadas,
   salto por clic/teclado/botón). Detalle en `docs/acceso-orden-e-intro.md`.
-- `src/app/intro-view-transition.ts` — hook `onViewTransitionCreated` del router: saltea el
-  cross-fade de View Transitions al entrar a `/acceder` con la intro pendiente.
+- `src/app/intro-view-transition.ts` — `skipViewTransitionIntoIntro`: saltea el cross-fade de
+  View Transitions al entrar a `/acceder` con la intro pendiente. Lo invoca
+  `onRouteViewTransition` (`route-view-transition.ts`), registrado en el router.
 - `components/login/` (`/login`) — credenciales de la empresa seleccionada (correo + documento).
 - `components/dashboard|locales|contratos|pagos|mantenimiento|usuarios/` — módulos de gestión,
   lazy, protegidos por `authGuard`/`adminGuard`.
@@ -124,10 +149,14 @@ Visitante → SPA →
 ```
 
 Todas renderizan `SiteHeader` + `SiteFooter` (las internas a través de `app-public-page`); los
-reveals se disparan por IntersectionObserver. Las páginas internas muestran `app-breadcrumb`
+reveals se disparan por IntersectionObserver. Entre dos rutas públicas, la View Transition
+deja el header quieto y desliza solo el contenido (`html.vt-public`); hacia `/acceder`,
+`/login` o la app autenticada se mantiene el cross-fade por defecto (o el salteo de la intro).
+Las páginas internas muestran `app-breadcrumb`
 arriba del `h1`, que mientras está montado mantiene un único `BreadcrumbList` en `<head>` con
-URLs absolutas sobre `location.origin`. Al cambiar de página el scroll vuelve arriba; un
-fragmento lleva a su sección con el offset de `scroll-offset.ts`.
+URLs absolutas sobre `location.origin`. Al cambiar de página el scroll vuelve arriba de forma
+instantánea; un fragmento lleva a su sección con el offset de `scroll-offset.ts`, con scroll
+suave si es un ancla de la misma página y no hay reduced motion.
 
 ### Acceso autenticado
 
@@ -181,6 +210,17 @@ comodín `**` muestra la 404 pública y no forma parte del flujo de acceso.
   en la propia declaración (fondo de `cta-final`). Tradeoff: el valor se repite en cada punto, a
   cambio de no alterar los CTA del hero y del header, que no llevan fallback y se ven con el
   gradiente de `.btn-primary`.
+- **Movimiento: JS mide, CSS anima.** El JS solo publica variables CSS (`--p`,
+  `--page-progress`, `--mx` / `--my`) y toda la presentación vive en CSS dentro de
+  `prefers-reduced-motion: no-preference` (y de `width >= 1024px` o puntero fino según el
+  efecto); el estado base es estático. El movimiento ligado al scroll vive en un
+  `ScrollMotionService` que provee el componente que lo usa (la home), así que salir de ella
+  libera listeners, observer y frame. Tradeoff: `[appScrollProgress]` necesita un ancestro que
+  provea el servicio. Se eligió JS + rAF sobre `animation-timeline` de CSS por soporte desigual
+  en Safari y Firefox; el CSS ya consume `--p`, así que la migración no toca estilos.
+- **Sin `@apply` en los estilos de la home y sus secciones**: Tailwind v4 expande cada
+  `@apply` con fallbacks y un bloque `@layer properties` por componente, y la home es eager
+  (va en el bundle inicial). Tradeoff: valores literales en lugar de utilidades.
 - **Sitio público sin API**: textos estáticos en el bundle. Tradeoff: el contenido no cambia
   sin redeploy; nada que proteger expuesto ni latencia de red en el sitio.
 - **Patrón `var(--token, valor)` para tokens de marca en estilos de componentes**: Tailwind v4
@@ -188,7 +228,8 @@ comodín `**` muestra la 404 pública y no forma parte del flujo de acceso.
   (`.ts`/`.html`), y los usos en SCSS de componentes no cuentan. En modo claro el build emite
   `--color-brand-700` (porque su nombre figura en un archivo escaneado) y `--color-brand-500`,
   pero no `--color-home-*`, `--radius-*` ni el resto de `--color-brand-*`. La banda `cta-final`,
-  `team-band` y `app-breadcrumb` declaran fallback literal. Los nombres de tokens no se
+  `team-band`, `app-breadcrumb`, la línea del recorrido de `steps-journey` y el botón de pausa
+  de `companies-marquee` declaran fallback literal. Los nombres de tokens no se
   escriben en `.ts`/`.html`: los tests los arman por partes. Tradeoff: el valor se repite en
   cada punto que lo necesita, a cambio de no cambiar el aspecto del resto de la home.
 - **Breadcrumb visual y JSON-LD desde una sola fuente**: `app-breadcrumb` recibe los ítems y

@@ -9,6 +9,21 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com) y este proyecto 
 
 ### Added
 
+- La página de inicio tiene movimiento ligado al scroll: una barra fina arriba muestra cuánto
+  de la página se recorrió; el título principal entra palabra por palabra, con un indicador que
+  invita a bajar, y en escritorio el contenido del hero se aleja con parallax al salir; el
+  párrafo de "¿Qué es KUVU?" se enciende palabra por palabra a medida que avanza.
+- En escritorio, "¿Cómo funciona?" es un recorrido: la sección queda fija mientras una línea se
+  llena y resalta el paso actual (anunciado a lectores de pantalla). En móvil sigue siendo una
+  lista.
+- "Compañías que confían" se muestra como una banda que se desplaza en bucle. Se pausa con el
+  puntero encima, con el foco del teclado o con el botón "Pausar animación de compañías".
+- La foto del equipo se abre con un recorte redondeado al aparecer y, en escritorio, se desplaza
+  levemente contra el scroll.
+- Los botones "Ingresar" de la página de inicio se acercan levemente al puntero del mouse.
+- Al pasar de una página pública a otra, el encabezado queda quieto y solo se desliza el
+  contenido. Los enlaces a una sección de la misma página llevan con scroll suave.
+
 - El sitio público es multipágina con una sola navegación en todas las páginas: Inicio, Servicios, Nosotros, Preguntas frecuentes y Contacto; Legal se enlaza desde el pie de página.
 - Nueva página **Servicios** (`/servicios`) con el detalle de cada servicio y los beneficios para dueños, gerentes y equipos operativos.
 - Nueva página **Contacto** (`/contacto`): un formulario arma el mensaje y abre WhatsApp con los datos prellenados. Pide autorizar el tratamiento de datos antes de enviar y no guarda ni envía los datos a ningún servidor.
@@ -38,6 +53,13 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com) y este proyecto 
 - Las páginas **Nosotros** y **Preguntas frecuentes** muestran un breadcrumb ("Inicio › Nosotros", "Inicio › Preguntas frecuentes") arriba del título, con enlace a la página de inicio, y publican esa ruta como datos estructurados schema.org (`BreadcrumbList`) para buscadores.
 
 ### Changed
+
+- Las apariciones al hacer scroll del sitio público recorren más distancia con una curva más
+  suave, y las filas y tarjetas se elevan también al recibir el foco del teclado; en pantallas
+  táctiles la elevación ya no queda fija después de tocar.
+- Con "reducir movimiento" activado en el sistema, todo el sitio público queda quieto: sin
+  entradas animadas, parallax, recorrido, banda en movimiento ni botones que siguen al puntero,
+  y con todo el contenido visible.
 
 - El encabezado del sitio público queda fijo arriba y se compacta con fondo desenfocado al hacer scroll; resalta la página activa. Por debajo de 1024 px el menú ocupa toda la pantalla, bloquea el scroll del fondo y se cierra con Escape.
 - La página de inicio funciona como escaparate: resume los servicios y deriva a cada página; los beneficios por rol se muestran en Servicios. "Ingresar" sigue siendo la acción principal y "Contactar" aparece como secundaria.
