@@ -13,9 +13,13 @@
         </div>
       </div>
 
+      @if (data.esperandoDatos()) {
+        <app-skeleton variante="stats" [cantidad]="esAdmin() ? 4 : 3" />
+        <app-skeleton variante="table" [cantidad]="5" />
+      } @else {
       <!-- STATS ADMIN -->
       @if (esAdmin()) {
-        <div class="stats-grid">
+        <div class="stats-grid" appStagger>
           <div class="stat-card stat-card--blue">
             <div class="stat-card__icon-wrap stat-card__icon-wrap--blue">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -23,7 +27,7 @@
               </svg>
             </div>
             <div class="stat-card__body">
-              <span class="stat-card__value">{{ stats().totalLocales }}</span>
+              <app-count-up class="stat-card__value" [value]="stats().totalLocales" />
               <span class="stat-card__label">Locales</span>
             </div>
           </div>
@@ -35,7 +39,7 @@
               </svg>
             </div>
             <div class="stat-card__body">
-              <span class="stat-card__value">{{ stats().totalContratos }}</span>
+              <app-count-up class="stat-card__value" [value]="stats().totalContratos" />
               <span class="stat-card__label">Contratos activos</span>
             </div>
           </div>
@@ -46,7 +50,7 @@
               </svg>
             </div>
             <div class="stat-card__body">
-              <span class="stat-card__value">{{ formatCurrency(stats().totalRecaudado) }}</span>
+              <app-count-up class="stat-card__value" [value]="stats().totalRecaudado" format="currency" />
               <span class="stat-card__label">Total recaudado</span>
             </div>
           </div>
@@ -57,7 +61,7 @@
               </svg>
             </div>
             <div class="stat-card__body">
-              <span class="stat-card__value">{{ stats().mantenPendientes }}</span>
+              <app-count-up class="stat-card__value" [value]="stats().mantenPendientes" />
               <span class="stat-card__label">Mant. pendientes</span>
             </div>
           </div>
@@ -66,7 +70,7 @@
 
       <!-- STATS ARRENDATARIO -->
       @if (!esAdmin()) {
-        <div class="stats-grid stats-grid--3">
+        <div class="stats-grid stats-grid--3" appStagger>
           <div class="stat-card stat-card--blue">
             <div class="stat-card__icon-wrap stat-card__icon-wrap--blue">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -74,7 +78,7 @@
               </svg>
             </div>
             <div class="stat-card__body">
-              <span class="stat-card__value">{{ statsArrendatario().contratos }}</span>
+              <app-count-up class="stat-card__value" [value]="statsArrendatario().contratos" />
               <span class="stat-card__label">Mis contratos</span>
             </div>
           </div>
@@ -85,7 +89,7 @@
               </svg>
             </div>
             <div class="stat-card__body">
-              <span class="stat-card__value">{{ formatCurrency(statsArrendatario().totalPagado) }}</span>
+              <app-count-up class="stat-card__value" [value]="statsArrendatario().totalPagado" format="currency" />
               <span class="stat-card__label">Total pagado</span>
             </div>
           </div>
@@ -96,7 +100,7 @@
               </svg>
             </div>
             <div class="stat-card__body">
-              <span class="stat-card__value">{{ statsArrendatario().mantenPendientes }}</span>
+              <app-count-up class="stat-card__value" [value]="statsArrendatario().mantenPendientes" />
               <span class="stat-card__label">Solicitudes pendientes</span>
             </div>
           </div>
@@ -104,7 +108,7 @@
       }
 
       <!-- CONTENT PANELS -->
-      <div class="dashboard__content">
+      <div class="dashboard__content" appStagger>
         <div class="panel">
           <div class="panel__header">
             <h2><app-icon name="credit-card" /> {{ esAdmin() ? 'Pagos recientes' : 'Mis pagos recientes' }}</h2>
@@ -158,6 +162,8 @@
           }
         </div>
       </div>
+
+      }
 
       <!-- QUICK ACTIONS -->
       <div class="quick-actions">

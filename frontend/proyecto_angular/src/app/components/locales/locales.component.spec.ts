@@ -47,6 +47,19 @@ describe('LocalesComponent', () => {
     expect(fila.textContent).toContain('Wilson Solano');
   });
 
+  it('shows a skeleton instead of the empty state while the data loads (R6.3)', () => {
+    d.data.esperandoDatos.set(true);
+    d.data.locales.set([]);
+    fixture.detectChanges();
+    expect(el().querySelector('app-skeleton')).not.toBeNull();
+    expect(el().querySelector('table')).toBeNull();
+
+    d.data.esperandoDatos.set(false);
+    fixture.detectChanges();
+    expect(el().querySelector('app-skeleton')).toBeNull();
+    expect(el().querySelector('td.empty')!.textContent).toContain('No hay locales registrados');
+  });
+
   describe('delete', () => {
     it('asks with a danger confirmation naming the address, deletes and confirms with a toast', async () => {
       boton('Eliminar').click();

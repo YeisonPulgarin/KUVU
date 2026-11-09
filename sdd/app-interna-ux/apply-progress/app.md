@@ -114,7 +114,32 @@ tests_agregados:
   - src/app/components/dashboard/dashboard.component.spec.ts
 ```
 
+## Grupo D — movimiento + cierre (rama `feat/app-interna-ux-movimiento`, apilada sobre pagos-mant)
+
+Estado: completo.
+
+| Tarea | Estado | Nota |
+|---|---|---|
+| T-20 | hecho | `<app-skeleton>` (`table`, `cards`, `stats`; `role=status`, `aria-busy`, "Cargando…") en las seis pantallas con `data.esperandoDatos()` |
+| T-21 | hecho | `[appStagger]` en tbody de locales/contratos/pagos, grilla de usuarios, indicadores y lista de mantenimiento, indicadores y paneles del dashboard |
+| T-22 | hecho | `<app-count-up>` en los indicadores del dashboard (moneda incluida) y de mantenimiento |
+| T-23 | hecho | `view-transition-name` `app-sidebar`/`app-main`, entrada de `app-main` con `--dur-base`/`--ease-out-expo`, `animation: none` bajo `reduce` |
+| T-24 | hecho | Karma 584/584, `ng build` OK (CSS global 40.6 kB; total inicial 459 kB < 500 kB) |
+| T-25 (cierre) | hecho | `sdd.config.md` (fila `app` con comando, nota de orden) y convenciones de la app interna en `sdd-init.md` |
+
+### Desvíos
+
+- En mantenimiento, la barra de filtros queda dentro del bloque que espera los datos (se
+  muestra con los indicadores y la lista, no durante el skeleton).
+- El brillo del skeleton se aplica solo a las barras (sobre las tarjetas blancas no se veía).
+
+```
+tests_status: verde (584/584)
+tests_agregados:
+  - src/app/components/shared/motion-pieces.spec.ts (skeleton, escalonado, conteo)
+  - specs de locales y dashboard ampliadas (skeleton y cifras)
+```
+
 ## Pendiente
 
-- Grupo D (T-20…T-24): skeleton, escalonado, conteo, view transitions, verificación.
-- `cierre` (T-25).
+- `verify` (capturas CDP base vs cambio, CA1–CA20).

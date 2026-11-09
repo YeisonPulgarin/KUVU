@@ -61,6 +61,23 @@ describe('DashboardComponent', () => {
     expect(el().querySelector('.dashboard__rol-badge')!.textContent).toContain('Arrendatario');
   });
 
+  it('shows the indicator figures (final values with reduced motion)', () => {
+    crear();
+    const valores = Array.from(el().querySelectorAll('.stat-card__value .sr-only')).map(v => v.textContent!.replace(/\s/g, ' ').trim());
+    expect(valores[0]).toBe('4');
+    expect(valores[1]).toBe('3');
+    expect(valores[2]).toContain('100.000');
+  });
+
+  it('shows skeletons for indicators and panels while the data loads (R6.3)', () => {
+    crear();
+    d.data.esperandoDatos.set(true);
+    fixture.detectChanges();
+    expect(el().querySelectorAll('app-skeleton').length).toBe(2);
+    expect(el().querySelector('.stats-grid')).toBeNull();
+    expect(el().querySelector('.panel')).toBeNull();
+  });
+
   it('loads the company data on entry', () => {
     crear();
     expect(d.data.cargarTodo).toHaveBeenCalledWith(1);

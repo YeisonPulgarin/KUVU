@@ -7,6 +7,8 @@ import { DataService } from '../../services/data.service';
 import { ContratoArrendamiento } from '../../models/index';
 import { AppLayoutComponent } from '../shared/app-layout/app-layout.component';
 import { ModalComponent } from '../shared/modal/modal.component';
+import { SkeletonComponent } from '../shared/skeleton/skeleton.component';
+import { StaggerDirective } from '../shared/stagger.directive';
 import { IconComponent } from '../shared/icon/icon.component';
 import { ConfirmService } from '../shared/confirm/confirm.service';
 import { ToastService } from '../shared/toast/toast.service';
@@ -16,7 +18,7 @@ import { formatFecha } from '../shared/formato';
 @Component({
   selector: 'app-contratos',
   standalone: true,
-  imports: [CommonModule, FormsModule, AppLayoutComponent, ModalComponent, IconComponent],
+  imports: [CommonModule, FormsModule, AppLayoutComponent, ModalComponent, IconComponent, SkeletonComponent, StaggerDirective],
   templateUrl: './contratos.component.html',
   styleUrls: ['./contratos.component.scss']
 })

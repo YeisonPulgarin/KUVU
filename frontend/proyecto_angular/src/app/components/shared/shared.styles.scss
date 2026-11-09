@@ -692,6 +692,45 @@ dialog.app-modal {
   &--error  { border-color: var(--sem-danger-border);  .toast__icon { color: var(--sem-danger-fg); } }
 }
 
+// SKELETON (<app-skeleton>): placeholder while the company data loads.
+.skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: .7rem;
+
+  &__bar {
+    display: block;
+    height: .9rem;
+    border-radius: 6px;
+    background-color: #e4e7ec;
+  }
+
+  &__row { display: flex; gap: 1rem; padding: .35rem 0; }
+  &__row .skeleton__bar { flex: 1; }
+  &__row .skeleton__bar:first-child { flex: 0 0 2.5rem; }
+
+  &--cards, &--stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr));
+    gap: 1rem;
+  }
+
+  &__card {
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 1.1rem;
+    border: 1px solid rgba(0, 0, 0, .04);
+    display: flex;
+    flex-direction: column;
+    gap: .6rem;
+  }
+
+  &--stats { margin-bottom: 1.4rem; }
+  &--stats .skeleton__card { min-height: 92px; justify-content: center; }
+  &__bar--corta { width: 45%; }
+  &__bar--alta { height: 1.6rem; width: 60%; }
+}
+
 // MOTION — everything that moves lives here, gated by reduced motion (RNF-03) and timed
 // with the motion tokens of styles/_motion.scss.
 @keyframes app-fade-in  { from { opacity: 0; } to { opacity: 1; } }
@@ -713,6 +752,23 @@ dialog.app-modal {
   to   { opacity: 0; transform: translateX(24px); }
 }
 @keyframes app-spin { to { transform: rotate(360deg); } }
+@keyframes app-stagger-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes app-shimmer {
+  from { background-position: 150% 0; }
+  to   { background-position: -50% 0; }
+}
+@keyframes app-main-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: none; }
+}
+
+// Screen-to-screen transition (router View Transitions): the sidebar is the same on every
+// internal screen and stays still; only the main column moves.
+.sidebar      { view-transition-name: app-sidebar; }
+.main-content { view-transition-name: app-main; }
 
 @media (prefers-reduced-motion: no-preference) {
   dialog.app-modal[open] { animation: app-rise-in var(--dur-base) var(--ease-out-expo); }
@@ -744,6 +800,31 @@ dialog.app-modal {
   [aria-busy="true"].btn-primary::before,
   [aria-busy="true"].btn-action::before,
   [aria-busy="true"][class*="btn-solid--"]::before { animation: app-spin .7s linear infinite; }
+
+  // [appStagger]: only while the container carries .is-staggering (its first paint).
+  .is-staggering > * {
+    animation: app-stagger-in var(--dur-base) var(--ease-out-expo) both;
+    animation-delay: calc(var(--stagger-i, 0) * 40ms);
+  }
+
+  .skeleton__bar {
+    background-image: linear-gradient(90deg, transparent 0, rgba(255, 255, 255, .7) 50%, transparent 100%);
+    background-size: 50% 100%;
+    background-repeat: no-repeat;
+    animation: app-shimmer 1.4s ease-in-out infinite;
+  }
+
+  ::view-transition-old(app-main) { animation: app-fade-out var(--dur-fast) ease both; }
+  ::view-transition-new(app-main) { animation: app-main-in var(--dur-base) var(--ease-out-expo) both; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(app-main),
+  ::view-transition-old(app-main),
+  ::view-transition-new(app-main),
+  ::view-transition-group(app-sidebar),
+  ::view-transition-old(app-sidebar),
+  ::view-transition-new(app-sidebar) { animation: none; }
 }
 
 

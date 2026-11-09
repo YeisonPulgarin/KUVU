@@ -4,6 +4,9 @@ import { RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { DataService } from '../../services/data.service';
 import { AppLayoutComponent } from '../shared/app-layout/app-layout.component';
+import { SkeletonComponent } from '../shared/skeleton/skeleton.component';
+import { StaggerDirective } from '../shared/stagger.directive';
+import { CountUpComponent } from '../shared/count-up/count-up.component';
 import { IconComponent } from '../shared/icon/icon.component';
 import { badgeTipoPago } from '../shared/badges';
 import { formatFecha, formatMoneda } from '../shared/formato';
@@ -11,7 +14,7 @@ import { formatFecha, formatMoneda } from '../shared/formato';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterLink, AppLayoutComponent, IconComponent],
+  imports: [CommonModule, RouterLink, AppLayoutComponent, IconComponent, SkeletonComponent, StaggerDirective, CountUpComponent],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })

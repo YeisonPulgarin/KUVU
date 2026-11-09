@@ -34,6 +34,9 @@
     </div>
 
     <div class="card">
+      @if (data.esperandoDatos()) {
+        <app-skeleton variante="table" />
+      } @else {
       <table class="tabla">
         <thead>
           <tr>
@@ -52,7 +55,7 @@
             }
           </tr>
         </thead>
-        <tbody>
+        <tbody appStagger>
           @for (pago of pagos(); track pago.idPagoVariado) {
             <tr>
               <td>{{ pago.idPagoVariado }}</td>
@@ -93,6 +96,7 @@
           </tfoot>
         }
       </table>
+      }
     </div>
   </div>
 

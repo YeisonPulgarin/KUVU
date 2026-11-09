@@ -11,21 +11,25 @@
     </div>
 
     <!-- Indicadores -->
-    <div class="mant-stats">
+    @if (data.esperandoDatos()) {
+      <app-skeleton variante="stats" />
+      <app-skeleton variante="cards" [cantidad]="3" />
+    } @else {
+    <div class="mant-stats" appStagger>
       <div class="mant-stat mant-stat--yellow">
-        <span class="mant-stat__num">{{ stats().pendientes }}</span>
+        <app-count-up class="mant-stat__num" [value]="stats().pendientes" />
         <span class="mant-stat__label"><app-icon name="clock" /> Pendientes</span>
       </div>
       <div class="mant-stat mant-stat--blue">
-        <span class="mant-stat__num">{{ stats().en_proceso }}</span>
+        <app-count-up class="mant-stat__num" [value]="stats().en_proceso" />
         <span class="mant-stat__label"><app-icon name="wrench" /> En proceso</span>
       </div>
       <div class="mant-stat mant-stat--green">
-        <span class="mant-stat__num">{{ stats().completados }}</span>
+        <app-count-up class="mant-stat__num" [value]="stats().completados" />
         <span class="mant-stat__label"><app-icon name="check-circle" /> Completados</span>
       </div>
       <div class="mant-stat mant-stat--red">
-        <span class="mant-stat__num">{{ stats().urgentes }}</span>
+        <app-count-up class="mant-stat__num" [value]="stats().urgentes" />
         <span class="mant-stat__label"><app-icon name="alert-triangle" /> Urgentes activos</span>
       </div>
     </div>
@@ -51,7 +55,10 @@
       </div>
     </div>
 
-    <div class="mant-list">
+    }
+
+    @if (!data.esperandoDatos()) {
+    <div class="mant-list" appStagger>
       @for (m of mantenimientosFiltrados(); track m.idMantenimiento) {
         <div class="mant-card" [class.mant-card--urgente]="m.prioridad === 'urgente'">
           <div class="mant-card__left">
@@ -108,6 +115,7 @@
         <div class="empty-state">No hay registros de mantenimiento para los filtros seleccionados.</div>
       }
     </div>
+    }
   </div>
 
   @if (mostrarFormulario()) {
