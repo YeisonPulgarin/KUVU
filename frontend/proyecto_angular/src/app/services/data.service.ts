@@ -7,7 +7,7 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { forkJoin, Observable, of } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { finalize, tap } from 'rxjs/operators';
 import {
   Usuario, Local, ContratoArrendamiento,
   Mantenimiento, PagoVariado
@@ -27,12 +27,23 @@ export class DataService {
   private _pagos          = signal<PagoVariado[]>([]);
   private _cargando       = signal<boolean>(false);
   private _empresaIdCargada = signal<number | null>(null);
+  /** Company whose data finished loading at least once (stays set during a refresh). */
+  private _empresaCargada   = signal<number | null>(null);
+  private _errorCarga       = signal<boolean>(false);
 
   cargando = computed(() => this._cargando());
+  /** True once the active company's data arrived: screens show skeletons until then. */
+  listo = computed(() => this._empresaCargada() !== null);
+  /** True when the last full load failed (the layout raises an error toast). */
+  errorCarga = computed(() => this._errorCarga());
+  /** Skeleton condition: no data for this company yet and no failed load to report. */
+  esperandoDatos = computed(() => !this.listo() && !this._errorCarga());
 
   // ── Cargar TODO de una vez (desde dashboard o al refrescar) ──
   cargarTodo(empresaId: number): Observable<any> {
     this._cargando.set(true);
+    this._errorCarga.set(false);
+    if (this._empresaCargada() !== empresaId) this._empresaCargada.set(null);
     this._empresaIdCargada.set(empresaId);
     const q = `?empresa_id=${empresaId}`;
 
@@ -49,8 +60,11 @@ export class DataService {
         this._contratos.set(data.contratos);
         this._mantenimientos.set(data.mantenimientos);
         this._pagos.set(data.pagos);
-        this._cargando.set(false);
-      })
+        this._empresaCargada.set(empresaId);
+      }),
+      // On error too: a failed load must not leave the screens loading forever.
+      finalize(() => this._cargando.set(false)),
+      tap({ error: () => this._errorCarga.set(true) })
     );
   }
 
@@ -123,6 +137,12 @@ export class DataService {
     );
   }
 
+  eliminarContrato(id: number, empresaId: number): Observable<any> {
+    return this.http.delete(`${API}/contratos/${id}`).pipe(
+      tap(() => this.recargarContratos(empresaId))
+    );
+  }
+
   private recargarContratos(empresaId: number): void {
     this.http.get<ContratoArrendamiento[]>(`${API}/contratos?empresa_id=${empresaId}`)
       .subscribe(data => this._contratos.set(data));
@@ -155,6 +175,12 @@ export class DataService {
 
   actualizarEstadoMantenimiento(id: number, estado: string, empresaId: number): Observable<any> {
     return this.http.put(`${API}/mantenimiento/${id}`, { estado }).pipe(
+      tap(() => this.recargarMantenimientos(empresaId))
+    );
+  }
+
+  eliminarMantenimiento(id: number, empresaId: number): Observable<any> {
+    return this.http.delete(`${API}/mantenimiento/${id}`).pipe(
       tap(() => this.recargarMantenimientos(empresaId))
     );
   }

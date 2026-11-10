@@ -4,6 +4,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { filter } from 'rxjs';
 import { AuthService } from '../../../services/auth.service';
 import { SidebarService } from '../../../services/sidebar.service';
+import { ConfirmService } from '../confirm/confirm.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -18,6 +19,7 @@ export class SidebarComponent {
   sidebarSvc = inject(SidebarService);
   destroyRef = inject(DestroyRef);
   platformId = inject(PLATFORM_ID);
+  private confirm = inject(ConfirmService);
 
   colapsado = this.sidebarSvc.colapsado;
   empresa   = this.auth.empresaActiva;
@@ -50,7 +52,15 @@ export class SidebarComponent {
   abrirMenu() { this.menuAbierto.set(true); }
   cerrarMenu() { this.menuAbierto.set(false); }
 
-  logout() {
+  /** Asks first: the button sits next to the collapse toggle and is easy to hit by mistake. */
+  async logout(): Promise<void> {
+    const confirmado = await this.confirm.confirmar({
+      titulo: 'Cerrar sesión',
+      mensaje: '¿Quieres cerrar tu sesión? Tendrás que ingresar de nuevo para volver.',
+      confirmarTexto: 'Cerrar sesión',
+      variante: 'neutral'
+    });
+    if (!confirmado) return;
     this.auth.logout();
     this.router.navigate(['/login']);
   }
