@@ -5,7 +5,7 @@
   "buildCommand": "npx ng build",
   "outputDirectory": "dist/proyecto-dss/browser",
   "rewrites": [
-    { "source": "/api/:path*", "destination": "https://RAILWAY_BACKEND_HOST/api/:path*" },
+    { "source": "/api/:path*", "destination": "https://kuvu-api.onrender.com/api/:path*" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
