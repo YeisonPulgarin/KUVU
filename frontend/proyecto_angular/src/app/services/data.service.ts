@@ -13,7 +13,9 @@ import {
   Mantenimiento, PagoVariado
 } from '../models/index';
 
-const API = 'http://localhost:3000/api';
+import { API_BASE } from '../api-base';
+
+const API = API_BASE;
 
 @Injectable({ providedIn: 'root' })
 export class DataService {

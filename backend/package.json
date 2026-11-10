@@ -4,7 +4,7 @@
   "description": "Backend Node.js para ArrendApp - Gestión de Arriendos",
   "main": "server.js",
   "scripts": {
-    "start": "node --env-file=.env server.js",
+    "start": "node --env-file-if-exists=.env server.js",
     "dev": "nodemon --watch . --ext js --exec \"node --env-file=.env server.js\"",
     "test": "node --test",
     "passwords:bootstrap": "node --env-file=.env scripts/bootstrap-passwords.js"
@@ -17,5 +17,8 @@
   },
   "devDependencies": {
     "nodemon": "^3.0.2"
+  },
+  "engines": {
+    "node": ">=22.9"
   }
 }

@@ -9,7 +9,9 @@ import { Empresa } from '../models/empresa.model';
 import { Usuario } from '../models/index';
 import { textoSobreMarca } from '../components/shared/color-contrast';
 
-const API = 'http://localhost:3000/api';
+import { API_BASE } from '../api-base';
+
+const API = API_BASE;
 
 export interface LoginExitoso {
   ok: true;
