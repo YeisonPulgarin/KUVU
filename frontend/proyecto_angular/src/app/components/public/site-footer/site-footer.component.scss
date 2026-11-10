@@ -32,32 +32,6 @@
 .footer-brand {
   max-width: 22rem;
 
-  .footer-logo {
-    @apply mb-3 flex items-center;
-
-    img {
-      @apply w-auto flex-shrink-0 object-contain;
-    }
-
-    .footer-logo--full {
-      @apply h-10;
-      display: none;
-
-      @media (width >= 768px) {
-        display: block;
-      }
-    }
-
-    .footer-logo--responsive {
-      @apply h-10;
-      display: block;
-
-      @media (width >= 768px) {
-        display: none;
-      }
-    }
-  }
-
   .footer-name {
     margin: 0;
     padding-bottom: 0.25rem;

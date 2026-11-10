@@ -1,7 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { ThemeService } from '../../../services/theme.service';
-import { logo } from '../../../content/logo';
 import { academicNote, contactWhatsAppLink, siteInfo, siteNavLinks } from '../../../content/site';
 import { responsible } from '../../../content/responsible';
 import { legalIndex } from '../../../content/legal-index';
@@ -17,7 +16,6 @@ import { RichTextComponent } from '../rich-text/rich-text.component';
 })
 export class SiteFooterComponent {
   readonly theme = inject(ThemeService);
-  readonly logo = logo;
   readonly brandName = siteInfo.name;
   readonly tagline = siteInfo.tagline;
   readonly navLinks = siteNavLinks;

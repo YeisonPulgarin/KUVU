@@ -37,17 +37,20 @@ describe('SiteFooterComponent', () => {
     return found as HTMLElement;
   };
 
-  it('should render the brand block with logos, name and tagline', () => {
-    expect(root.querySelector('.footer-name')?.textContent).toContain('KUVU');
-    expect(root.querySelector('.footer-tagline')?.textContent).toContain('Administración inmobiliaria');
-    expect(root.querySelector('.footer-logo--full')?.getAttribute('src')).toBe(logo.web);
-    expect(root.querySelector('.footer-logo--responsive')?.getAttribute('src')).toBe(logo.responsive);
+  it('should render the brand block as name and tagline, without a logo image', () => {
+    const brand = root.querySelector('.footer-brand') as HTMLElement;
+    expect(brand.querySelector('.footer-name')?.textContent).toContain('KUVU');
+    expect(brand.querySelector('.footer-tagline')?.textContent).toContain('Administración inmobiliaria');
+    expect(brand.querySelector('img')).toBeNull();
   });
 
-  it('should keep both footer logos unchanged when the theme is dark', () => {
+  it('should not render any logo image in the footer, in light or dark theme', () => {
+    const logoSrcs: string[] = [logo.web, logo.responsive];
+    const srcs = () => Array.from(root.querySelectorAll('img')).map((img) => img.getAttribute('src'));
+    expect(srcs().filter((src) => logoSrcs.includes(src ?? ''))).toEqual([]);
     fixture.componentInstance.theme.toggle();
     fixture.detectChanges();
-    expect(root.querySelector('.footer-logo--full')?.getAttribute('src')).toBe(logo.web);
+    expect(srcs().filter((src) => logoSrcs.includes(src ?? ''))).toEqual([]);
   });
 
   it('should list the site navigation in the Sitio column, plus Acceso', () => {

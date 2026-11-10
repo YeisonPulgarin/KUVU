@@ -301,11 +301,11 @@ describe('HomeComponent', () => {
   });
 
   describe('logo', () => {
-    it('should render the KUVU web logo image instead of a CSS box', () => {
-      const img = asElement(root.querySelector('.logo-img--full'));
+    it('should render the KUVU symbol logo image in the header instead of a CSS box', () => {
+      const img = asElement(root.querySelector('.logo-link .logo-img'));
       expect(img).toBeTruthy();
       expect(img.tagName).toBe('IMG');
-      expect(img.getAttribute('src')).toBe('/logo-rediseno/Logo_Kuvu.png');
+      expect(img.getAttribute('src')).toBe('/logo-rediseno/Logo_Responsive.png');
       expect(img.getAttribute('alt')).toBe('KUVU');
     });
 

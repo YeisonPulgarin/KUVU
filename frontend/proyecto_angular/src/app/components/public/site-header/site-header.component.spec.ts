@@ -58,24 +58,28 @@ describe('SiteHeaderComponent', () => {
   });
 
   describe('brand', () => {
-    it('should render the KUVU web logo linking to the home route', () => {
+    const logoImgs = () => Array.from(root.querySelectorAll('.logo-link img')) as HTMLImageElement[];
+
+    it('should render a single symbol logo linking to the home route', () => {
       const link = asElement(root.querySelector('.logo-link'));
-      const full = asElement(link.querySelector('.logo-img--full'));
-      expect(full.getAttribute('src')).toBe(logo.web);
-      expect(full.getAttribute('alt')).toBe('KUVU');
+      const imgs = logoImgs();
+      expect(imgs.length).toBe(1);
+      expect(imgs[0].getAttribute('src')).toBe(logo.responsive);
+      expect(imgs[0].getAttribute('alt')).toBe('KUVU');
       expect(link.getAttribute('href')).toBe('/');
     });
 
-    it('should render the responsive logo next to the web one', () => {
-      const responsive = asElement(root.querySelector('.logo-link .logo-img--responsive'));
-      expect(responsive.getAttribute('src')).toBe(logo.responsive);
-    });
-
-    it('should keep both logos unchanged when the theme is dark', () => {
+    it('should never render the full web logo, in light or dark theme', () => {
+      const srcs = () => Array.from(root.querySelectorAll('img')).map((img) => img.getAttribute('src'));
+      expect(srcs()).not.toContain(logo.web);
       component.theme.toggle();
       fixture.detectChanges();
-      expect(root.querySelector('.logo-img--full')?.getAttribute('src')).toBe(logo.web);
-      expect(root.querySelector('.logo-img--responsive')?.getAttribute('src')).toBe(logo.responsive);
+      expect(srcs()).not.toContain(logo.web);
+      expect(logoImgs().map((img) => img.getAttribute('src'))).toEqual([logo.responsive]);
+    });
+
+    it('should show the symbol logo on every viewport width (no breakpoint swap)', () => {
+      expect(getComputedStyle(logoImgs()[0]).display).toBe('block');
     });
   });
 
@@ -149,6 +153,16 @@ describe('SiteHeaderComponent', () => {
       fixture.detectChanges();
       expect(current()).toEqual(['/contacto']);
     }));
+
+    it('should mark the current page in the mobile panel with is-active and aria-current', fakeAsync(() => {
+      router.navigateByUrl('/nosotros');
+      tick();
+      fixture.detectChanges();
+      const items = Array.from(root.querySelectorAll('#mobile-menu .mobile-item')) as HTMLAnchorElement[];
+      const active = items.filter((a) => a.classList.contains('is-active'));
+      expect(active.map((a) => a.getAttribute('href'))).toEqual(['/nosotros']);
+      expect(active[0].getAttribute('aria-current')).toBe('page');
+    }));
   });
 
   describe('compact state on scroll', () => {
@@ -175,6 +189,39 @@ describe('SiteHeaderComponent', () => {
       window.dispatchEvent(new Event('scroll'));
       fixture.detectChanges();
       expect(root.classList).not.toContain('is-compact');
+    });
+
+    // The blur must not sit on an ancestor of the fixed panel: it would become its containing
+    // block and the panel would collapse to the 56px bar once the page is scrolled.
+    it('should keep the mobile panel sized to the viewport when compact', () => {
+      scrollY = HEADER_COMPACT_THRESHOLD + 200;
+      window.dispatchEvent(new Event('scroll'));
+      fixture.detectChanges();
+      expect(root.classList).toContain('is-compact');
+
+      const header = asElement(root.querySelector('.site-header'));
+      expect(getComputedStyle(header).backdropFilter).toBe('none');
+      expect(getComputedStyle(header).filter).toBe('none');
+      expect(getComputedStyle(header).transform).toBe('none');
+
+      const panel = asElement(root.querySelector('#mobile-menu'));
+      if (getComputedStyle(panel).display !== 'none') {
+        const rect = panel.getBoundingClientRect();
+        expect(rect.top).toBeCloseTo(56, 0);
+        expect(rect.bottom).toBeCloseTo(window.innerHeight, 0);
+      }
+    });
+
+    it('should keep the translucent blurred surface on the header background layer', () => {
+      scrollY = HEADER_COMPACT_THRESHOLD + 1;
+      window.dispatchEvent(new Event('scroll'));
+      fixture.detectChanges();
+      const header = asElement(root.querySelector('.site-header'));
+      const surface = getComputedStyle(header, '::before');
+      expect(surface.content).not.toBe('none');
+      if (CSS.supports('backdrop-filter', 'blur(1px)')) {
+        expect(surface.backdropFilter).toContain('blur');
+      }
     });
   });
 
