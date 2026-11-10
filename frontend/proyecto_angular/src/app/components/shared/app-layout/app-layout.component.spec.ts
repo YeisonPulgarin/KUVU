@@ -47,6 +47,16 @@ describe('AppLayoutComponent', () => {
     expect(el().querySelector('app-confirm-host')).not.toBeNull();
   });
 
+  it('paints a subtle grain on the page background, without any layer over the content', () => {
+    const main = el().querySelector<HTMLElement>('main.main-content')!;
+    const estilo = getComputedStyle(main);
+    expect(estilo.backgroundImage).toContain('data:image/svg+xml');
+    expect(estilo.backgroundImage).toContain('feTurbulence');
+    expect(estilo.backgroundImage).toContain('linear-gradient');
+    expect(getComputedStyle(main, '::before').content).toBe('none');
+    expect(getComputedStyle(main, '::after').content).toBe('none');
+  });
+
   it('shows an accessible breadcrumb "{Empresa} › {Página}" linking the company to the dashboard', () => {
     const nav = el().querySelector('nav.app-breadcrumb')!;
     expect(nav.getAttribute('aria-label')).toBe('Ruta');

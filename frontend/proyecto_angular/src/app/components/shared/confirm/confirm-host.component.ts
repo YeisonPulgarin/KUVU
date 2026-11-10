@@ -27,7 +27,8 @@ const ICONO: Record<VarianteConfirmacion, IconName> = {
           <p class="confirm__mensaje">{{ s.mensaje }}</p>
         </div>
         <div class="modal__footer">
-          <button type="button" class="btn-secondary" autofocus (click)="elegir(false)">
+          <button type="button" class="btn-action btn-action--danger" autofocus (click)="elegir(false)">
+            <app-icon name="x" />
             {{ s.cancelarTexto ?? 'Cancelar' }}
           </button>
           <button type="button" class="btn-solid--{{ s.variante }}" (click)="elegir(true)">

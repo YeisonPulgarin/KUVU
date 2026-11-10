@@ -108,6 +108,16 @@ describe('LocalesComponent', () => {
       return el().querySelector('dialog')!;
     }
 
+    it('discards with a danger-tinted Cancelar with an x icon, like Eliminar', () => {
+      abrirNuevo();
+      const cancelar = Array.from(el().querySelectorAll<HTMLButtonElement>('dialog .modal__footer button'))
+        .find(b => b.textContent!.trim() === 'Cancelar')!;
+      expect(cancelar.classList).toContain('btn-action');
+      expect(cancelar.classList).toContain('btn-action--danger');
+      expect(cancelar.classList).not.toContain('btn-secondary');
+      expect(cancelar.querySelector('app-icon svg')).not.toBeNull();
+    });
+
     it('associates every label with its field', () => {
       const dialog = abrirNuevo();
       dialog.querySelectorAll('label').forEach(label => {

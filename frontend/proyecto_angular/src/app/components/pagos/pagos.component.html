@@ -116,7 +116,7 @@
           <app-icon name="lock" /> Serás redirigido a la pasarela de pago segura para completar tu transacción.
         </div>
         <div class="pasarela-actions">
-          <button type="button" class="btn-secondary" (click)="modal()?.cerrar()">Cancelar</button>
+          <button type="button" class="btn-action btn-action--danger" (click)="modal()?.cerrar()"><app-icon name="x" /> Cancelar</button>
           <button type="button" class="btn-primary" autofocus [disabled]="pagando()"
                   [attr.aria-busy]="pagando() ? 'true' : null" (click)="confirmarPago()">
             @if (!pagando()) { <app-icon name="credit-card" /> }

@@ -129,4 +129,19 @@ describe('ContratosComponent', () => {
     expect(d.toast.exito).toHaveBeenCalledWith('Contrato actualizado.');
     expect(el().querySelector('dialog')).toBeNull();
   });
+
+  it('discards the form with a danger-tinted Cancelar with an x icon, like Eliminar', () => {
+    crear();
+    fixture.componentInstance.abrirFormulario();
+    fixture.detectChanges();
+    const cancelar = Array.from(el().querySelectorAll<HTMLButtonElement>('dialog .modal__footer button'))
+      .find(b => b.textContent!.trim() === 'Cancelar')!;
+    expect(cancelar.classList).toContain('btn-action');
+    expect(cancelar.classList).toContain('btn-action--danger');
+    expect(cancelar.classList).not.toContain('btn-secondary');
+    expect(cancelar.querySelector('app-icon svg')).not.toBeNull();
+    cancelar.click();
+    fixture.detectChanges();
+    expect(el().querySelector('dialog')).toBeNull();
+  });
 });

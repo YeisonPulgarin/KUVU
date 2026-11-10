@@ -107,6 +107,17 @@ describe('PagosComponent', () => {
       expect(boton('Eliminar')).toBeUndefined();
     });
 
+    it('discards the payment gateway with a danger-tinted Cancelar with an x icon', () => {
+      boton('Pagar arriendo')!.click();
+      fixture.detectChanges();
+      const cancelar = Array.from(el().querySelectorAll<HTMLButtonElement>('dialog .pasarela-actions button'))
+        .find(b => b.textContent!.trim() === 'Cancelar')!;
+      expect(cancelar.classList).toContain('btn-action');
+      expect(cancelar.classList).toContain('btn-action--danger');
+      expect(cancelar.classList).not.toContain('btn-secondary');
+      expect(cancelar.querySelector('app-icon svg')).not.toBeNull();
+    });
+
     it('registers a single payment on a double click (R4.4) and confirms with a toast', () => {
       const respuesta = new Subject<unknown>();
       d.data.agregarPago.and.returnValue(respuesta);

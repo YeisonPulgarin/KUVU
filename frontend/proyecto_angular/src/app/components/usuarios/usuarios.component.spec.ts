@@ -216,4 +216,25 @@ describe('UsuariosComponent', () => {
     expect(el().querySelector('label[for="usuarios-buscar"]')).not.toBeNull();
     expect(el().querySelector('label[for="usuarios-rol"]')).not.toBeNull();
   });
+
+  it('discards both user dialogs with a danger-tinted Cancelar with an x icon', () => {
+    const c = fixture.componentInstance;
+    c.abrirFormulario();
+    fixture.detectChanges();
+    const cancelar = Array.from(el().querySelectorAll<HTMLButtonElement>('dialog .modal__footer button'))
+      .find(b => b.textContent!.trim() === 'Cancelar')!;
+    expect(cancelar.classList).toContain('btn-action');
+    expect(cancelar.classList).toContain('btn-action--danger');
+    expect(cancelar.classList).not.toContain('btn-secondary');
+    expect(cancelar.querySelector('app-icon svg')).not.toBeNull();
+    cancelar.click();
+    fixture.detectChanges();
+
+    porLabel(tarjeta('Carlos Lesmes'), 'Restablecer contraseña de Carlos Lesmes').click();
+    fixture.detectChanges();
+    const descartar = Array.from(el().querySelectorAll<HTMLButtonElement>('dialog .modal__footer button'))
+      .find(b => b.textContent!.trim() === 'Cancelar')!;
+    expect(descartar.classList).toContain('btn-action--danger');
+    expect(descartar.querySelector('app-icon svg')).not.toBeNull();
+  });
 });

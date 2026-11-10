@@ -2,6 +2,8 @@
 // ESTILOS COMPARTIDOS: modals, cards, tables, forms, badges, btns
 // ─────────────────────────────────────────────────────────────────
 
+@use '../../../styles/grain' as *;
+
 // SEMANTIC TOKENS — fixed for every company (the brand colors only fill the main CTA).
 // Each role: -fg (text and icon), -bg (tint), -border and -solid (fill of the confirm
 // button, with a white label). Prefix `--sem-*` keeps them out of Tailwind's `--color-*`.
@@ -247,6 +249,17 @@
   }
 }
 
+// Page background of the signed-in app (both roles): subtle grain under a --color-bg wash.
+// Only a background (no layer over the content), so it never takes clicks nor lowers text
+// contrast. .main-content is the scroll container and its background does not scroll with
+// the content (background-attachment: scroll is relative to the box). Dialogs stay plain.
+.app-layout .main-content {
+  background:
+    linear-gradient(color-mix(in srgb, var(--color-bg) 93%, transparent) 0 0),
+    $grain var(--color-bg);
+  background-size: auto, 180px 180px;
+}
+
 // Row and card actions: tinted with their semantic role at rest, not only on hover.
 .btn-action {
   display: inline-flex;
@@ -457,6 +470,17 @@
     background: #fafbfc;
     border-radius: 0 0 16px 16px;
   }
+}
+
+// Discard buttons of dialogs (danger tint + "x", like Eliminar) take the size of the primary
+// next to them: the modal footers and the payment gateway actions.
+.modal__footer .btn-action,
+.pasarela-actions .btn-action {
+  padding: .6rem 1.3rem;
+  border-radius: 9px;
+  font-size: .84rem;
+  font-weight: 700;
+  gap: .45rem;
 }
 
 // FORM GRID

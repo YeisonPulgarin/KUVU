@@ -119,7 +119,7 @@
           <p class="error-msg" role="alert">{{ errorMsg() }}</p>
         }
         <div class="modal__footer">
-          <button type="button" class="btn-secondary" (click)="modal()?.cerrar()">Cancelar</button>
+          <button type="button" class="btn-action btn-action--danger" (click)="modal()?.cerrar()"><app-icon name="x" /> Cancelar</button>
           <button type="submit" class="btn-primary" [disabled]="guardando()"
                   [attr.aria-busy]="guardando() ? 'true' : null">
             {{ guardando() ? 'Guardando…' : 'Guardar' }}

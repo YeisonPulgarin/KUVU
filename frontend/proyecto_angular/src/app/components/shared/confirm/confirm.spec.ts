@@ -81,6 +81,24 @@ describe('ConfirmHostComponent', () => {
     expect(document.activeElement).toBe(cancelar);
   });
 
+  it('styles the discard button like Eliminar (danger tint + x icon), also as "Volver"', () => {
+    pedir();
+    let [cancelar] = Array.from(el().querySelectorAll<HTMLButtonElement>('.modal__footer button'));
+    expect(cancelar.classList).toContain('btn-action--danger');
+    expect(cancelar.classList).not.toContain('btn-secondary');
+    expect(cancelar.querySelector('app-icon svg')).not.toBeNull();
+    expect(cancelar.textContent!.trim()).toBe('Cancelar');
+    el().querySelector<HTMLButtonElement>('.modal__close')!.click();
+    fixture.detectChanges();
+
+    pedir({ ...borrarLocal, variante: 'warning', confirmarTexto: 'Cancelar solicitud', cancelarTexto: 'Volver' });
+    [cancelar] = Array.from(el().querySelectorAll<HTMLButtonElement>('.modal__footer button'));
+    expect(cancelar.textContent!.trim()).toBe('Volver');
+    expect(cancelar.classList).toContain('btn-action--danger');
+    expect(cancelar.querySelector('app-icon svg')).not.toBeNull();
+    expect(document.activeElement).toBe(cancelar);
+  });
+
   it('resolves true on confirm and closes', async () => {
     const respuesta = pedir();
     el().querySelectorAll<HTMLButtonElement>('.modal__footer button')[1].click();
