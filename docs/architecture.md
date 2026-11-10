@@ -38,8 +38,12 @@ Sitio multipágina con una sola navegación: `/`, `/servicios`, `/nosotros`,
   lee `siteNavLinks`, es `sticky`, se compacta pasados 24 px de scroll y por debajo de
   1024 px muestra un menú a pantalla completa (bloquea el scroll del fondo, cierra con Escape,
   botón, enlace o navegación). El footer tiene columnas marca / Sitio / Legal / Contacto, la
-  nota académica y el copyright. El logo tiene 2 variantes (web y responsive) y se alterna por
-  viewport con el breakpoint `768px`; el tema no interviene en su selección.
+  nota académica y el copyright. El header muestra solo el símbolo (`logo.responsive`) en todo
+  ancho y tema; el footer no lleva imagen de logo. La superficie del header (con su
+  `backdrop-filter`) vive en `.site-header::before` para que el panel móvil fijo se mida contra
+  el viewport (ver `docs/ajustes-logo-menu-app.md`).
+- `src/app/components/back-to-top/` — botón flotante "Volver arriba", montado una vez en
+  `AppComponent` para todas las rutas; sigue el scroll de la ventana o de `.main-content`.
 - `src/app/components/public/public-page/` — `app-public-page`: layout de las páginas internas
   (header, hero con breadcrumb, título y lead, `<ng-content>`, footer). Lo usan todas las
   páginas públicas salvo la home.
@@ -242,10 +246,13 @@ pasa por `cambioPasswordGuard`: entra quien tiene un cambio pendiente (en memori
 - **Tema oscuro por clase `.dark`** (no `prefers-color-scheme`): el toggle es manual y se
   persiste en `localStorage`; `index.html` aplica la clase antes del bootstrap para evitar el
   flash.
-- **Logo multi-variante con swap por CSS+TS**: dos `<img>` por punto de marca con `[src]`
-  bindeado al tema y visibilidad resuelta en el breakpoint `768px`. Tradeoff: duplica el
-  markup del logo en header y footer (2 usos, se revisa ante un tercero) a cambio de no
-  pagar `<picture>`/`srcset` ni recarga al alternar tema.
+- **Un logo por punto de marca**: el header usa el símbolo en todo ancho y tema; el acceso
+  combina símbolo y texto "KUVU" para legibilidad sobre la foto oscura; navbar e intro usan el
+  logo completo. Tradeoff: sin variantes por tema ni `<picture>`, la legibilidad depende de que
+  cada fondo contraste con el asset elegido.
+- **Un único "Volver arriba" global** con un listener `scroll` en captura que reconoce la
+  ventana y `.main-content`, en vez de una instancia por layout. Tradeoff: un contenedor de
+  scroll de página nuevo debe sumarse a `APP_SCROLLER_SELECTOR`.
 - **Imágenes responsive con `<picture>` + contenido tipado** (`SiteImage` + `app-responsive-image`)
   en lugar de `NgOptimizedImage` o `background-image`: formato y ancho por `<source>`/`srcset`,
   lazy nativo, `alt` real y testeable. Tradeoff: las variantes se generan a mano con un script y

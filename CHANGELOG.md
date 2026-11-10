@@ -9,6 +9,9 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com) y este proyecto 
 
 ### Added
 
+- Todas las páginas (sitio, acceso y app de gestión, para administradores y arrendatarios)
+  tienen un botón flotante "Volver arriba" que aparece al bajar y lleva suavemente al comienzo.
+
 - El sitio público estrena identidad visual: titulares grandes en una tipografía display
   condensada, textos más grandes que aprovechan el ancho, fondo con grano y trama de puntos, y
   bloques a ancho completo en el verde de marca (sin colores nuevos). Claro y oscuro reciben el
@@ -95,6 +98,15 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com) y este proyecto 
 
 ### Changed
 
+- El header del sitio muestra solo el símbolo de KUVU, en escritorio y móvil y en tema claro y
+  oscuro; el footer deja el logo y conserva el nombre "KUVU".
+- La selección de inmobiliaria, el login y el cambio de contraseña muestran el símbolo con el
+  nombre "KUVU" en blanco, legible sobre la foto de fondo.
+- El menú móvil resalta la opción bajo el cursor y marca la página actual con una barra de
+  acento.
+- En la app de gestión, los botones "Cancelar" (y "Volver" en las confirmaciones) usan el
+  mismo estilo rojo con ícono que "Eliminar", y el fondo de las pantallas tiene una textura
+  sutil.
 - Las fotos del equipo frente a la universidad reemplazan a la foto del equipo de traje en la
   home, en Nosotros y en la vista previa al compartir. El título del hero entra completo (sin
   ir palabra por palabra) y ya no tiene el indicador para bajar; las secciones dejan de mostrar
@@ -150,6 +162,9 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com) y este proyecto 
 - El logo del sitio se rediseñó como sistema de variantes: el header y el footer públicos alternan entre el logo web y el símbolo según el viewport (768px), y muestran el mismo logo en tema claro y oscuro; la selección de empresa, el login y el navbar interno usan el logo web. El favicon es el símbolo en PNG. Reemplaza la imagen única anterior.
 
 ### Fixed
+
+- El menú móvil del sitio abre aunque la página esté desplazada hacia abajo; antes había que
+  volver arriba para usarlo.
 
 - El panel colorea el tipo de cada pago reciente y muestra las fechas como dd/mm/aaaa.
 - "Nuevo contrato" y "Nuevo mantenimiento" ya no abren con los datos del registro editado

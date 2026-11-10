@@ -16,13 +16,12 @@ Los assets viven en `frontend/proyecto_angular/public/logo-rediseno/`:
 Las rutas se centralizan en `src/app/content/logo.ts` (constante `as const`) y se exportan desde
 `content/index.ts`; `content.spec.ts` garantiza que existan las 2 entradas y que no se dupliquen.
 
-- **Header y footer** (`site-header` / `site-footer`): cada uno renderiza dos `<img>` que
-  conviven en el DOM — `.logo-img--full` (logo web) y `.logo-img--responsive` (símbolo) — con
-  `[src]="logo.web"` y `[src]="logo.responsive"`. El SCSS muestra el logo web en
-  `@media (width >= 768px)` y el símbolo por debajo. El `alt` es el nombre de marca.
-- **Landing (`/acceder`), Login (`/login`) y Navbar**: usan el logo web con la ruta literal
-  `/logo-rediseno/Logo_Kuvu.png` (no importan `logo.ts`); sin variante responsive ni breakpoint
-  propio.
+- **Header** (`site-header`): una sola `<img>` con `[src]="logo.responsive"` (el símbolo) en
+  todos los anchos; el `alt` es el nombre de marca. El **footer** no lleva imagen: la marca es el
+  texto "KUVU." (ver `docs/ajustes-logo-menu-app.md`).
+- **Acceso** (`/acceder`, `/login`, `/cambiar-contrasena`): símbolo (`logo.responsive`) más el
+  texto "KUVU" en blanco (`.brand-lockup`, estilos en `components/login/brand-lockup.scss`).
+- **Navbar interna e intro**: usan el logo web con la ruta literal `/logo-rediseno/Logo_Kuvu.png`.
 - **Favicon**: `src/index.html` apunta a `/logo-rediseno/Logo_Responsive.png` con
   `type="image/png"`.
 
@@ -34,14 +33,11 @@ Las rutas se centralizan en `src/app/content/logo.ts` (constante `as const`) y s
   header sigue funcionando (los iconos de sol/luna dependen de `isDark()`).
 - **Claves `web` y `responsive`, no `light`/`dark`**: nombran el uso real de cada asset. Con el
   tema fuera del contrato, nombres de tema serían engañosos.
-- **Dos `<img>` + toggle por CSS** en el breakpoint `768px` en vez de `<picture>`/`srcset`: el
-  mecanismo existente ya resuelve el caso responsive, hay tests sobre ambas imágenes en el DOM y
-  las alturas ya están en el SCSS.
 - **Nombres de archivo sin kebab-case**: se conservan los nombres entregados (`Logo_Kuvu.png`,
   `Logo_Responsive.png`), que siguen la convención `Logo_*` que el proyecto ya usó para su
   asset de marca.
-- **Landing/login/navbar con ruta literal**: no son parte del sistema de contenido público; ya
-  usaban strings literales y sus specs comparan contra la ruta.
+- **Navbar e intro con ruta literal**: no son parte del sistema de contenido público y sus specs
+  comparan contra la ruta.
 
 ## Limitaciones conocidas
 
@@ -52,7 +48,7 @@ Las rutas se centralizan en `src/app/content/logo.ts` (constante `as const`) y s
   deja bandejas laterales. Tampoco hay un `.ico` multi-resolución.
 - **Peso de los assets**: 144 KB el logo web y 56 KB el símbolo, servidos tal cual desde
   `public/`. No hay derivados WebP/AVIF ni `srcset`.
-- **Landing, login y navbar no tienen variante responsive**: en pantallas muy estrechas muestran
-  el logo web completo.
+- **Navbar e intro no tienen variante responsive**: en pantallas muy estrechas muestran el logo
+  web completo.
 - La legibilidad sobre cada fondo (header claro/oscuro, móvil, login, navbar) se revisa a mano
   en el navegador; no hay test automatizado de contraste.
