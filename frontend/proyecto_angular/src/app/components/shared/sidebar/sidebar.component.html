@@ -108,6 +108,11 @@
         <span class="sidebar__user-name">{{ usuario()?.nombre?.split(' ')?.[0] ?? '' }} {{ usuario()?.nombre?.split(' ')?.[1] ?? '' }}</span>
         <span class="sidebar__user-rol">{{ esAdmin() ? 'Administrador' : 'Arrendatario' }}</span>
       </div>
+      <a routerLink="/cambiar-contrasena" class="sidebar__password" title="Cambiar contraseña" aria-label="Cambiar contraseña">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>
+        </svg>
+      </a>
       <button type="button" class="sidebar__logout" (click)="logout()" title="Cerrar sesión" aria-label="Cerrar sesión">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/>
@@ -115,6 +120,11 @@
         </svg>
       </button>
     } @else {
+      <a routerLink="/cambiar-contrasena" class="sidebar__password sidebar__password--icon-only" title="Cambiar contraseña" aria-label="Cambiar contraseña">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>
+        </svg>
+      </a>
       <button type="button" class="sidebar__logout sidebar__logout--icon-only" (click)="logout()" title="Cerrar sesión" aria-label="Cerrar sesión">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/>

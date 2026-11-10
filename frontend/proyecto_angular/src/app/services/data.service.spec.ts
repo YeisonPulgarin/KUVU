@@ -108,4 +108,45 @@ describe('DataService', () => {
       expect(error).toBeTrue();
     });
   });
+  describe('users and passwords', () => {
+    const ADMIN = { correo: 'wilson@amarilo.co', documento: '1127723450', password: 'Admin$Seguro1', empresa_id: 1 };
+
+    it('creates a user with the temporary password and the admin credentials, editable fields only', () => {
+      service.agregarUsuario(
+        { idUsuario: 99, empresa_id: 1, nombre: 'Ana', documento: '10', correo: 'a@k.co', telefono: '3', idRol: 2, nombreRol: 'x', debe_cambiar_password: 0 },
+        'Ventana$Roja77', ADMIN
+      ).subscribe();
+
+      const req = http.expectOne(`${API}/usuarios`);
+      expect(req.request.method).toBe('POST');
+      expect(req.request.body).toEqual({
+        empresa_id: 1, nombre: 'Ana', documento: '10', telefono: '3', correo: 'a@k.co', idRol: 2,
+        passwordTemporal: 'Ventana$Roja77', admin: ADMIN,
+      });
+      req.flush({ ok: true, idUsuario: 3 });
+      http.expectOne(`${API}/usuarios?empresa_id=1`).flush([]);
+    });
+
+    it('updates a user without sending password state', () => {
+      service.actualizarUsuario(2, {
+        idUsuario: 2, empresa_id: 1, nombre: 'Carlos', documento: '21', idRol: 2, debe_cambiar_password: 1, nombreRol: 'Arrendatario',
+      }).subscribe();
+
+      const req = http.expectOne(`${API}/usuarios/2`);
+      expect(req.request.method).toBe('PUT');
+      expect(Object.keys(req.request.body).sort()).toEqual(['correo', 'documento', 'empresa_id', 'idRol', 'nombre', 'telefono']);
+      req.flush({ ok: true });
+      http.expectOne(`${API}/usuarios?empresa_id=1`).flush([]);
+    });
+
+    it('resets a password and reloads the users of the company', () => {
+      service.restablecerPassword(2, 1, 'Ventana$Roja77', ADMIN).subscribe();
+
+      const req = http.expectOne(`${API}/usuarios/2/restablecer-password`);
+      expect(req.request.method).toBe('POST');
+      expect(req.request.body).toEqual({ passwordTemporal: 'Ventana$Roja77', admin: ADMIN });
+      req.flush({ ok: true });
+      http.expectOne(`${API}/usuarios?empresa_id=1`).flush([]);
+    });
+  });
 });

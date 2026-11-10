@@ -191,15 +191,23 @@ export class DataService {
   }
 
   // ── CRUD Usuarios ─────────────────────────────────────────────
-  agregarUsuario(usuario: Partial<Usuario>): Observable<any> {
-    return this.http.post(`${API}/usuarios`, usuario).pipe(
+  // Creating a user and resetting a password carry the administrator's full credentials:
+  // the API has no session, so it re-checks who is asking on every such request.
+  agregarUsuario(usuario: Partial<Usuario>, passwordTemporal: string, admin: CredencialesAdmin): Observable<any> {
+    return this.http.post(`${API}/usuarios`, { ...camposEditables(usuario), passwordTemporal, admin }).pipe(
       tap(() => this.recargarUsuarios(usuario.empresa_id!))
     );
   }
 
   actualizarUsuario(id: number, usuario: Partial<Usuario>): Observable<any> {
-    return this.http.put(`${API}/usuarios/${id}`, usuario).pipe(
+    return this.http.put(`${API}/usuarios/${id}`, camposEditables(usuario)).pipe(
       tap(() => this.recargarUsuarios(usuario.empresa_id!))
+    );
+  }
+
+  restablecerPassword(id: number, empresaId: number, passwordTemporal: string, admin: CredencialesAdmin): Observable<any> {
+    return this.http.post(`${API}/usuarios/${id}/restablecer-password`, { passwordTemporal, admin }).pipe(
+      tap(() => this.recargarUsuarios(empresaId))
     );
   }
 
@@ -213,4 +221,18 @@ export class DataService {
     this.http.get<Usuario[]>(`${API}/usuarios?empresa_id=${empresaId}`)
       .subscribe(data => this._usuarios.set(data));
   }
+}
+
+/** Administrator credentials that authorize creating users and resetting passwords. */
+export interface CredencialesAdmin {
+  correo: string;
+  documento: string;
+  password: string;
+  empresa_id: number;
+}
+
+/** Only the columns a user form may write: never ids, role names or password state. */
+function camposEditables(u: Partial<Usuario>): Partial<Usuario> {
+  const { empresa_id, nombre, documento, telefono, correo, idRol } = u;
+  return { empresa_id, nombre, documento, telefono, correo, idRol };
 }

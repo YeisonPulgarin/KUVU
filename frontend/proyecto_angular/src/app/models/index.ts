@@ -13,6 +13,8 @@ export interface Usuario {
   correo?: string;
   idRol: number;
   nombreRol?: string;
+  /** 1 while the user still has a temporary password (set by migration or an administrator). */
+  debe_cambiar_password?: number;
 }
 
 export interface Local {

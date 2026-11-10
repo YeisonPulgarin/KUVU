@@ -35,6 +35,13 @@ describe('SidebarComponent', () => {
     expect(el().querySelector('.sidebar__logout')!.getAttribute('aria-label')).toBe('Cerrar sesión');
   });
 
+  it('links to the password change, for any role', () => {
+    crear(2);
+    const link = el().querySelector<HTMLAnchorElement>('a.sidebar__password')!;
+    expect(link.getAttribute('aria-label')).toBe('Cambiar contraseña');
+    expect(link.getAttribute('href')).toBe('/cambiar-contrasena');
+  });
+
   it('shows Locales and Usuarios only to the administrator', () => {
     crear(1);
     const textos = () => Array.from(el().querySelectorAll('.sidebar__link')).map(a => a.textContent!.trim());
