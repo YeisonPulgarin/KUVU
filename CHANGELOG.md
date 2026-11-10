@@ -22,6 +22,7 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com) y este proyecto 
 
 - La pantalla para elegir inmobiliaria (`/acceder`) tiene un enlace "Volver al inicio" y su logo
   lleva a la página de inicio; ya no hace falta el botón atrás del navegador.
+
 - En la app de cada empresa, el administrador puede eliminar locales, contratos, pagos y
   solicitudes de mantenimiento, además de usuarios. Cada borrado pide confirmación en un
   diálogo que nombra lo que se elimina.
