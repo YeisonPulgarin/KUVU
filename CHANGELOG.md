@@ -9,6 +9,18 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com) y este proyecto 
 
 ### Added
 
+- En la app de cada empresa, el administrador puede eliminar locales, contratos, pagos y
+  solicitudes de mantenimiento, además de usuarios. Cada borrado pide confirmación en un
+  diálogo que nombra lo que se elimina.
+- Cada pantalla de la app de gestión muestra la ruta "{Empresa} › {Página}" arriba del título.
+- Toda acción de la app de gestión da un aviso: crear, editar, eliminar, cambiar el estado de
+  un mantenimiento, pagar y los errores de carga o de guardado. Los formularios marcan los
+  campos que faltan.
+- Mientras cargan los datos de la empresa, las tablas e indicadores muestran un esqueleto en
+  lugar de "No hay registros". Las cifras del panel cuentan hasta su valor, las listas entran
+  escalonadas y al cambiar de pantalla el menú lateral queda quieto mientras el contenido
+  entra. Todo se desactiva con movimiento reducido.
+
 - La página de inicio tiene movimiento ligado al scroll: una barra fina arriba muestra cuánto
   de la página se recorrió; el título principal entra palabra por palabra, con un indicador que
   invita a bajar, y en escritorio el contenido del hero se aleja con parallax al salir; el
@@ -54,6 +66,16 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com) y este proyecto 
 
 ### Changed
 
+- Los botones de la app de gestión tienen colores con significado e íconos en lugar de emoji:
+  editar en azul, completar en verde, eliminar y "Cancelar solicitud" en rojo. "Cancelar" y
+  cerrar en los formularios son neutros y legibles. Los estados y prioridades se leen como
+  "En proceso" o "Urgente".
+- El texto del botón principal se ajusta al color de cada empresa: en marcas claras como
+  Amarilo pasa a oscuro para ser legible.
+- Los diálogos de la app de gestión se cierran con Escape o tocando afuera, llevan el foco al
+  primer campo y lo devuelven al botón que los abrió. "Cancelar solicitud" y "Cerrar sesión"
+  piden confirmación.
+
 - Las apariciones al hacer scroll del sitio público recorren más distancia con una curva más
   suave, y las filas y tarjetas se elevan también al recibir el foco del teclado; en pantallas
   táctiles la elevación ya no queda fija después de tocar.
@@ -86,6 +108,14 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com) y este proyecto 
 - El logo del sitio se rediseñó como sistema de variantes: el header y el footer públicos alternan entre el logo web y el símbolo según el viewport (768px), y muestran el mismo logo en tema claro y oscuro; la selección de empresa, el login y el navbar interno usan el logo web. El favicon es el símbolo en PNG. Reemplaza la imagen única anterior.
 
 ### Fixed
+
+- El panel colorea el tipo de cada pago reciente y muestra las fechas como dd/mm/aaaa.
+- "Nuevo contrato" y "Nuevo mantenimiento" ya no abren con los datos del registro editado
+  antes.
+- En Locales, guardar sin dirección muestra el error dentro del formulario.
+- Un doble clic en "Ir a pagar" registra un solo pago.
+- El reporte de pagos muestra como texto cualquier dato guardado con caracteres de HTML, en
+  lugar de interpretarlo.
 
 - En tema claro, la página de inicio, Nosotros, Preguntas frecuentes y el encabezado muestran los colores y formas de marca: las tarjetas de "¿Cómo funciona?" tienen borde, fondo y esquinas redondeadas, los números de paso se ven (antes, texto blanco sin fondo), los íconos de servicios tienen su fondo verde claro y las secciones alternan sus fondos. En los dos temas, los botones redondeados del encabezado, del pie y de Nosotros y las tarjetas e íconos de la página de inicio muestran sus esquinas redondeadas.
 - La sección final de la página de inicio ("¿Listo para administrar tus inmobiliarias?") se lee en modo claro: el titular y el párrafo blancos quedaban sobre un fondo gris claro casi del mismo tono. La banda mantiene su fondo verde.

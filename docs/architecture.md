@@ -117,9 +117,18 @@ Sitio multipágina con una sola navegación: `/`, `/servicios`, `/nosotros`,
   `onRouteViewTransition` (`route-view-transition.ts`), registrado en el router.
 - `components/login/` (`/login`) — credenciales de la empresa seleccionada (correo + documento).
 - `components/dashboard|locales|contratos|pagos|mantenimiento|usuarios/` — módulos de gestión,
-  lazy, protegidos por `authGuard`/`adminGuard`.
-- `services/auth.service.ts`, `data.service.ts`, `intro-state.service.ts` — sesión, datos
-  (mock) y estado de la intro (recordada por pestaña en `sessionStorage['kuvu.intro.seen']`).
+  lazy, protegidos por `authGuard`/`adminGuard`. Cada uno se envuelve en `<app-layout>`.
+- `components/shared/app-layout/` — shell de la app de gestión: sidebar, breadcrumb
+  `{Empresa} › {Página}` y los hosts de avisos y confirmaciones.
+- `components/shared/{modal,confirm,toast,icon,skeleton,count-up}/`, `stagger.directive.ts`,
+  `badges.ts`, `formato.ts`, `color-contrast.ts` — piezas compartidas de la app de gestión:
+  modal sobre `<dialog>`, `ConfirmService`, `ToastService`, íconos SVG, skeleton, conteo de
+  cifras, entrada escalonada, badges semánticos, formatos y contraste de marca. Detalle en
+  `docs/app-interna-ux.md`.
+- `services/auth.service.ts`, `data.service.ts`, `intro-state.service.ts` — sesión (y el color
+  de texto sobre la marca, `--color-primario-contraste`), datos de la API REST con estado de
+  carga (`listo`, `errorCarga`, `esperandoDatos`) y estado de la intro (recordada por pestaña
+  en `sessionStorage['kuvu.intro.seen']`).
 - `services/page-turn-sound.service.ts` — sonido de la intro sintetizado con Web Audio, sin
   archivos; no crea contexto sin un gesto previo del usuario.
 
@@ -225,6 +234,15 @@ comodín `**` muestra la 404 pública y no forma parte del flujo de acceso.
 - **Breadcrumb visual y JSON-LD desde una sola fuente**: `app-breadcrumb` recibe los ítems y
   los publica vía `PageMetaService`. Tradeoff: un componente presentacional escribe en
   `<head>`, a cambio de que el visual y los datos estructurados no puedan divergir.
+- **Colores semánticos fijos en la app de gestión**: `--sem-*` (peligro, éxito, advertencia,
+  info, neutro) son iguales para todas las empresas; la marca solo rellena el CTA principal.
+  Los refinamientos de `.btn-primary`/`.btn-secondary` de la app viven bajo `.app-layout`
+  porque el sitio público comparte esas clases globales. Tradeoff: el CSS de la app sigue
+  cargándose global vía `shared.styles.scss`.
+- **Transición entre pantallas de gestión con View Transitions**: `.sidebar` y
+  `.main-content` llevan los nombres reservados `app-sidebar` y `app-main`; el sidebar queda
+  quieto y solo entra el contenido. No toca `route-view-transition.ts`, que solo actúa entre
+  páginas públicas.
 - **Botones primarios con gradiente global**: los botones "Ingresar" del hero, el header y
   `cta-final` toman el gradiente de `.btn-primary` (`--color-primario` → `--color-secundario`)
   con texto blanco. El de `cta-final` da 4.72 : 1 en el extremo claro (`#3A6FD8`): aclarar
@@ -243,11 +261,11 @@ comodín `**` muestra la 404 pública y no forma parte del flujo de acceso.
 - No hay configuración de hosting en el repo: los headers de seguridad (CSP con hash o nonce
   para el script inline de tema, `nosniff`, `Referrer-Policy`, `frame-ancestors`) se definen
   al elegirlo.
-- La app autenticada usa datos mock en `DataService`; la conexión a la API REST es trabajo
-  pendiente.
+- La API REST no autentica en el servidor: la app de gestión confirma lo destructivo en la UI,
+  pero eso no es un control de seguridad (riesgo aceptado).
 - La seguridad del contenido es solo descriptiva: no se publican mecanismos internos.
-- Deuda registrada: `pagos.component.ts` usa `document.write` (work item de seguridad
-  dedicado).
+- El reporte imprimible de pagos se arma como HTML y se escribe con `document.write` en una
+  ventana del mismo origen; cada dato de la API pasa por `escaparHtml()` (`shared/formato.ts`).
 - El JSON-LD del breadcrumb usa el origen donde corre la app: sin dominio de producción, las
   URLs son locales. No hay SSR, así que el JSON-LD existe después del render en el cliente.
 - Deuda registrada: actualizar `@angular/*` a ≥ 21.2.24, incluido `@angular/router`
