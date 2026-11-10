@@ -51,6 +51,25 @@ docs_existentes: docs/
   `/acceder` → `/`). En `/acceder` viven dentro de `.landing-container`, así heredan el `inert`
   de la intro sin lógica propia. Sobre la foto oscurecida, el foco visible usa el celeste
   `rgba(140, 215, 255, .9)` en lugar del `--color-brand-500` global.
+- Marca: el header público muestra solo el símbolo (`logo.responsive`) en todos los anchos y
+  temas, y el footer no lleva imagen de logo (la marca es el texto `.footer-name`). En
+  `/acceder`, `/login` y `/cambiar-contrasena` la marca es `.brand-lockup` (símbolo +
+  `.brand-wordmark` "KUVU" en blanco), con estilos en `components/login/brand-lockup.scss`,
+  que las tres vistas suman por `styleUrls`. Las hojas de landing y login incrustan Google
+  Fonts y están cerca del presupuesto `anyComponentStyle` (error en 20 kB), así que los
+  estilos nuevos de esas vistas van en una hoja aparte. Navbar e intro usan el logo completo.
+- Header público: la superficie (color, translucidez y `backdrop-filter`) vive en
+  `.site-header::before`. Ningún ancestro del panel `.mobile-menu` (`position: fixed`) lleva
+  `backdrop-filter`, `filter` ni `transform`, porque se volvería su bloque contenedor y el
+  panel colapsaría con la página scrolleada.
+- `<app-back-to-top>` (`components/back-to-top/`): un solo botón "Volver arriba" montado en
+  `AppComponent` para todas las rutas. Sigue la ventana o `.main-content`
+  (`APP_SCROLLER_SELECTOR`) con un listener `scroll` en captura sobre `document`, y usa
+  `z-index: 45` (debajo del header 50, el sidebar móvil 150–250 y los toasts 400). Un
+  contenedor de scroll nuevo de página entera se agrega a ese selector.
+- Grano: `$grain` se declara en `src/styles/_grain.scss`, que no emite CSS. Lo usan
+  `_site.scss` (`.site-root`) y `shared.styles.scss` (`.app-layout .main-content`) con
+  `@use`.
 
 ## Convenciones de la app interna (slice `app`)
 
@@ -63,10 +82,15 @@ docs_existentes: docs/
   Tailwind). El color de marca (`--color-primario`) solo rellena el CTA principal
   (`.btn-primary`), con texto `--color-primario-contraste`, que `AuthService` calcula por
   luminancia (`components/shared/color-contrast.ts`).
-- Botones: `.btn-primary` (un CTA por pantalla), `.btn-secondary` (descartar/cancelar,
-  neutro AA), `.btn-action--{rol}` para acciones de fila (`--icon` para solo ícono, con
-  `aria-label`) y `.btn-solid--{rol}` solo en el diálogo de confirmación. Mapeo: editar e
-  iniciar → `info`, completar → `success`, eliminar y cancelar solicitud → `danger`.
+- Botones: `.btn-primary` (un CTA por pantalla), `.btn-action--{rol}` para acciones de fila
+  (`--icon` para solo ícono, con `aria-label`) y `.btn-solid--{rol}` solo en el diálogo de
+  confirmación. Mapeo: editar e iniciar → `info`, completar → `success`, eliminar y
+  cancelar solicitud → `danger`. Los botones de descarte de modales y del diálogo de
+  confirmación ("Cancelar", "Volver") son `.btn-action--danger` con `<app-icon name="x">`
+  (decisión del usuario). En `.modal__footer` y `.pasarela-actions` toman la medida del
+  primario. `.btn-secondary` queda para acciones neutras como "Descargar PDF".
+- Fondo: `.app-layout .main-content` lleva grano bajo un velo de `--color-bg` al 93 %; los
+  modales y las tarjetas son lisos.
 - Íconos: `<app-icon name="…">` (SVG inline, `aria-hidden`); sin emoji en la app interna.
 - Nada de `confirm()`/`alert()`/`prompt()`: `ConfirmService.confirmar({...})` (promesa) y
   `ToastService.exito()/error()`. Toda acción da feedback: toast de éxito o error, o
