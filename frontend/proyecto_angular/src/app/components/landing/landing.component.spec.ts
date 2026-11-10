@@ -179,12 +179,84 @@ describe('LandingComponent', () => {
     }));
   });
 
+  describe('volver al inicio', () => {
+    function homeLinks(el: HTMLElement): HTMLAnchorElement[] {
+      return [el.querySelector('a.back-home'), el.querySelector('a.brand-link')] as HTMLAnchorElement[];
+    }
+
+    it('renders a "Volver al inicio" link to the home (CA-1)', () => {
+      const link = asElement(root.querySelector('a.back-home')) as HTMLAnchorElement;
+      expect(link).toBeTruthy();
+      expect(link.textContent?.trim()).toBe('Volver al inicio');
+      expect(link.getAttribute('href')).toBe('/');
+    });
+
+    it('places the link before the card, outside it', () => {
+      const link = asElement(root.querySelector('a.back-home'));
+      expect(link.closest('.landing-card')).toBeNull();
+      expect(link.parentElement?.classList).toContain('landing-container');
+      expect(link.compareDocumentPosition(asElement(root.querySelector('.landing-card'))) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    });
+
+    it('hides the chevron icon from assistive technology (CA-5)', () => {
+      const icon = asElement(root.querySelector('a.back-home svg'));
+      expect(icon.getAttribute('aria-hidden')).toBe('true');
+    });
+
+    it('makes the logo a home link with an accessible name (CA-2)', () => {
+      const logoLink = asElement(root.querySelector('a.brand-link'));
+      expect(logoLink.getAttribute('href')).toBe('/');
+      expect(logoLink.getAttribute('aria-label')).toBe('KUVU, volver al inicio');
+      expect(logoLink.querySelector('img.brand-logo-img')).toBeTruthy();
+    });
+
+    it('navigates to / when either link is activated (CA-3)', () => {
+      const router = TestBed.inject(Router);
+      const navigate = spyOn(router, 'navigateByUrl').and.resolveTo(true);
+      for (const link of homeLinks(root)) {
+        navigate.calls.reset();
+        link.click();
+        expect(navigate).toHaveBeenCalledTimes(1);
+        expect(router.serializeUrl(navigate.calls.mostRecent().args[0] as never)).toBe('/');
+      }
+      // Leaving /acceder does not pick a company.
+      expect(sessionStorage.getItem('empresaPreseleccionada')).toBeNull();
+    });
+
+    it('keeps the search input as the initial focus target', () => {
+      expect(asElement(root.querySelector('.search-input')).hasAttribute('autofocus')).toBeTrue();
+    });
+
+    it('leaves the links inert while the intro runs and operable after it (CA-4)', fakeAsync(() => {
+      fixture.destroy();
+      sessionStorage.clear();
+      debeReproducir = true;
+      const f2 = TestBed.createComponent(LandingComponent);
+      f2.detectChanges();
+      httpMock.expectOne('http://localhost:3000/api/empresas').flush(EMPRESAS);
+      f2.detectChanges();
+      const el = f2.nativeElement as HTMLElement;
+      for (const link of homeLinks(el)) {
+        expect(asElement(link.closest('.landing-container')).inert).toBeTrue();
+      }
+      f2.componentInstance.completadaIntro();
+      f2.detectChanges();
+      for (const link of homeLinks(el)) {
+        expect(asElement(link.closest('.landing-container')).inert).toBeFalse();
+      }
+      f2.destroy();
+      tick(INTRO_DURATION_MS);
+    }));
+  });
+
   describe('pantalla de seleccion', () => {
-    it('should render the KUVU web logo', () => {
+    it('should render the KUVU web logo, named by its home link', () => {
       const img = asElement(root.querySelector('.brand-logo-img'));
       expect(img.tagName).toBe('IMG');
       expect(img.getAttribute('src')).toBe('/logo-rediseno/Logo_Kuvu.png');
-      expect(img.getAttribute('alt')).toBe('KUVU');
+      // The link carries the accessible name; an empty alt avoids reading "KUVU" twice.
+      expect(img.getAttribute('alt')).toBe('');
+      expect(img.closest('a.brand-link')).toBeTruthy();
     });
 
     it('should render the new PANTALLA 1 copy', () => {

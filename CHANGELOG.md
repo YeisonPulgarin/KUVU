@@ -20,6 +20,8 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com) y este proyecto 
 - **Nosotros** muestra las tres fotos nuevas del equipo en una galería; **Servicios**,
   **Preguntas frecuentes** y **Contacto** se rediseñan y terminan en un bloque de marca.
 
+- La pantalla para elegir inmobiliaria (`/acceder`) tiene un enlace "Volver al inicio" y su logo
+  lleva a la página de inicio; ya no hace falta el botón atrás del navegador.
 - La página de inicio tiene movimiento ligado al scroll: una barra fina arriba muestra cuánto
   de la página se recorrió; el título principal entra palabra por palabra, con un indicador que
   invita a bajar, y en escritorio el contenido del hero se aleja con parallax al salir; el

@@ -10,7 +10,7 @@ import {
   signal,
   viewChild
 } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { IntroStateService } from '../../services/intro-state.service';
@@ -23,7 +23,7 @@ type LandingState = 'INTRO' | 'SELECTION';
 @Component({
   selector: 'app-landing',
   standalone: true,
-  imports: [FormsModule, CommonModule, AuthIntroComponent],
+  imports: [FormsModule, CommonModule, RouterLink, AuthIntroComponent],
   templateUrl: './landing.component.html',
   styleUrls: ['./landing.component.scss']
 })

@@ -46,3 +46,8 @@ docs_existentes: docs/
   titular no cambia sus palabras.
 - Las páginas rediseñadas no usan eyebrows numerados (`.section-eyebrow` queda solo en
   `/legal`). Los specs que cambian el tema limpian `kuvu-theme` y `.dark` en `afterEach`.
+- Flujo de acceso (`/acceder`, `/login`): las salidas son enlaces o botones de texto chico con
+  chevron (`.back-btn` en `/login` → `/acceder`; `.back-home` y el logo `.brand-link` en
+  `/acceder` → `/`). En `/acceder` viven dentro de `.landing-container`, así heredan el `inert`
+  de la intro sin lógica propia. Sobre la foto oscurecida, el foco visible usa el celeste
+  `rgba(140, 215, 255, .9)` en lugar del `--color-brand-500` global.
