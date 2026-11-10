@@ -5,13 +5,15 @@
   "main": "server.js",
   "scripts": {
     "start": "node --env-file=.env server.js",
-    "dev":   "nodemon --watch . --ext js --exec \"node --env-file=.env server.js\"",
-    "test":  "node --test"
+    "dev": "nodemon --watch . --ext js --exec \"node --env-file=.env server.js\"",
+    "test": "node --test",
+    "passwords:bootstrap": "node --env-file=.env scripts/bootstrap-passwords.js"
   },
   "dependencies": {
-    "cors":    "^2.8.5",
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.5",
     "express": "^4.18.2",
-    "mysql2":  "^3.6.5"
+    "mysql2": "^3.6.5"
   },
   "devDependencies": {
     "nodemon": "^3.0.2"

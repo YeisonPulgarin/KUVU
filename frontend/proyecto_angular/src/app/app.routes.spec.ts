@@ -3,6 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { Router, provideRouter } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { routes } from './app.routes';
+import { cambioPasswordGuard } from './guards/auth.guard';
 import { NotFoundComponent } from './components/pages/not-found/not-found.component';
 import { ServiciosComponent } from './components/pages/servicios/servicios.component';
 import { ContactoComponent } from './components/pages/contacto/contacto.component';
@@ -26,7 +27,7 @@ describe('app routes', () => {
     ['', 'servicios', 'nosotros', 'preguntas-frecuentes', 'contacto', 'legal', '**'].forEach((path) => {
       expect(route(path)!.data?.['publicSite']).withContext(path).toBeTrue();
     });
-    ['acceder', 'login', 'dashboard', 'contratos', 'pagos', 'mantenimiento', 'locales', 'usuarios'].forEach((path) => {
+    ['acceder', 'login', 'cambiar-contrasena', 'dashboard', 'contratos', 'pagos', 'mantenimiento', 'locales', 'usuarios'].forEach((path) => {
       expect(route(path)!.data?.['publicSite']).withContext(path).toBeUndefined();
     });
   });
@@ -41,6 +42,12 @@ describe('app routes', () => {
     expect(wildcard.path).toBe('**');
     expect(wildcard.redirectTo).toBeUndefined();
     expect(wildcard.loadComponent).toEqual(jasmine.any(Function));
+  });
+
+  it('should load the password change lazily behind its own guard', () => {
+    const found = route('cambiar-contrasena')!;
+    expect(found.loadComponent).toEqual(jasmine.any(Function));
+    expect(found.canActivate).toEqual([cambioPasswordGuard]);
   });
 
   it('should keep the guards on the management routes', () => {

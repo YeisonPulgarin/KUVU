@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { authGuard, adminGuard } from './guards/auth.guard';
+import { authGuard, adminGuard, cambioPasswordGuard } from './guards/auth.guard';
 import { HomeComponent } from './components/home/home.component';
 
 /**
@@ -20,6 +20,13 @@ export const routes: Routes = [
     path: 'login',
     loadComponent: () =>
       import('./components/login/login.component').then(m => m.LoginComponent)
+  },
+  // Password change: forced after a temporary password (no session yet) or voluntary.
+  {
+    path: 'cambiar-contrasena',
+    loadComponent: () =>
+      import('./components/cambiar-password/cambiar-password.component').then(m => m.CambiarPasswordComponent),
+    canActivate: [cambioPasswordGuard]
   },
 
   // ── Public site pages ───────────────────────────────────

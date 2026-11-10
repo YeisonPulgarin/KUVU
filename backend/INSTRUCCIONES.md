@@ -88,7 +88,12 @@ Abre: `http://localhost:4200`
 En la pantalla de login:
 
 1. **Selecciona una empresa** (se cargan desde la BD automáticamente)
-2. **Ingresa tu correo** y **número de cédula** (no contraseña)
+2. **Ingresa tu correo**, tu **número de cédula** y tu **contraseña**
+3. La primera vez la contraseña es temporal (tu número de cédula): el sistema te pide definir una
+   nueva antes de entrar. Si la olvidas, un administrador de tu inmobiliaria la restablece.
+
+Una base de datos que ya tenía usuarios necesita la migración de contraseñas: ver
+`docs/auth-contrasenas.md` → "Migrar una BD existente".
 
 ### Usuarios de prueba:
 
@@ -117,7 +122,11 @@ En la pantalla de login:
 → Verifica que `node server.js` esté corriendo y que XAMPP MySQL esté activo.
 
 **Error 401 al hacer login**
-→ Correo o documento incorrecto. Usa los de la tabla de prueba.
+→ Algún dato es incorrecto o la cuenta está bloqueada por 5 intentos fallidos (espera 15 minutos
+o pide a un administrador que restablezca la contraseña).
+
+**Error: "Cannot find module bcryptjs"**
+→ Ejecuta `npm install` dentro de la carpeta `backend/`
 
 **Error: "Access to XMLHttpRequest blocked by CORS"**
 → El backend ya tiene CORS configurado para `localhost:4200`. Si usas otro puerto, cambia en `server.js`:

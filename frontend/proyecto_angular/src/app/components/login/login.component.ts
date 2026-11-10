@@ -2,8 +2,9 @@ import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
+import { AuthService, MENSAJE_ACCESO } from '../../services/auth.service';
 import { Empresa } from '../../models/empresa.model';
+import { loginBackgroundUrl } from './login-background';
 
 @Component({
   selector: 'app-login',
@@ -19,26 +20,16 @@ export class LoginComponent implements OnInit {
   empresaSeleccionada = signal<Empresa | null>(null);
   correo    = signal('');
   documento = signal('');
+  password  = signal('');
+  verPassword = signal(false);
   error     = signal('');
   cargando  = signal(false);
-  // Decisión del usuario: "Recordarme" y "¿Olvidaste tu contraseña?" son
-  // decorativos no funcionales — no persisten ni disparan ninguna acción.
+  // "Recordarme" es decorativo: no persiste nada (decisión de producto).
   recordarme = signal(false);
+  // "¿Olvidaste tu contraseña?" despliega cómo recuperarla: la restablece el administrador.
+  ayudaOlvido = signal(false);
 
-  // Mapa de subdominio → nombre de archivo en /login-backgrounds/
-  private readonly BG_MAP: Record<string, string> = {
-    'kuvu':        'kuvu.webp',
-    'amarilo':     'amarilo.webp',
-    'balcones':    'balcones.webp',
-    'miinmueble':  'miinmueble.webp',
-    'nido':        'nido-rent.webp',
-  };
-
-  bgUrl = computed(() => {
-    const sub = this.empresaSeleccionada()?.subdominio ?? '';
-    const file = this.BG_MAP[sub.toLowerCase()] ?? 'kuvu.webp';
-    return `/login-backgrounds/${file}`;
-  });
+  bgUrl = computed(() => loginBackgroundUrl(this.empresaSeleccionada()?.subdominio));
 
   ngOnInit(): void {
     // Si ya está autenticado, ir al dashboard
@@ -74,21 +65,28 @@ export class LoginComponent implements OnInit {
       this.router.navigate(['/acceder']);
       return;
     }
-    if (!this.correo() || !this.documento()) {
-      this.error.set('Ingresa tu correo y número de documento.');
+    if (!this.correo() || !this.documento() || !this.password()) {
+      this.error.set('Ingresa tu correo, número de documento y contraseña.');
       return;
     }
 
     this.cargando.set(true);
     this.error.set('');
 
-    this.auth.login(this.correo(), this.documento(), this.empresaSeleccionada()!.id)
+    const empresa = this.empresaSeleccionada()!;
+    this.auth.login(this.correo(), this.documento(), this.password(), empresa.id, empresa)
       .subscribe({
-        next: () => this.router.navigate(['/dashboard']),
+        next: (resp) => {
+          this.password.set('');
+          this.router.navigate([resp.requiereCambioPassword ? '/cambiar-contrasena' : '/dashboard']);
+        },
         error: (err) => {
           this.cargando.set(false);
+          this.password.set('');
           if (err.status === 401) {
-            this.error.set('Correo o documento incorrecto para esta empresa.');
+            this.error.set(MENSAJE_ACCESO);
+          } else if (err.status === 400) {
+            this.error.set('Ingresa tu correo, número de documento y contraseña.');
           } else {
             this.error.set('Error de conexión. Verifica que el backend esté corriendo.');
           }

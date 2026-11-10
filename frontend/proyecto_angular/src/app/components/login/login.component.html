@@ -30,7 +30,7 @@
 
         <div class="step-header">
           <h2 class="step-title">Inicia sesión</h2>
-          <p class="step-desc">Usa tu correo y número de cédula</p>
+          <p class="step-desc">Usa tu correo, tu número de cédula y tu contraseña</p>
         </div>
 
         <div class="form-group">
@@ -64,12 +64,40 @@
               placeholder="Ej: 1128074279"
               [ngModel]="documento()"
               (ngModelChange)="documento.set($event)"
-              (keyup.enter)="onLogin()"
+              (keyup.enter)="passwordInput.focus()"
               autocomplete="off" />
           </div>
         </div>
 
-        <!-- Extras decorativos (sin persistencia ni acción, por decisión de producto) -->
+        <div class="form-group">
+          <label class="field-label" for="login-password">Contraseña</label>
+          <div class="field-wrap">
+            <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <rect x="4" y="11" width="16" height="10" rx="2"/>
+              <path d="M8 11V7a4 4 0 0 1 8 0v4"/>
+            </svg>
+            <input
+              #passwordInput
+              id="login-password"
+              [type]="verPassword() ? 'text' : 'password'"
+              class="field-input field-input--password"
+              placeholder="Tu contraseña"
+              [ngModel]="password()"
+              (ngModelChange)="password.set($event)"
+              (keyup.enter)="onLogin()"
+              autocomplete="current-password" />
+            <button
+              type="button"
+              class="field-toggle"
+              [attr.aria-pressed]="verPassword()"
+              [attr.aria-label]="verPassword() ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+              (click)="verPassword.set(!verPassword())">
+              {{ verPassword() ? 'Ocultar' : 'Ver' }}
+            </button>
+          </div>
+        </div>
+
+        <!-- "Recordarme" es decorativo; "¿Olvidaste…?" explica cómo recuperar la contraseña -->
         <div class="form-extras">
           <label class="extras-remember">
             <input
@@ -79,8 +107,20 @@
               (change)="recordarme.set(!recordarme())" />
             <span>Recordarme</span>
           </label>
-          <span class="extras-link">¿Olvidaste tu contraseña?</span>
+          <button
+            type="button"
+            class="extras-link"
+            aria-controls="login-ayuda-olvido"
+            [attr.aria-expanded]="ayudaOlvido()"
+            (click)="ayudaOlvido.set(!ayudaOlvido())">¿Olvidaste tu contraseña?</button>
         </div>
+
+        @if (ayudaOlvido()) {
+          <p class="login-ayuda" id="login-ayuda-olvido">
+            Pídele al administrador de tu inmobiliaria que la restablezca. Recibirás una contraseña
+            temporal que cambiarás al ingresar.
+          </p>
+        }
 
         @if (error()) {
           <div class="login-error">⚠ {{ error() }}</div>
