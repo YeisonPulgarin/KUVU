@@ -1,12 +1,29 @@
 # verify-report — app-interna-ux
 
-Estado verificado: rama `feat/app-interna-ux-movimiento` (`0d2a646`), punta de la pila de 4
-ramas sobre `fix/tema-claro-tokens`. Slice `app` + `cierre` completos, sin slices omitidos.
+Estado verificado: rama `feat/app-interna-ux-movimiento` (`19b66dd`), punta de la pila de 4
+ramas sobre `fix/tema-claro-tokens`, **después de `secure` y `refine`**. Slice `app` +
+`cierre` completos, sin slices omitidos.
 
 ## Resultado
 
 **Verde con observaciones.** Los 20 criterios de aceptación pasan. Durante la verificación
-se encontraron y corrigieron dos desvíos (commit `0d2a646`, ver "Desvíos corregidos").
+se encontraron y corrigieron dos desvíos (commit `a85dba7` en la rama base, ver "Desvíos corregidos").
+
+## Re-verificación tras `secure` y `refine`
+
+- `secure` (`422d9bb`): escape de los datos del reporte imprimible (`escaparHtml`), con test de
+  regresión. Sin cambio observable para datos legítimos.
+- `refine` (`19b66dd`): `LocalesComponent.formatCurrency` delega en `formatMoneda`, con spec
+  de caracterización. Comportamiento idéntico.
+- Karma **586/586**. Fallos intermitentes vistos: `StepsJourneyComponent` y
+  `CompaniesMarqueeComponent`, specs del sitio público que dependen del tema que queda en
+  `:root`/`localStorage` según el orden aleatorio; pasan al reintentar (deuda en
+  `refine-report`). `ng build` OK. CA8 y CA15 vuelven a pasar.
+- Los criterios CA1–CA20 siguen pasando: ninguno de los dos cambios toca estilos, plantillas
+  ni flujos de las pantallas.
+- Antes de `secure`, la pila se rebaseó para llevar la corrección de estilos a la rama base:
+  el commit original de la punta quedó vacío y se descartó. Árbol final equivalente (solo
+  cambia el orden de dos reglas CSS sin conflicto entre sí).
 
 ## Tests y build
 
@@ -82,7 +99,7 @@ Ninguna captura confirma un borrado, un alta ni un pago: los diálogos se abren 
 | CA19 | pasa | specs de cada pantalla cubren crear, editar, eliminar, cambiar estado, pagar, error de guardado, error de borrado, error de carga (layout) y validación |
 | CA20 | pasa | inventario: todos los "Cancelar"/"Volver" de descartar usan `.btn-secondary` (10.46:1) y el ✕ `.modal__close` (7.69:1, hover neutro); "Cancelar solicitud" usa `.btn-action--danger` con confirmación de peligro (spec + captura) |
 
-## Desvíos corregidos durante verify (commit `0d2a646`)
+## Desvíos corregidos durante verify (commit `a85dba7`, en `feat/app-interna-ux`)
 
 1. **Estilos de botones filtrados al sitio público.** El header, el hero y la banda final del
    sitio público usan las clases globales `.btn-primary`/`.btn-secondary`. Los cambios del

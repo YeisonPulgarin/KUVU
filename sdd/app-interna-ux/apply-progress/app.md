@@ -140,7 +140,7 @@ tests_agregados:
   - specs de locales y dashboard ampliadas (skeleton y cifras)
 ```
 
-## Correcciones de verify (commit `0d2a646`)
+## Correcciones de verify (commit `a85dba7`, llevado a la rama base)
 
 - Refinamientos de `.btn-primary`/`.btn-secondary` bajo `.app-layout` (el sitio público usa
   las clases globales); hosts de toasts y confirmación dentro de `.app-layout`.
@@ -149,4 +149,4 @@ tests_agregados:
 
 ## Pendiente
 
-- Gate E (`secure` / `refine`), `document`, `archive`.
+- `document`, `archive`.
