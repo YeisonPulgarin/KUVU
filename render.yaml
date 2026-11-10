@@ -1,5 +1,5 @@
 # Render Blueprint: backend de KUVU (API REST) en el plan gratuito.
-# Las credenciales de la base (Aiven MySQL) se cargan en el panel de Render (sync: false).
+# Las credenciales de la base (TiDB Cloud, compatible con MySQL) se cargan en el panel de Render (sync: false).
 services:
   - type: web
     name: kuvu-api
@@ -22,5 +22,5 @@ services:
         sync: false
       - key: MYSQLDATABASE
         value: bd_arrendamientos
-      - key: MYSQL_SSL_CA
-        sync: false
+      - key: MYSQL_SSL
+        value: "true"
