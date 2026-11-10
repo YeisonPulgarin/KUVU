@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { AuthService, MENSAJE_ACCESO } from '../../services/auth.service';
 import { ReglaPassword, cumplePolitica, evaluarPassword } from '../../services/password-policy';
 import { loginBackgroundUrl } from '../login/login-background';
+import { logo } from '../../content/logo';
 
 /**
  * Password change. Two modes:
@@ -16,9 +17,10 @@ import { loginBackgroundUrl } from '../login/login-background';
   standalone: true,
   imports: [FormsModule],
   templateUrl: './cambiar-password.component.html',
-  styleUrls: ['../login/login.component.scss', './cambiar-password.component.scss'],
+  styleUrls: ['../login/login.component.scss', '../login/brand-lockup.scss', './cambiar-password.component.scss'],
 })
 export class CambiarPasswordComponent {
+  readonly logo = logo;
   private auth   = inject(AuthService);
   private router = inject(Router);
 

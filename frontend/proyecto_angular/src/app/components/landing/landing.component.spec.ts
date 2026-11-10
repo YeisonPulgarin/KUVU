@@ -250,13 +250,21 @@ describe('LandingComponent', () => {
   });
 
   describe('pantalla de seleccion', () => {
-    it('should render the KUVU web logo, named by its home link', () => {
-      const img = asElement(root.querySelector('.brand-logo-img'));
+    it('should render the symbol plus a white KUVU wordmark, named by its home link', () => {
+      const img = asElement(root.querySelector('.brand-lockup .brand-logo-img'));
       expect(img.tagName).toBe('IMG');
-      expect(img.getAttribute('src')).toBe('/logo-rediseno/Logo_Kuvu.png');
+      expect(img.getAttribute('src')).toBe('/logo-rediseno/Logo_Responsive.png');
       // The link carries the accessible name; an empty alt avoids reading "KUVU" twice.
       expect(img.getAttribute('alt')).toBe('');
       expect(img.closest('a.brand-link')).toBeTruthy();
+
+      const wordmark = asElement(root.querySelector('a.brand-link .brand-wordmark'));
+      expect(wordmark.textContent?.trim()).toBe('KUVU');
+      expect(getComputedStyle(wordmark).color).toBe('rgb(255, 255, 255)');
+    });
+
+    it('should not render the full web logo, which is unreadable on the dark overlay', () => {
+      expect(root.querySelector('img[src="/logo-rediseno/Logo_Kuvu.png"]')).toBeNull();
     });
 
     it('should render the new PANTALLA 1 copy', () => {

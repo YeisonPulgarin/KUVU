@@ -5,15 +5,17 @@ import { Router } from '@angular/router';
 import { AuthService, MENSAJE_ACCESO } from '../../services/auth.service';
 import { Empresa } from '../../models/empresa.model';
 import { loginBackgroundUrl } from './login-background';
+import { logo } from '../../content/logo';
 
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  styleUrls: ['./login.component.scss', './brand-lockup.scss']
 })
 export class LoginComponent implements OnInit {
+  readonly logo = logo;
   auth   = inject(AuthService);
   router = inject(Router);
 

@@ -60,11 +60,16 @@ describe('LoginComponent', () => {
   });
 
   describe('PANTALLA 2', () => {
-    it('should render the KUVU web logo', () => {
-      const img = asElement(root.querySelector('.brand-logo-img'));
+    it('should render the symbol plus a white KUVU wordmark', () => {
+      const img = asElement(root.querySelector('.brand-lockup .brand-logo-img'));
       expect(img.tagName).toBe('IMG');
-      expect(img.getAttribute('src')).toBe('/logo-rediseno/Logo_Kuvu.png');
-      expect(img.getAttribute('alt')).toBe('KUVU');
+      expect(img.getAttribute('src')).toBe('/logo-rediseno/Logo_Responsive.png');
+      // The visible wordmark names the brand; the symbol is decorative.
+      expect(img.getAttribute('alt')).toBe('');
+      const wordmark = asElement(root.querySelector('.brand-lockup .brand-wordmark'));
+      expect(wordmark.textContent?.trim()).toBe('KUVU');
+      expect(getComputedStyle(wordmark).color).toBe('rgb(255, 255, 255)');
+      expect(root.querySelector('img[src="/logo-rediseno/Logo_Kuvu.png"]')).toBeNull();
     });
 
     it('should render the credentials screen header', () => {

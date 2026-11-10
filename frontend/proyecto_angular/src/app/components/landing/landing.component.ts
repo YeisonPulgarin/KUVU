@@ -17,6 +17,7 @@ import { IntroStateService } from '../../services/intro-state.service';
 import { AuthService } from '../../services/auth.service';
 import { AuthIntroComponent, TURN_START_MS } from '../shared/auth-intro/auth-intro.component';
 import { Empresa } from '../../models/empresa.model';
+import { logo } from '../../content/logo';
 
 type LandingState = 'INTRO' | 'SELECTION';
 
@@ -25,9 +26,10 @@ type LandingState = 'INTRO' | 'SELECTION';
   standalone: true,
   imports: [FormsModule, CommonModule, RouterLink, AuthIntroComponent],
   templateUrl: './landing.component.html',
-  styleUrls: ['./landing.component.scss']
+  styleUrls: ['./landing.component.scss', '../login/brand-lockup.scss']
 })
 export class LandingComponent implements OnInit {
+  readonly logo = logo;
   private auth       = inject(AuthService);
   private router     = inject(Router);
   private introState = inject(IntroStateService);

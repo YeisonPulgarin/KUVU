@@ -59,6 +59,16 @@ describe('CambiarPasswordComponent', () => {
     create();
   });
 
+  it('shows the symbol plus a white KUVU wordmark instead of the full logo', () => {
+    const img = root.querySelector('.brand-lockup .brand-logo-img') as HTMLImageElement;
+    expect(img.getAttribute('src')).toBe('/logo-rediseno/Logo_Responsive.png');
+    expect(img.getAttribute('alt')).toBe('');
+    const wordmark = root.querySelector('.brand-lockup .brand-wordmark') as HTMLElement;
+    expect(wordmark.textContent?.trim()).toBe('KUVU');
+    expect(getComputedStyle(wordmark).color).toBe('rgb(255, 255, 255)');
+    expect(root.querySelector('img[src="/logo-rediseno/Logo_Kuvu.png"]')).toBeNull();
+  });
+
   it('shows the forced mode after a temporary password', () => {
     expect(component.obligatorio()).toBeTrue();
     expect(root.querySelector('.step-title')!.textContent).toContain('Crea tu contraseña');

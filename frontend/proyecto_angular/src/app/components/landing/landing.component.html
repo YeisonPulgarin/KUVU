@@ -22,7 +22,10 @@
     <!-- MARCA -->
     <div class="brand">
       <a routerLink="/" class="brand-link" aria-label="KUVU, volver al inicio">
-        <img src="/logo-rediseno/Logo_Kuvu.png" alt="" class="brand-logo-img" />
+        <span class="brand-lockup">
+          <img [src]="logo.responsive" alt="" class="brand-logo-img" />
+          <span class="brand-wordmark">KUVU</span>
+        </span>
       </a>
       <span class="brand-tagline">GESTIÓN INTELIGENTE DE PROPIEDADES</span>
     </div>
