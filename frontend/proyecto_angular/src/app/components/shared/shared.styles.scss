@@ -249,14 +249,15 @@
   }
 }
 
-// Page background of the signed-in app (both roles): subtle grain under a --color-bg wash.
-// Only a background (no layer over the content), so it never takes clicks nor lowers text
-// contrast. .main-content is the scroll container and its background does not scroll with
-// the content (background-attachment: scroll is relative to the box). Dialogs stay plain.
+// Page background of the signed-in app (both roles): a soft glow of the company color from
+// the top-right corner and slate grain specks over --color-bg. Only a background (no layer
+// over the content), so it never takes clicks; the specks keep the mean close to --color-bg.
+// .main-content is the scroll container and its background does not scroll with the content.
+// Cards, tables and dialogs stay plain. --color-primario comes from the <app-layout> host.
 .app-layout .main-content {
   background:
-    linear-gradient(color-mix(in srgb, var(--color-bg) 93%, transparent) 0 0),
-    $grain var(--color-bg);
+    radial-gradient(120% 70% at 100% 0%, color-mix(in srgb, var(--color-primario) 8%, transparent), transparent 70%),
+    $grain-specks var(--color-bg);
   background-size: auto, 180px 180px;
 }
 

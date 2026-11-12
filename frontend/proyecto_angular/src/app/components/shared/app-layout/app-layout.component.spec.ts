@@ -54,14 +54,27 @@ describe('AppLayoutComponent', () => {
     expect(el().querySelector('app-confirm-host')).not.toBeNull();
   });
 
-  it('paints a subtle grain on the page background, without any layer over the content', () => {
+  it('paints a visible grain and a company glow on the page background, with no layer over the content', () => {
     const main = el().querySelector<HTMLElement>('main.main-content')!;
     const estilo = getComputedStyle(main);
-    expect(estilo.backgroundImage).toContain('data:image/svg+xml');
+    // Two image layers over the background color: the glow, then the grain specks.
+    expect(estilo.backgroundImage.startsWith('radial-gradient(')).toBeTrue();
     expect(estilo.backgroundImage).toContain('feTurbulence');
-    expect(estilo.backgroundImage).toContain('linear-gradient');
+    // Transparent slate specks (alpha from the noise), not opaque grey noise under a wash.
+    expect(estilo.backgroundImage).toContain('-.6 0 0 0 .33');
+    expect(estilo.backgroundImage).not.toContain('linear-gradient');
+    expect(estilo.backgroundSize).toBe('auto, 180px 180px');
     expect(getComputedStyle(main, '::before').content).toBe('none');
     expect(getComputedStyle(main, '::after').content).toBe('none');
+  });
+
+  it('tints the background glow with the company color declared on the host', () => {
+    const main = el().querySelector<HTMLElement>('main.main-content')!;
+    const glow = () => getComputedStyle(main).backgroundImage.split('url(')[0];
+    const amarilla = glow();
+    empresaActiva.set({ ...AMARILLA, color_primario: '#2C7A7B', color_secundario: '#2C7A7B' });
+    fixture.detectChanges();
+    expect(glow()).not.toBe(amarilla);
   });
 
   it('shows an accessible breadcrumb "{Empresa} › {Página}" linking the company to the dashboard', () => {
