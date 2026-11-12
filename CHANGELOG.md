@@ -9,6 +9,13 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com) y este proyecto 
 
 ### Added
 
+- En la home, el menú (escritorio y móvil) marca la sección que se está leyendo: Servicios,
+  Nosotros, Preguntas frecuentes o Contacto, en lugar de quedarse en Inicio. Al bajar, aparece
+  bajo el menú un recorrido que crece con cada sección ("Inicio › Servicios › Nosotros…");
+  cada paso anterior lleva de vuelta a su sección.
+- En el menú móvil, la opción bajo el cursor o con foco cambia al color de marca, se subraya
+  y se desplaza; con movimiento reducido cambia igual, sin desplazarse.
+
 - Todas las páginas (sitio, acceso y app de gestión, para administradores y arrendatarios)
   tienen un botón flotante "Volver arriba" que aparece al bajar y lleva suavemente al comienzo.
 
@@ -163,6 +170,8 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com) y este proyecto 
 
 ### Fixed
 
+- En la home y en **Nosotros**, los nombres del equipo aparecen en el orden en que están en
+  las fotos, de izquierda a derecha: Carlos Arciniegas, Wilson Solano y Yeison Pulgarin.
 - El menú móvil del sitio abre aunque la página esté desplazada hacia abajo; antes había que
   volver arriba para usarlo.
 

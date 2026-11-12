@@ -41,7 +41,15 @@ Sitio multipágina con una sola navegación: `/`, `/servicios`, `/nosotros`,
   nota académica y el copyright. El header muestra solo el símbolo (`logo.responsive`) en todo
   ancho y tema; el footer no lleva imagen de logo. La superficie del header (con su
   `backdrop-filter`) vive en `.site-header::before` para que el panel móvil fijo se mida contra
-  el viewport (ver `docs/ajustes-logo-menu-app.md`).
+  el viewport (ver `docs/ajustes-logo-menu-app.md`). El ítem resaltado del menú es
+  `SectionSpyService.activeHref() ?? ruta actual`, y `aria-current="page"` siempre marca la
+  ruta. En la home el header además muestra el rastro de secciones (`nav.scroll-trail`)
+  colgado bajo la barra (ver `docs/menu-hover-scrollspy-breadcrumb.md`).
+- `src/app/components/public/site-header/section-spy.service.ts` — `SectionSpyService`
+  (raíz): sección de la home que se está leyendo. La home lo arranca tras el primer render con
+  `homeSpySections` (`content/site.ts`) y lo apaga al destruirse; fuera de la home está
+  detenido. Expone `activeHref` (ítem del menú) y `trail` (ítems desde Inicio hasta la
+  sección actual).
 - `src/app/components/back-to-top/` — botón flotante "Volver arriba", montado una vez en
   `AppComponent` para todas las rutas; sigue el scroll de la ventana o de `.main-content`.
 - `src/app/components/public/public-page/` — `app-public-page`: layout de las páginas internas
@@ -77,8 +85,8 @@ Sitio multipágina con una sola navegación: `/`, `/servicios`, `/nosotros`,
   su lugar. `setJsonLd(id, data)`/`clearJsonLd(id)`: un `<script type="application/ld+json">`
   por id, escrito con `textContent`; `setBreadcrumb`/`clearBreadcrumb` (`BreadcrumbList`) se
   apoyan en él.
-- `src/app/scroll-offset.ts` — `headerScrollOffset(doc)`: altura real de `app-site-header` +
-  16 px (88 px si no tiene altura, 0 sin header público). `app.config.ts` lo registra con
+- `src/app/scroll-offset.ts` — `headerScrollOffset(doc)`: altura real de `app-site-header`
+  (más la del rastro `.scroll-trail` si está visible) + 16 px (88 px si no tiene altura, 0 sin header público). `app.config.ts` lo registra con
   `provideAppInitializer` como offset del `ViewportScroller`, junto a
   `withInMemoryScrolling({ scrollPositionRestoration: 'top', anchorScrolling: 'enabled' })`:
   las anclas (`/legal#cookies`) quedan debajo del header sticky. El router hace ese scroll con
@@ -230,8 +238,12 @@ pasa por `cambioPasswordGuard`: entra quien tiene un cambio pendiente (en memori
   la home y las páginas (el FAQ corto es subconjunto del completo).
 - **Chrome compartido del sitio** (header/footer/theme/reveal) con una sola navegación por
   rutas (`siteNavLinks`), sin anclas ni input en el header, y `app-public-page` como layout
-  de las páginas internas. Tradeoff: la home no usa el layout (no lleva breadcrumb) y monta
-  header y footer por su cuenta.
+  de las páginas internas. Tradeoff: la home no usa el layout (no lleva `app-breadcrumb`) y
+  monta header y footer por su cuenta; su rastro es dinámico y vive en el header.
+- **Scroll-spy como servicio raíz** (`SectionSpyService`) que la home alimenta y el header
+  lee. Tradeoff: un singleton con estado de una sola página, a cambio de no acoplar el header
+  a la home (no comparten otro injector); `stop()` en `ngOnDestroy` lo deja inerte fuera de
+  ella.
 - **Meta por página en `content/pages.ts`** aplicados con `setPage` en `ngOnInit`, sin `title`
   de ruta. Tradeoff: cada página debe llamar al servicio, a cambio de una fuente única
   testeable (títulos y descripciones únicos) donde `title` y `og:title` no divergen.
