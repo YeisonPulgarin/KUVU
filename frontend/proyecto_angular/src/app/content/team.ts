@@ -1,5 +1,6 @@
 import type { SiteImage, TeamSection } from './types';
 
+/** Left to right, as the three members stand in every team photo. */
 const members = ['Carlos Arciniegas', 'Wilson Solano', 'Yeison Pulgarin'] as const;
 
 const photo = (n: 1 | 2 | 3, widths: readonly number[], width: number, height: number, alt: string): SiteImage => ({

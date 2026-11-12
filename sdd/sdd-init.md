@@ -77,7 +77,7 @@ docs_existentes: docs/
   2 px) aparece en hover/foco aun con movimiento reducido; con movimiento crece y el ítem se
   desplaza 12 px.
 - Equipo: `content/team.ts` es la fuente única del orden de nombres (Carlos Arciniegas,
-  Wilson Solano, Yeison Pulgarin); las fotos son grupales.
+  Wilson Solano, Yeison Pulgarin), que es su posición de izquierda a derecha en las fotos grupales.
 - `<app-back-to-top>` (`components/back-to-top/`): un solo botón "Volver arriba" montado en
   `AppComponent` para todas las rutas. Sigue la ventana o `.main-content`
   (`APP_SCROLLER_SELECTOR`) con un listener `scroll` en captura sobre `document`, y usa

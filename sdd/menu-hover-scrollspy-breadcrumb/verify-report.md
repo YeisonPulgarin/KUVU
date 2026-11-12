@@ -36,6 +36,6 @@ Slices completados: `contenido`, `chrome`, `home`, `cierre`. Omitidos: ninguno.
 - Sin desvíos contra spec/design.
 - No verificado en navegador real (solo Karma headless): sensación del hover, línea de
   lectura del spy (35 % del viewport) y la animación del rastro conviene revisarlas a ojo.
-- El orden pedido del equipo puede no coincidir con la posición de cada persona en las fotos
-  grupales (el test anterior decía "left to right as in the photo"). Queda a confirmar.
+- Orden del equipo: el usuario confirma que coincide con la posición de izquierda a derecha
+  en las fotos; el test de la banda lo afirma ("left to right as in the photo").
 - Riesgo de revisión: ~650 líneas de frontend (625 agregadas, 27 quitadas, 16 archivos) entre código y tests, sobre el umbral de 300.

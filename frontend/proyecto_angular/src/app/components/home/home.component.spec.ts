@@ -254,7 +254,7 @@ describe('HomeComponent', () => {
       expect(band.getAttribute('aria-labelledby')).toBe(title.id);
     });
 
-    it('should list the three members in the team order (Carlos, Wilson, Yeison)', () => {
+    it('should list the three members left to right as in the photo', () => {
       const caption = band.querySelector('.team-band-caption')?.textContent ?? '';
       const positions = ['Carlos Arciniegas', 'Wilson Solano', 'Yeison Pulgarin'].map((name) =>
         caption.indexOf(name)

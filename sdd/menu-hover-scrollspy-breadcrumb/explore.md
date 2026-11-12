@@ -65,4 +65,4 @@ personas en cada una): no hay foto ni rol por persona que reordenar. Tests que f
    sección actual; al subir, se recorta. Cada ítem no final es un ancla a su sección.
    Las páginas internas conservan su breadcrumb estático "Inicio › Página".
 5. **Orden del equipo:** Carlos Arciniegas · Wilson Solano · Yeison Pulgarin, en la fuente
-   única `content/team.ts`; las fotos grupales no cambian.
+   única `content/team.ts`; es el orden de izquierda a derecha en las fotos grupales.

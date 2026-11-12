@@ -1,8 +1,8 @@
 # apply-progress — contenido
 
 - [x] T1 Orden del equipo en `content/team.ts` (Carlos Arciniegas, Wilson Solano, Yeison
-  Pulgarin); specs de contenido, home y `/nosotros` con el orden nuevo. El título del test de
-  la banda dice ahora "team order" porque el orden pedido no se garantiza igual al de la foto.
+  Pulgarin), que es el orden de izquierda a derecha en las fotos (confirmado por el usuario);
+  specs de contenido, home y `/nosotros` con ese orden.
 - [x] T2 `homeSpySections` en `content/site.ts` + test de orden contra `siteNavLinks`.
 
 Desvío: los specs de home y `/nosotros` que fijan el orden se tocan en este slice (ver tasks).
