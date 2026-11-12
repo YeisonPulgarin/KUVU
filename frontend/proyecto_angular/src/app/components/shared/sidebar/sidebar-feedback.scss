@@ -1,0 +1,54 @@
+// Feedback of the sidebar navigation links: the same language as the public mobile menu
+// (brand-colored text, tint, underline that grows, slight shift), on hover, keyboard focus,
+// touch (:active) and the link just chosen in the mobile drawer (.is-pressed).
+//
+// The text uses the company color lightened with white (30 % / 70 %): it stays recognisably
+// the company's hue and reads ≥ 4.5 : 1 on the dark sidebar for any company color (worst
+// case, black → #b3b3b3, 6.0 : 1 on #133937). --color-primario comes from <app-layout>.
+// Loaded after sidebar.component.scss, so these states win over its plain :hover.
+
+.sidebar__link {
+  --sidebar-acento: color-mix(in srgb, var(--color-primario, #3a6fd8) 30%, #fff);
+  // The browser's grey tap flash would hide the link's own pressed state.
+  -webkit-tap-highlight-color: transparent;
+}
+
+.sidebar__label {
+  padding-bottom: 2px;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0 2px;
+}
+
+.sidebar__link:hover,
+.sidebar__link:focus-visible,
+.sidebar__link:active,
+.sidebar__link.is-pressed {
+  color: var(--sidebar-acento);
+  background: color-mix(in srgb, var(--color-primario, #3a6fd8) 18%, transparent);
+
+  .sidebar__icon { stroke: var(--sidebar-acento); }
+  .sidebar__label { background-size: 100% 2px; }
+}
+
+// Motion only when the user has not asked for reduced motion.
+@media (prefers-reduced-motion: no-preference) {
+  .sidebar__link {
+    transition:
+      background-color .2s var(--ease-out-expo, ease-out),
+      color .2s var(--ease-out-expo, ease-out),
+      transform .35s var(--ease-out-expo, ease-out);
+  }
+
+  .sidebar__label {
+    transition: background-size .35s var(--ease-out-expo, ease-out);
+  }
+
+  .sidebar__link:hover,
+  .sidebar__link:focus-visible,
+  .sidebar__link:active,
+  .sidebar__link.is-pressed {
+    transform: translateX(4px);
+  }
+}

@@ -44,56 +44,56 @@
 
   <!-- ── NAVIGATION ── -->
   <nav class="sidebar__nav">
-    <a routerLink="/dashboard" routerLinkActive="active" class="sidebar__link" title="Dashboard">
+    <a routerLink="/dashboard" routerLinkActive="active" class="sidebar__link" [class.is-pressed]="elegido() === '/dashboard'" (click)="elegir('/dashboard')" title="Dashboard">
       <svg class="sidebar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
         <rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/>
       </svg>
-      @if (mostrarTexto()) { <span>Dashboard</span> }
+      @if (mostrarTexto()) { <span class="sidebar__label">Dashboard</span> }
     </a>
 
     @if (esAdmin()) {
-      <a routerLink="/locales" routerLinkActive="active" class="sidebar__link" title="Locales">
+      <a routerLink="/locales" routerLinkActive="active" class="sidebar__link" [class.is-pressed]="elegido() === '/locales'" (click)="elegir('/locales')" title="Locales">
         <svg class="sidebar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M3 9.5L12 3l9 6.5V21a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/>
           <path d="M9 22V12h6v10"/>
         </svg>
-        @if (mostrarTexto()) { <span>Locales</span> }
+        @if (mostrarTexto()) { <span class="sidebar__label">Locales</span> }
       </a>
     }
 
-    <a routerLink="/contratos" routerLinkActive="active" class="sidebar__link" title="Contratos">
+    <a routerLink="/contratos" routerLinkActive="active" class="sidebar__link" [class.is-pressed]="elegido() === '/contratos'" (click)="elegir('/contratos')" title="Contratos">
       <svg class="sidebar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
         <polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/>
         <line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/>
       </svg>
-      @if (mostrarTexto()) { <span>Contratos</span> }
+      @if (mostrarTexto()) { <span class="sidebar__label">Contratos</span> }
     </a>
 
-    <a routerLink="/pagos" routerLinkActive="active" class="sidebar__link" title="Pagos">
+    <a routerLink="/pagos" routerLinkActive="active" class="sidebar__link" [class.is-pressed]="elegido() === '/pagos'" (click)="elegir('/pagos')" title="Pagos">
       <svg class="sidebar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <rect x="1" y="4" width="22" height="16" rx="2"/>
         <line x1="1" y1="10" x2="23" y2="10"/>
       </svg>
-      @if (mostrarTexto()) { <span>Pagos</span> }
+      @if (mostrarTexto()) { <span class="sidebar__label">Pagos</span> }
     </a>
 
-    <a routerLink="/mantenimiento" routerLinkActive="active" class="sidebar__link" title="Mantenimiento">
+    <a routerLink="/mantenimiento" routerLinkActive="active" class="sidebar__link" [class.is-pressed]="elegido() === '/mantenimiento'" (click)="elegir('/mantenimiento')" title="Mantenimiento">
       <svg class="sidebar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/>
       </svg>
-      @if (mostrarTexto()) { <span>Mantenimiento</span> }
+      @if (mostrarTexto()) { <span class="sidebar__label">Mantenimiento</span> }
     </a>
 
     @if (esAdmin()) {
-      <a routerLink="/usuarios" routerLinkActive="active" class="sidebar__link" title="Usuarios">
+      <a routerLink="/usuarios" routerLinkActive="active" class="sidebar__link" [class.is-pressed]="elegido() === '/usuarios'" (click)="elegir('/usuarios')" title="Usuarios">
         <svg class="sidebar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
           <circle cx="9" cy="7" r="4"/>
           <path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/>
         </svg>
-        @if (mostrarTexto()) { <span>Usuarios</span> }
+        @if (mostrarTexto()) { <span class="sidebar__label">Usuarios</span> }
       </a>
     }
   </nav>

@@ -19,15 +19,12 @@ import { logo } from '../../../content/logo';
 import { contactWhatsAppLink, siteInfo, siteNavLinks } from '../../../content/site';
 import type { NavItem } from '../../../content/types';
 import { SectionSpyService } from './section-spy.service';
+import { TAP_FEEDBACK_MS } from '../../../motion/tap-feedback';
 
 const pathOf = (url: string) => url.split(/[?#]/)[0] || '/';
 
-/**
- * Pause, in ms, between choosing an option of the mobile menu and closing the panel: long
- * enough to see the chosen option change (color, growing underline) on touch screens, where
- * there is no hover. Navigation itself is not delayed.
- */
-export const MENU_TAP_FEEDBACK_MS = 320;
+/** Pause between choosing an option of the mobile menu and closing the panel. */
+export const MENU_TAP_FEEDBACK_MS = TAP_FEEDBACK_MS;
 
 /** Scroll offset, in px, after which the header switches to its compact state. */
 export const HEADER_COMPACT_THRESHOLD = 24;
