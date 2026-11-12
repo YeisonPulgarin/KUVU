@@ -74,8 +74,10 @@ docs_existentes: docs/
   `/#{id}`. `headerScrollOffset` suma su alto. Las páginas internas conservan
   `<app-breadcrumb>` estático.
 - Menú móvil: el texto de cada opción va en `.mobile-label`, cuyo subrayado (gradiente de
-  2 px) aparece en hover/foco aun con movimiento reducido; con movimiento crece y el ítem se
-  desplaza 12 px.
+  2 px) aparece en hover, foco, `:active` y `.is-pressed` aun con movimiento reducido; con
+  movimiento crece y el ítem se desplaza 12 px. Elegir una opción navega al instante pero el
+  panel se cierra tras `MENU_TAP_FEEDBACK_MS` (320 ms) con la opción marcada `is-pressed`,
+  para que el cambio se vea en táctil (sin hover); Escape y el botón cierran al instante.
 - Equipo: `content/team.ts` es la fuente única del orden de nombres (Carlos Arciniegas,
   Wilson Solano, Yeison Pulgarin), que es su posición de izquierda a derecha en las fotos grupales.
 - `<app-back-to-top>` (`components/back-to-top/`): un solo botón "Volver arriba" montado en
@@ -83,9 +85,9 @@ docs_existentes: docs/
   (`APP_SCROLLER_SELECTOR`) con un listener `scroll` en captura sobre `document`, y usa
   `z-index: 45` (debajo del header 50, el sidebar móvil 150–250 y los toasts 400). Un
   contenedor de scroll nuevo de página entera se agrega a ese selector.
-- Grano: `$grain` se declara en `src/styles/_grain.scss`, que no emite CSS. Lo usan
-  `_site.scss` (`.site-root`) y `shared.styles.scss` (`.app-layout .main-content`) con
-  `@use`.
+- Grano: `$grain` (ruido gris opaco, sitio público, `.site-root`) y `$grain-specks` (motas con
+  transparencia, app interna, `.app-layout .main-content`) se declaran en
+  `src/styles/_grain.scss`, que no emite CSS.
 
 ## Convenciones de la app interna (slice `app`)
 
@@ -111,8 +113,9 @@ docs_existentes: docs/
   confirmación ("Cancelar", "Volver") son `.btn-action--danger` con `<app-icon name="x">`
   (decisión del usuario). En `.modal__footer` y `.pasarela-actions` toman la medida del
   primario. `.btn-secondary` queda para acciones neutras como "Descargar PDF".
-- Fondo: `.app-layout .main-content` lleva grano bajo un velo de `--color-bg` al 93 %; los
-  modales y las tarjetas son lisos.
+- Fondo: `.app-layout .main-content` lleva un brillo radial del color de la empresa (8 %,
+  esquina superior derecha) y `$grain-specks` (motas pizarra con transparencia, media ~4 %)
+  sobre `--color-bg`; sin velo. Los modales, tablas y tarjetas son lisos.
 - Íconos: `<app-icon name="…">` (SVG inline, `aria-hidden`); sin emoji en la app interna.
 - Nada de `confirm()`/`alert()`/`prompt()`: `ConfirmService.confirmar({...})` (promesa) y
   `ToastService.exito()/error()`. Toda acción da feedback: toast de éxito o error, o
