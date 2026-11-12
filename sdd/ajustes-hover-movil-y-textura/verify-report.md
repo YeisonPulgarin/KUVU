@@ -46,3 +46,24 @@ arriba a la derecha, con el texto secundario igual de legible y la tarjeta lisa.
 - Para verlo en local: el dev server recompila solo; no hace falta reiniciar `ng serve`.
   Recargar la pestaña (o Ctrl+F5 si el navegador conserva estilos viejos). En DevTools con
   emulación táctil, el cambio se ve al tocar y dura ~320 ms antes de que el panel se cierre.
+
+## Re-verificación (ampliación del sidebar, secure y refine)
+Estado verificado: `158acb4` (sidebar), `d8d13cb` (artifacts), `47ed69b` (secure sin
+hallazgos), `4c64f14` (refine: borra el `:hover` muerto del sidebar), `af550f8`.
+- `ng test`: **720/720 en verde**. `ng build`: sin errores (warnings `css-inline-fonts`
+  preexistentes).
+- CSS compilado del sidebar (chunk con `sidebar__label`): `.sidebar__link.is-pressed` (y
+  `:hover`, `:focus-visible`, `:active`) con `color: var(--sidebar-acento)`, fondo
+  `color-mix(var(--color-primario) 18%)`, ícono con el acento y `.sidebar__label
+  { background-size: 100% 2px }` fuera de media queries; `translate(4px)` solo en
+  `no-preference`. El `:hover` viejo (`rgba(255,255,255,.05)`) ya no aparece en el bundle.
+
+| CA | Resultado | Evidencia |
+|---|---|---|
+| CA-1 a CA-6 | pasan | sin cambios desde la primera corrida |
+| CA-7 estado del sidebar | pasa | spec "paints the chosen link…" + CSS compilado |
+| CA-8 contraste del acento | pasa | spec con 7 colores (negro, azul puro, blanco, empresas del seed) ≥ 4.5 : 1 sobre `#133937` |
+| CA-9 pausa del drawer | pasa | specs de móvil (pausa, `NavigationEnd`) y de escritorio (sin cierre) |
+
+Sin desvíos. Para verlo en local alcanza con recargar (`ng serve` recompila solo). Habilita
+`document` y `archive`.
