@@ -33,3 +33,10 @@ Slices completados: `intro`, `app`, `cierre`. Omitidos: ninguno.
   las seis pantallas con `authGuard`/`adminGuard`. `shared/navbar` (sin uso) quedaría azul.
 - Tras desplegar, una pestaña abierta con la versión anterior conserva el inline en `<html>`
   hasta recargar.
+
+## Re-verificación (después de secure y refine)
+Estado verificado: `adc549a` (secure sin hallazgos) y `76f7243` (refine sin cambios). Ninguna
+de las dos fases tocó código.
+- `ng test`: **709/709 en verde**. `ng build`: sin errores (mismos warnings
+  `css-inline-fonts` preexistentes).
+- CA-1 a CA-5 siguen pasando. Sin desvíos nuevos. Habilita `document` y `archive`.
