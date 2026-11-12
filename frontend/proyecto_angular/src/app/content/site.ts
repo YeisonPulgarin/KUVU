@@ -63,3 +63,24 @@ export function breadcrumbFor(href: string): readonly NavItem[] {
   }
   return [home, page];
 }
+
+/** A home section that starts the part of the page belonging to one menu item. */
+export interface HomeSpySection {
+  /** `id` of the home `<section>`. */
+  readonly id: string;
+  /** `href` of the menu item highlighted from this section on. */
+  readonly href: string;
+}
+
+/**
+ * Scroll-spy map of the home, in page order: each entry is the first section of a menu item,
+ * and the sections between two entries belong to the earlier one. The hrefs follow the order
+ * of `siteNavLinks`, so the index of the active section is also the length of the trail.
+ */
+export const homeSpySections: readonly HomeSpySection[] = [
+  { id: 'inicio', href: '/' },
+  { id: 'servicios', href: '/servicios' },
+  { id: 'equipo', href: '/nosotros' },
+  { id: 'faq', href: '/preguntas-frecuentes' },
+  { id: 'contacto', href: '/contacto' }
+];

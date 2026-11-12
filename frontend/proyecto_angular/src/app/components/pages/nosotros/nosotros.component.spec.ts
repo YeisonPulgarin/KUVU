@@ -105,7 +105,7 @@ describe('NosotrosComponent', () => {
 
     it('should caption the photo with the members left to right', () => {
       const caption = asElement(root.querySelector('.team figcaption'));
-      expect(caption.textContent?.trim()).toBe('Wilson Solano · Carlos Arciniegas · Yeison Pulgarin');
+      expect(caption.textContent?.trim()).toBe('Carlos Arciniegas · Wilson Solano · Yeison Pulgarin');
     });
   });
 

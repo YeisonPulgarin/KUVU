@@ -1,6 +1,6 @@
 import type { SiteImage, TeamSection } from './types';
 
-const members = ['Wilson Solano', 'Carlos Arciniegas', 'Yeison Pulgarin'] as const;
+const members = ['Carlos Arciniegas', 'Wilson Solano', 'Yeison Pulgarin'] as const;
 
 const photo = (n: 1 | 2 | 3, widths: readonly number[], width: number, height: number, alt: string): SiteImage => ({
   basePath: `/Imagenes_web/equipo-kuvu-${n}`,

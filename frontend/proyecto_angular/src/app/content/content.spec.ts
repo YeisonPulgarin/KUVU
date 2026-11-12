@@ -23,6 +23,7 @@ import {
   siteInfo,
   siteNavLinks,
   sitePages,
+  homeSpySections,
   team,
   headlines,
   headlineText
@@ -179,7 +180,7 @@ describe('content modules', () => {
     });
 
     it('should keep the three members', () => {
-      expect(team.members).toEqual(['Wilson Solano', 'Carlos Arciniegas', 'Yeison Pulgarin']);
+      expect(team.members).toEqual(['Carlos Arciniegas', 'Wilson Solano', 'Yeison Pulgarin']);
     });
 
     it('should declare the three new team photos under /Imagenes_web/ without spaces', () => {
@@ -299,6 +300,15 @@ describe('content modules', () => {
         expect(link.href).not.toContain('#');
         expect(sitePages).toContain(link);
       });
+    });
+
+    it('should map one home section per menu item, in the menu order', () => {
+      expect(homeSpySections.map((section) => section.href)).toEqual(
+        siteNavLinks.map((link) => link.href)
+      );
+      const ids = homeSpySections.map((section) => section.id);
+      expect(new Set(ids).size).toBe(ids.length);
+      ids.forEach((id) => expect(id).toMatch(/^[a-z-]+$/));
     });
 
     it('should keep Legal out of the header navigation', () => {
