@@ -96,8 +96,14 @@ docs_existentes: docs/
 - Colores semánticos fijos `--sem-{danger,success,warning,info,neutral}-{fg,bg,border,solid}`
   al inicio de `shared.styles.scss` (prefijo `--sem-*`, fuera del namespace `--color-*` de
   Tailwind). El color de marca (`--color-primario`) solo rellena el CTA principal
-  (`.btn-primary`), con texto `--color-primario-contraste`, que `AuthService` calcula por
-  luminancia (`components/shared/color-contrast.ts`).
+  (`.btn-primary`), con texto `--color-primario-contraste`, calculado por luminancia
+  (`components/shared/color-contrast.ts`).
+- Tema de empresa: `temaDeEmpresa(empresa)` (`services/auth.service.ts`) es puro y
+  `<app-layout>` lo declara como variables en su host (`--color-primario`,
+  `--color-secundario`, `--color-texto`, `--color-primario-contraste`). Nada escribe tokens de
+  empresa en `<html>`: el sitio público y el acceso usan siempre el azul KUVU de `:root`
+  (incluido el botón "Ingresar"). Una superficie interna nueva que necesite la marca va dentro
+  de `<app-layout>`.
 - Botones: `.btn-primary` (un CTA por pantalla), `.btn-action--{rol}` para acciones de fila
   (`--icon` para solo ícono, con `aria-label`) y `.btn-solid--{rol}` solo en el diálogo de
   confirmación. Mapeo: editar e iniciar → `info`, completar → `success`, eliminar y
