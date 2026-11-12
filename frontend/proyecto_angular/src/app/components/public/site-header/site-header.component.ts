@@ -5,6 +5,7 @@ import {
   HostListener,
   Signal,
   afterNextRender,
+  computed,
   inject,
   signal,
   viewChild
@@ -17,6 +18,9 @@ import { ThemeService } from '../../../services/theme.service';
 import { logo } from '../../../content/logo';
 import { contactWhatsAppLink, siteInfo, siteNavLinks } from '../../../content/site';
 import type { NavItem } from '../../../content/types';
+import { SectionSpyService } from './section-spy.service';
+
+const pathOf = (url: string) => url.split(/[?#]/)[0] || '/';
 
 /** Scroll offset, in px, after which the header switches to its compact state. */
 export const HEADER_COMPACT_THRESHOLD = 24;
@@ -26,7 +30,7 @@ export const HEADER_COMPACT_THRESHOLD = 24;
   standalone: true,
   imports: [RouterModule],
   templateUrl: './site-header.component.html',
-  styleUrls: ['./site-header.component.scss'],
+  styleUrls: ['./site-header.component.scss', './scroll-trail.scss'],
   host: { '[class.is-compact]': 'isCompact()' }
 })
 export class SiteHeaderComponent {
@@ -42,6 +46,27 @@ export class SiteHeaderComponent {
   readonly isMenuOpen = signal(false);
   readonly isCompact = signal(false);
 
+  private readonly router = inject(Router);
+  private readonly spy = inject(SectionSpyService);
+  private readonly path = signal(pathOf(this.router.url));
+
+  /** Menu item of the current route: it carries `aria-current="page"`. */
+  readonly pageHref = computed(() => {
+    const path = this.path();
+    return this.navLinks.find((link) =>
+      this.isExact(link.href) ? path === link.href : path === link.href || path.startsWith(`${link.href}/`)
+    )?.href ?? null;
+  });
+
+  /** Highlighted menu item: the section being read on the home, otherwise the route. */
+  readonly activeHref = computed(() => this.spy.activeHref() ?? this.pageHref());
+
+  /** Cumulative trail of the home sections already reached ("Inicio › Servicios › …"). */
+  readonly trail = this.spy.trail;
+
+  /** The trail shows once the header is compact, and never over the open mobile menu. */
+  readonly showTrail = computed(() => this.isCompact() && !this.isMenuOpen() && this.trail().length > 0);
+
   private readonly document = inject(DOCUMENT);
   private readonly menuButton = viewChild<ElementRef<HTMLButtonElement>>('menuButton');
   private readonly menuPanel = viewChild<ElementRef<HTMLElement>>('menuPanel');
@@ -49,12 +74,15 @@ export class SiteHeaderComponent {
   constructor() {
     const destroyRef = inject(DestroyRef);
 
-    inject(Router)
-      .events.pipe(
+    this.router.events
+      .pipe(
         filter((event) => event instanceof NavigationEnd),
         takeUntilDestroyed(destroyRef)
       )
-      .subscribe(() => this.closeMenu(false));
+      .subscribe(() => {
+        this.path.set(pathOf(this.router.url));
+        this.closeMenu(false);
+      });
 
     afterNextRender(() => {
       const view = this.document.defaultView;

@@ -229,10 +229,26 @@
     color: var(--color-home-text);
     transition: color var(--dur-fast) var(--ease-out-expo), background-color var(--dur-fast) var(--ease-out-expo);
 
+    // Label underline: a 2px bar painted under the text that grows left → right on
+    // hover/focus (works across wrapped lines). Without motion it simply appears.
+    .mobile-label {
+      padding-bottom: 3px;
+      background-image: linear-gradient(currentColor, currentColor);
+      background-repeat: no-repeat;
+      background-position: 0 100%;
+      background-size: 0 2px;
+    }
+
+    // Hover/focus: brand-colored text, underline and a visible tint, so the option under the
+    // pointer stands out from its neighbours (also with reduced motion).
     &:hover,
     &:focus-visible {
       color: var(--color-brand-600);
-      background-color: color-mix(in srgb, var(--color-brand-600) 8%, transparent);
+      background-color: color-mix(in srgb, var(--color-brand-600) 14%, transparent);
+
+      .mobile-label {
+        background-size: 100% 2px;
+      }
     }
 
     // Current page: accent bar on the leading edge plus a soft tint.
@@ -298,16 +314,20 @@
       transition-delay: calc(var(--i, 0) * 40ms + 60ms);
     }
 
-    // Slight shift to the right on hover/focus; the entry animation above stays on the <li>.
+    // Shift to the right on hover/focus; the entry animation above stays on the <li>.
     .mobile-item {
       transition:
         color var(--dur-fast) var(--ease-out-expo),
         background-color var(--dur-fast) var(--ease-out-expo),
-        transform var(--dur-fast) var(--ease-out-expo);
+        transform var(--dur-base) var(--ease-out-expo);
+
+      .mobile-label {
+        transition: background-size var(--dur-base) var(--ease-out-expo);
+      }
 
       &:hover,
       &:focus-visible {
-        transform: translateX(6px);
+        transform: translateX(12px);
       }
     }
   }

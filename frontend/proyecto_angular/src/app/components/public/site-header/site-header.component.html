@@ -13,9 +13,8 @@
       @for (link of navLinks; track link.href) {
         <a
           [routerLink]="link.href"
-          routerLinkActive="is-active"
-          ariaCurrentWhenActive="page"
-          [routerLinkActiveOptions]="{ exact: isExact(link.href) }"
+          [class.is-active]="activeHref() === link.href"
+          [attr.aria-current]="pageHref() === link.href ? 'page' : null"
           class="nav-item"
         >{{ link.label }}</a>
       }
@@ -84,6 +83,26 @@
 
   </div>
 
+  <!-- Home only: cumulative trail of the sections already reached, under the bar -->
+  @if (showTrail()) {
+    <nav class="scroll-trail" aria-label="Recorrido de la página">
+      <ol class="scroll-trail-list">
+        @for (item of trail(); track item.href; let last = $last) {
+          <li class="scroll-trail-item">
+            @if (!$first) {
+              <span class="scroll-trail-sep" aria-hidden="true">›</span>
+            }
+            @if (last) {
+              <span class="scroll-trail-current" aria-current="location">{{ item.label }}</span>
+            } @else {
+              <a class="scroll-trail-link" routerLink="/" [fragment]="item.fragment">{{ item.label }}</a>
+            }
+          </li>
+        }
+      </ol>
+    </nav>
+  }
+
   <!-- Full-screen mobile menu -->
   <nav
     #menuPanel
@@ -99,12 +118,11 @@
         <li class="mobile-entry" [style.--i]="i">
           <a
             [routerLink]="link.href"
-            routerLinkActive="is-active"
-            ariaCurrentWhenActive="page"
-            [routerLinkActiveOptions]="{ exact: isExact(link.href) }"
+            [class.is-active]="activeHref() === link.href"
+            [attr.aria-current]="pageHref() === link.href ? 'page' : null"
             class="mobile-item"
             (click)="closeMenu(false)"
-          >{{ link.label }}</a>
+          ><span class="mobile-label">{{ link.label }}</span></a>
         </li>
       }
     </ul>

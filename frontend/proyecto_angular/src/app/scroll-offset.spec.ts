@@ -26,6 +26,16 @@ describe('headerScrollOffset', () => {
     expect(headerScrollOffset(document)).toEqual([0, 56 + ANCHOR_GAP]);
   });
 
+  it('should add the height of the home trail hanging under the bar', () => {
+    addHeader(56);
+    const trail = document.createElement('nav');
+    trail.className = 'scroll-trail';
+    trail.style.display = 'block';
+    trail.style.height = '30px';
+    header!.appendChild(trail);
+    expect(headerScrollOffset(document)).toEqual([0, 56 + 30 + ANCHOR_GAP]);
+  });
+
   it('should fall back to the scroll-padding value when the header has no height', () => {
     addHeader(0);
     expect(headerScrollOffset(document)).toEqual([0, FALLBACK_SCROLL_OFFSET]);

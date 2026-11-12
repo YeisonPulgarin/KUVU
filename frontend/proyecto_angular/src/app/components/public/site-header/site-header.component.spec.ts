@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, WritableSignal, signal } from '@angular/core';
 import { ComponentFixture, TestBed, fakeAsync, flush, tick } from '@angular/core/testing';
 import { Router, provideRouter } from '@angular/router';
 import { HEADER_COMPACT_THRESHOLD, SiteHeaderComponent } from './site-header.component';
 import { siteNavLinks } from '../../../content/site';
 import { logo } from '../../../content/logo';
+import { SectionSpyService, TrailItem } from './section-spy.service';
 
 @Component({ standalone: true, template: '' })
 class BlankPage {}
@@ -17,6 +18,8 @@ describe('SiteHeaderComponent', () => {
   let fixture: ComponentFixture<SiteHeaderComponent>;
   let root: HTMLElement;
   let router: Router;
+  // Double of the home scroll-spy: specs drive the section being read directly.
+  let spy: { activeHref: WritableSignal<string | null>; trail: WritableSignal<readonly TrailItem[]> };
 
   // Leaves no theme behind: later specs read the default light theme.
   afterEach(() => {
@@ -29,9 +32,12 @@ describe('SiteHeaderComponent', () => {
     document.documentElement.classList.remove('dark');
     document.body.style.overflow = '';
 
+    spy = { activeHref: signal<string | null>(null), trail: signal<readonly TrailItem[]>([]) };
+
     await TestBed.configureTestingModule({
       imports: [SiteHeaderComponent],
       providers: [
+        { provide: SectionSpyService, useValue: spy },
         provideRouter(
           siteNavLinks.map((link) => ({ path: link.href.slice(1), component: BlankPage }))
         )
@@ -162,6 +168,125 @@ describe('SiteHeaderComponent', () => {
       const active = items.filter((a) => a.classList.contains('is-active'));
       expect(active.map((a) => a.getAttribute('href'))).toEqual(['/nosotros']);
       expect(active[0].getAttribute('aria-current')).toBe('page');
+    }));
+  });
+
+  describe('home scroll-spy', () => {
+    const mobileItems = () =>
+      Array.from(root.querySelectorAll('#mobile-menu .mobile-item')) as HTMLAnchorElement[];
+    const highlighted = (links: HTMLAnchorElement[]) =>
+      links.filter((l) => l.classList.contains('is-active')).map((l) => l.getAttribute('href'));
+
+    it('should highlight the menu item of the section being read, on desktop and mobile', fakeAsync(() => {
+      router.navigateByUrl('/');
+      tick();
+      spy.activeHref.set('/servicios');
+      fixture.detectChanges();
+      expect(highlighted(desktopLinks())).toEqual(['/servicios']);
+      expect(highlighted(mobileItems())).toEqual(['/servicios']);
+    }));
+
+    it('should keep aria-current="page" on Inicio, the real page, while the spy moves', fakeAsync(() => {
+      router.navigateByUrl('/');
+      tick();
+      spy.activeHref.set('/nosotros');
+      fixture.detectChanges();
+      const current = desktopLinks().filter((l) => l.getAttribute('aria-current') === 'page');
+      expect(current.map((l) => l.getAttribute('href'))).toEqual(['/']);
+      expect(desktopLinks()[0].classList).not.toContain('is-active');
+    }));
+
+    it('should fall back to the route when the spy is stopped', fakeAsync(() => {
+      router.navigateByUrl('/servicios');
+      tick();
+      spy.activeHref.set(null);
+      fixture.detectChanges();
+      expect(highlighted(desktopLinks())).toEqual(['/servicios']);
+      expect(desktopLinks()[1].getAttribute('aria-current')).toBe('page');
+    }));
+
+    it('should wrap each mobile label for the hover underline', () => {
+      expect(mobileItems().map((a) => a.querySelector('.mobile-label')?.textContent)).toEqual(
+        siteNavLinks.map((link) => link.label)
+      );
+    });
+  });
+
+  describe('scroll trail', () => {
+    let scrollY = 0;
+    const trail = () => root.querySelector('nav.scroll-trail');
+    const steps: readonly TrailItem[] = [
+      { label: 'Inicio', href: '/', fragment: 'inicio' },
+      { label: 'Servicios', href: '/servicios', fragment: 'servicios' },
+      { label: 'Nosotros', href: '/nosotros', fragment: 'equipo' }
+    ];
+    const compact = () => {
+      scrollY = HEADER_COMPACT_THRESHOLD + 1;
+      window.dispatchEvent(new Event('scroll'));
+      fixture.detectChanges();
+    };
+
+    beforeEach(() => {
+      spyOnProperty(window, 'scrollY').and.callFake(() => scrollY);
+    });
+
+    it('should not show at the top of the page, even with the spy running', () => {
+      scrollY = 0;
+      spy.trail.set(steps.slice(0, 1));
+      window.dispatchEvent(new Event('scroll'));
+      fixture.detectChanges();
+      expect(trail()).toBeNull();
+    });
+
+    it('should not show off the home (spy stopped)', () => {
+      compact();
+      expect(trail()).toBeNull();
+    });
+
+    it('should grow step by step with the sections reached', () => {
+      compact();
+      [1, 2, 3].forEach((n) => {
+        spy.trail.set(steps.slice(0, n));
+        fixture.detectChanges();
+        const labels = Array.from(trail()!.querySelectorAll('li')).map((li) =>
+          li.textContent?.replace('›', '').trim()
+        );
+        expect(labels).toEqual(steps.slice(0, n).map((s) => s.label));
+      });
+    });
+
+    it('should link earlier steps to their home section and mark the last one as the location', () => {
+      compact();
+      spy.trail.set(steps);
+      fixture.detectChanges();
+      const nav = trail()!;
+      expect(nav.getAttribute('aria-label')).toBe('Recorrido de la página');
+      const links = Array.from(nav.querySelectorAll('a')).map((a) => a.getAttribute('href'));
+      expect(links).toEqual(['/#inicio', '/#servicios']);
+      const current = nav.querySelector('[aria-current="location"]');
+      expect(current?.textContent?.trim()).toBe('Nosotros');
+      expect(nav.querySelectorAll('.scroll-trail-sep[aria-hidden="true"]').length).toBe(2);
+    });
+
+    it('should hang under the bar without adding to the header height', () => {
+      compact();
+      const before = root.getBoundingClientRect().height;
+      spy.trail.set(steps);
+      fixture.detectChanges();
+      expect(getComputedStyle(trail()!).position).toBe('absolute');
+      expect(root.getBoundingClientRect().height).toBe(before);
+    });
+
+    it('should hide while the mobile menu is open', fakeAsync(() => {
+      compact();
+      spy.trail.set(steps);
+      component.openMenu();
+      fixture.detectChanges();
+      flush();
+      expect(trail()).toBeNull();
+      component.closeMenu();
+      fixture.detectChanges();
+      expect(trail()).not.toBeNull();
     }));
   });
 
