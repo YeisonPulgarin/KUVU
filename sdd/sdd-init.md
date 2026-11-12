@@ -116,6 +116,11 @@ docs_existentes: docs/
 - Fondo: `.app-layout .main-content` lleva un brillo radial del color de la empresa (8 %,
   esquina superior derecha) y `$grain-specks` (motas pizarra con transparencia, media ~4 %)
   sobre `--color-bg`; sin velo. Los modales, tablas y tarjetas son lisos.
+- Sidebar: cada enlace lleva su texto en `.sidebar__label`; `sidebar-feedback.scss` (hoja
+  aparte) da el estado de hover, foco, `:active` y `.is-pressed` con `--sidebar-acento`
+  (empresa 30 % + blanco, legible sobre `#133937` para cualquier empresa). En el drawer móvil
+  `elegir(ruta)` marca el enlace y cierra tras `TAP_FEEDBACK_MS` (`app/motion/tap-feedback.ts`,
+  compartido con el menú público).
 - Íconos: `<app-icon name="…">` (SVG inline, `aria-hidden`); sin emoji en la app interna.
 - Nada de `confirm()`/`alert()`/`prompt()`: `ConfirmService.confirmar({...})` (promesa) y
   `ToastService.exito()/error()`. Toda acción da feedback: toast de éxito o error, o

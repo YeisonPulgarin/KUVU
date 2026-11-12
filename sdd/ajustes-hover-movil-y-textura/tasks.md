@@ -18,6 +18,14 @@ default; los dos slices son independientes.
 - T5 Spec de `app-layout`: tres capas (degradado, SVG de motas, color), sin velo; el
   degradado usa el color de la empresa del host.
 
+### Slice `app` (ampliación: sidebar)
+- T8 `app/motion/tap-feedback.ts`; header reexpone `MENU_TAP_FEEDBACK_MS` desde ahí.
+- T9 `SidebarComponent`: `elegido`, `elegir`, timer, salteo de `NavigationEnd`, destroy;
+  template con `is-pressed`, `(click)` y `.sidebar__label`.
+- T10 `sidebar-feedback.scss` + `styleUrls` (D4).
+- T11 Spec del sidebar: CA-7 (estilos medidos con `getComputedStyle`), CA-8 (contraste del
+  acento con `color-contrast.ts`), CA-9 (pausa en móvil, sin pausa en escritorio).
+
 ### Slice `cierre`
 - T6 `sdd/sdd-init.md`: convención de pausa de cierre del menú y grano de la app.
 
@@ -25,7 +33,8 @@ default; los dos slices son independientes.
 - T7 `ng test`, `ng build`, CSS compilado y captura en Chrome headless del fondo.
 
 ## Forecast de riesgo
-~8 archivos, ~150 líneas con tests, un repo. **Bajo**.
+~13 archivos, ~300 líneas con tests (con la ampliación del sidebar), un repo. En el umbral
+de 300: **bajo-medio**; se entrega en commits por slice.
 
 ## Alcance previsto de `document`
 changelog: sí (Fixed). architecture: no (sin componentes ni límites nuevos; se registra

@@ -23,6 +23,18 @@ menú hamburguesa (< 1024 px), con puntero o táctil.
 de la empresa activa. Tarjetas, tablas y modales siguen con fondo liso. El fondo medio se
 mantiene cercano a `--color-bg` (sin oscurecer el texto que va directo sobre él).
 
+**RF-5 — Feedback en el sidebar de la app interna.** En el sidebar (`<app-layout>`, ambos
+roles), cada enlace de navegación en hover, `:focus-visible`, `:active` o recién elegido
+muestra: texto en un acento del color de la empresa legible sobre el fondo oscuro (≥ 4.5 : 1),
+tinte del color de la empresa, subrayado bajo la etiqueta (cuando hay texto) y, con movimiento
+permitido, el subrayado crece y el enlace se desplaza. El ítem activo conserva su barra y
+negrita. Con movimiento reducido, el cambio de color, tinte y subrayado se ve sin animación.
+
+**RF-6 — Pausa del drawer móvil.** En el drawer móvil (< 768 px), elegir un enlace navega al
+instante, marca el enlace como elegido y cierra el drawer tras la misma pausa del menú
+público; un `NavigationEnd` durante la pausa no lo corta. En escritorio no hay pausa (el
+sidebar no se cierra).
+
 ## Criterios de aceptación
 - CA-1: las reglas de `:active` y de la opción elegida aplican color, tinte y subrayado fuera
   del bloque de movimiento; desplazamiento y transición, solo con `no-preference`.
@@ -35,6 +47,13 @@ mantiene cercano a `--color-bg` (sin oscurecer el texto que va directo sobre él
 - CA-5: el grano tiene media de oscurecimiento baja (≤ 6 %) y picos visibles; comprobado en
   una captura en navegador.
 - CA-6: suite y build en verde.
+- CA-7: un enlace del sidebar marcado como elegido tiene color distinto al de reposo,
+  subrayado completo en su etiqueta y tinte; reglas fuera del bloque de movimiento (CSS
+  compilado).
+- CA-8: el acento de texto mezcla el color de la empresa con blanco (30 % / 70 %), así su
+  contraste sobre `#133937` es ≥ 4.5 : 1 para cualquier color de empresa.
+- CA-9: en móvil, elegir un enlace deja el drawer abierto con el enlace marcado hasta que vence
+  la pausa; `NavigationEnd` en medio no lo cierra; en escritorio no se programa cierre.
 
 ## Fuera de alcance
 - Hover en dispositivos sin puntero fuera del menú hamburguesa.

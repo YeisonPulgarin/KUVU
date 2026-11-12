@@ -55,6 +55,30 @@ El degradado usa `--color-primario`, que `<app-layout>` declara en su host
 - Descartado: `background-blend-mode: overlay`. Sobre un fondo casi blanco el overlay
   comprime la variación a ±5 niveles: vuelve a ser imperceptible.
 
+## D4 — Sidebar de la app interna (RF-5, RF-6)
+
+- `app/motion/tap-feedback.ts` exporta `TAP_FEEDBACK_MS = 320`, fuente única de la pausa; el
+  header publica `MENU_TAP_FEEDBACK_MS = TAP_FEEDBACK_MS` (mismo valor, sin romper su API).
+- `SidebarComponent`: `elegido = signal<string | null>(null)` y `elegir(ruta)`, enlazado al
+  `(click)` de cada `.sidebar__link`. En móvil fija `elegido` y programa
+  `cerrarMenu()` tras `TAP_FEEDBACK_MS`; en escritorio no hace nada (no hay cierre). El cierre
+  por `NavigationEnd` se saltea con un cierre pendiente; `cerrarMenu()` y el destroy cancelan
+  el timer y limpian `elegido`. Template: `[class.is-pressed]` y la etiqueta en
+  `<span class="sidebar__label">`.
+- Estilos en hoja aparte `sidebar/sidebar-feedback.scss` (sumada por `styleUrls`):
+  - `--sidebar-acento: color-mix(in srgb, var(--color-primario, #3a6fd8) 30%, #fff)`. Con el
+    peor caso (empresa negra) el acento es `#b3b3b3`: 7.3 : 1 sobre `#133937`; con colores
+    claros es aún más claro. Así se usa el color de la empresa sin depender de su luminancia.
+  - Estado (`:hover`, `:focus-visible`, `:active`, `.is-pressed`): `color: var(--sidebar-acento)`,
+    fondo `color-mix(--color-primario 18 %, transparent)`, ícono con el acento, y
+    `.sidebar__label` con subrayado de gradiente `0 → 100% 2px` (mismo truco que
+    `.mobile-label`).
+  - Con `no-preference`: transición del subrayado y `translateX(4px)` (el sidebar es angosto).
+  - `.active` conserva barra de empresa y negrita; el `:hover` local de `sidebar.component.scss`
+    queda superado por especificidad de la hoja nueva (misma clase + pseudo, cargada después).
+- Descartado: usar `--color-primario` puro como color de texto: con empresas oscuras (p. ej.
+  `#2B4C8C`) da < 2 : 1 sobre el fondo del sidebar.
+
 ## Verificación visual
 `verify` toma una captura en Chrome headless de una página que reproduce las capas de fondo
 con los valores compilados, y revisa el CSS del bundle para confirmar que las reglas llegan.
