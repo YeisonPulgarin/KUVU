@@ -39,3 +39,13 @@ Slices completados: `contenido`, `chrome`, `home`, `cierre`. Omitidos: ninguno.
 - Orden del equipo: el usuario confirma que coincide con la posición de izquierda a derecha
   en las fotos; el test de la banda lo afirma ("left to right as in the photo").
 - Riesgo de revisión: ~650 líneas de frontend (625 agregadas, 27 quitadas, 16 archivos) entre código y tests, sobre el umbral de 300.
+
+## Re-verificación (después de secure y refine)
+Estado verificado: `f31e6af` (orden del equipo = izquierda a derecha en las fotos),
+`435a2b0` (secure sin hallazgos), `0ec1570` (refine sin cambios).
+- `secure` y `refine` no tocaron código; el único cambio de código desde la primera corrida
+  es el comentario de `content/team.ts` y el título del test de la banda ("left to right as
+  in the photo"), que vuelve a afirmar que el orden coincide con la foto.
+- `ng test`: **702/702 en verde**. `ng build`: sin errores (mismos warnings
+  `css-inline-fonts` de landing/login, ajenos al cambio).
+- CA-1 a CA-9 siguen pasando. Sin desvíos. Habilita `document` y `archive`.
