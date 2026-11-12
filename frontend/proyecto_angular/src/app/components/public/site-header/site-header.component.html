@@ -120,8 +120,9 @@
             [routerLink]="link.href"
             [class.is-active]="activeHref() === link.href"
             [attr.aria-current]="pageHref() === link.href ? 'page' : null"
+            [class.is-pressed]="pressedHref() === link.href"
             class="mobile-item"
-            (click)="closeMenu(false)"
+            (click)="chooseLink(link.href)"
           ><span class="mobile-label">{{ link.label }}</span></a>
         </li>
       }

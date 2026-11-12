@@ -1,7 +1,7 @@
 import { Component, WritableSignal, signal } from '@angular/core';
 import { ComponentFixture, TestBed, fakeAsync, flush, tick } from '@angular/core/testing';
 import { Router, provideRouter } from '@angular/router';
-import { HEADER_COMPACT_THRESHOLD, SiteHeaderComponent } from './site-header.component';
+import { HEADER_COMPACT_THRESHOLD, MENU_TAP_FEEDBACK_MS, SiteHeaderComponent } from './site-header.component';
 import { siteNavLinks } from '../../../content/site';
 import { logo } from '../../../content/logo';
 import { SectionSpyService, TrailItem } from './section-spy.service';
@@ -394,13 +394,71 @@ describe('SiteHeaderComponent', () => {
       expect(document.body.style.overflow).toBe('');
     }));
 
-    it('should close when a link is chosen', fakeAsync(() => {
+    it('should close when a link is chosen, after the tap feedback pause', fakeAsync(() => {
       open();
       asElement(panel().querySelector('.mobile-item')).click();
       tick();
       fixture.detectChanges();
+      expect(component.isMenuOpen()).toBeTrue();
+
+      tick(MENU_TAP_FEEDBACK_MS);
+      fixture.detectChanges();
       expect(component.isMenuOpen()).toBeFalse();
       expect(document.body.style.overflow).toBe('');
+    }));
+
+    it('should keep the chosen option marked while the panel is still open', fakeAsync(() => {
+      open();
+      const items = Array.from(panel().querySelectorAll('.mobile-item')) as HTMLElement[];
+      items[2].click();
+      fixture.detectChanges();
+      expect(items.filter((a) => a.classList.contains('is-pressed'))).toEqual([items[2]]);
+
+      tick(MENU_TAP_FEEDBACK_MS);
+      fixture.detectChanges();
+      expect(items.some((a) => a.classList.contains('is-pressed'))).toBeFalse();
+    }));
+
+    it('should not cut the feedback pause when the navigation ends first', fakeAsync(() => {
+      open();
+      asElement(panel().querySelector('.mobile-item')).click();
+      tick(10);
+      router.navigateByUrl('/servicios');
+      tick(10);
+      fixture.detectChanges();
+      expect(component.isMenuOpen()).toBeTrue();
+
+      tick(MENU_TAP_FEEDBACK_MS);
+      expect(component.isMenuOpen()).toBeFalse();
+      expect(document.body.style.overflow).toBe('');
+    }));
+
+    it('should still close at once with Escape during the pause', fakeAsync(() => {
+      open();
+      asElement(panel().querySelector('.mobile-item')).click();
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+      fixture.detectChanges();
+      expect(component.isMenuOpen()).toBeFalse();
+      expect(component.pressedHref()).toBeNull();
+      flush();
+    }));
+
+    // Touch screens have no hover: the chosen option must show the brand color and the
+    // underline by itself (the rules live outside the motion block, so reduced motion too).
+    it('should paint the chosen option with the brand color and a full underline', fakeAsync(() => {
+      open();
+      const item = asElement(panel().querySelectorAll('.mobile-item')[3]);
+      const label = asElement(item.querySelector('.mobile-label'));
+      item.style.transition = 'none';
+      label.style.transition = 'none';
+      const restColor = getComputedStyle(item).color;
+      expect(getComputedStyle(label).backgroundSize).toBe('0px 2px');
+
+      component.chooseLink(siteNavLinks[3].href);
+      fixture.detectChanges();
+      expect(getComputedStyle(label).backgroundSize).toBe('100% 2px');
+      expect(getComputedStyle(item).color).not.toBe(restColor);
+      flush();
     }));
 
     it('should stay closed after navigating to another route', fakeAsync(() => {

@@ -22,6 +22,13 @@ import { SectionSpyService } from './section-spy.service';
 
 const pathOf = (url: string) => url.split(/[?#]/)[0] || '/';
 
+/**
+ * Pause, in ms, between choosing an option of the mobile menu and closing the panel: long
+ * enough to see the chosen option change (color, growing underline) on touch screens, where
+ * there is no hover. Navigation itself is not delayed.
+ */
+export const MENU_TAP_FEEDBACK_MS = 320;
+
 /** Scroll offset, in px, after which the header switches to its compact state. */
 export const HEADER_COMPACT_THRESHOLD = 24;
 
@@ -45,6 +52,10 @@ export class SiteHeaderComponent {
 
   readonly isMenuOpen = signal(false);
   readonly isCompact = signal(false);
+
+  /** Mobile option just chosen: keeps its "chosen" look until the panel closes. */
+  readonly pressedHref = signal<string | null>(null);
+  private closeTimer: ReturnType<typeof setTimeout> | undefined;
 
   private readonly router = inject(Router);
   private readonly spy = inject(SectionSpyService);
@@ -81,7 +92,10 @@ export class SiteHeaderComponent {
       )
       .subscribe(() => {
         this.path.set(pathOf(this.router.url));
-        this.closeMenu(false);
+        // A chosen option already scheduled the close: let its feedback finish.
+        if (this.closeTimer === undefined) {
+          this.closeMenu(false);
+        }
       });
 
     afterNextRender(() => {
@@ -93,7 +107,10 @@ export class SiteHeaderComponent {
       destroyRef.onDestroy(() => view.removeEventListener('scroll', onScroll));
     });
 
-    destroyRef.onDestroy(() => this.unlockScroll());
+    destroyRef.onDestroy(() => {
+      this.cancelPendingClose();
+      this.unlockScroll();
+    });
   }
 
   /** `/` only matches exactly; the other pages also match their sub-routes. */
@@ -118,8 +135,23 @@ export class SiteHeaderComponent {
     });
   }
 
+  /**
+   * An option of the mobile panel was chosen: the router navigates right away, the option keeps
+   * its "chosen" state and the panel closes after MENU_TAP_FEEDBACK_MS.
+   */
+  chooseLink(href: string): void {
+    this.cancelPendingClose();
+    this.pressedHref.set(href);
+    this.closeTimer = setTimeout(() => {
+      this.closeTimer = undefined;
+      this.closeMenu(false);
+    }, MENU_TAP_FEEDBACK_MS);
+  }
+
   /** Closes the menu; `restoreFocus` returns focus to the menu button (not on navigation). */
   closeMenu(restoreFocus = true): void {
+    this.cancelPendingClose();
+    this.pressedHref.set(null);
     if (!this.isMenuOpen()) return;
     this.isMenuOpen.set(false);
     this.unlockScroll();
@@ -135,6 +167,11 @@ export class SiteHeaderComponent {
 
   toggleTheme(): void {
     this.theme.toggle();
+  }
+
+  private cancelPendingClose(): void {
+    clearTimeout(this.closeTimer);
+    this.closeTimer = undefined;
   }
 
   private unlockScroll(): void {
