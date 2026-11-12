@@ -117,10 +117,7 @@ $transition:         .25s cubic-bezier(.4,0,.2,1);
 
     span { overflow: hidden; text-overflow: ellipsis; }
 
-    &:hover {
-      background: rgba(255,255,255,.05);
-      color: #e2e8f0;
-    }
+    // Hover, focus, touch and chosen states: sidebar-feedback.scss.
 
     &.active {
       background: rgba(255,255,255,.08);
