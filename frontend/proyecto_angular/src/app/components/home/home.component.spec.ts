@@ -2,7 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HOME_JSONLD_ID, HomeComponent } from './home.component';
 import { pageMeta } from '../../content/pages';
-import { headlines, team } from '../../content';
+import { headlines, homeSpySections, team } from '../../content';
+import { SectionSpyService } from '../public/site-header/section-spy.service';
 import { ScrollMotionService } from '../../motion/scroll-motion.service';
 
 function asElement(node: unknown): HTMLElement {
@@ -279,6 +280,32 @@ describe('HomeComponent', () => {
 
     it('should mark the text block for reveal', () => {
       expect(band.querySelector('.team-band-content[data-reveal]')).toBeTruthy();
+    });
+  });
+
+  describe('scroll-spy', () => {
+    const sectionIds = () => Array.from(root.querySelectorAll('section[id]')).map((s) => s.id);
+
+    it('should give every spy section an id in the page, in page order', () => {
+      const ids = sectionIds();
+      const positions = homeSpySections.map((section) => ids.indexOf(section.id));
+      positions.forEach((p) => expect(p).toBeGreaterThanOrEqual(0));
+      expect([...positions].sort((a, b) => a - b)).toEqual(positions);
+    });
+
+    it('should anchor the closing contact band as #contacto', () => {
+      expect(root.querySelector('section#contacto')?.classList).toContain('cta-final');
+    });
+
+    it('should start the spy after rendering and stop it when the home is destroyed', async () => {
+      const spy = TestBed.inject(SectionSpyService);
+      await fixture.whenStable();
+      expect(spy.activeHref()).not.toBeNull();
+      expect(spy.trail()[0]?.label).toBe('Inicio');
+
+      fixture.destroy();
+      expect(spy.activeHref()).toBeNull();
+      expect(spy.trail()).toEqual([]);
     });
   });
 

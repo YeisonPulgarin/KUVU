@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, inject } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, afterNextRender, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { SiteHeaderComponent } from '../public/site-header/site-header.component';
@@ -16,9 +16,11 @@ import { ScrollProgressDirective } from '../../motion/scroll-progress.directive'
 import { SplitTextComponent } from '../../motion/split-text.component';
 import { HeadlineComponent } from '../public/headline/headline.component';
 import { PageMetaService } from '../../services/page-meta.service';
+import { SectionSpyService } from '../public/site-header/section-spy.service';
 import {
   headlines,
   homeFaqItems,
+  homeSpySections,
   logo,
   origin,
   pageMeta,
@@ -59,6 +61,7 @@ export const HOME_JSONLD_ID = 'kuvu-home-jsonld';
 export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly meta = inject(PageMetaService);
   private readonly scroll = inject(ScrollMotionService);
+  private readonly spy = inject(SectionSpyService);
   private readonly host: HTMLElement = inject<ElementRef<HTMLElement>>(ElementRef).nativeElement;
 
   readonly services = services;
@@ -93,6 +96,12 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
+  constructor() {
+    // The scroll-spy starts after the first render, once the sections exist; it drives the
+    // menu highlight and the trail in the site header. Destroying the home cancels the hook.
+    afterNextRender(() => this.spy.start(homeSpySections));
+  }
+
   /** The reading-progress bar reads `--page-progress` from the home host. */
   ngAfterViewInit(): void {
     this.scroll.setPageProgressHost(this.host);
@@ -100,5 +109,6 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.meta.clearJsonLd(HOME_JSONLD_ID);
+    this.spy.stop();
   }
 }
