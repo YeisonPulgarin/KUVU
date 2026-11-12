@@ -170,6 +170,9 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com) y este proyecto 
 
 ### Fixed
 
+- El botón "Ingresar" del sitio público es siempre azul KUVU. Antes, después de entrar a la
+  app de una empresa (por ejemplo, una de color amarillo), al volver al sitio o recargar tomaba
+  el color de esa empresa.
 - En la home y en **Nosotros**, los nombres del equipo aparecen en el orden en que están en
   las fotos, de izquierda a derecha: Carlos Arciniegas, Wilson Solano y Yeison Pulgarin.
 - El menú móvil del sitio abre aunque la página esté desplazada hacia abajo; antes había que

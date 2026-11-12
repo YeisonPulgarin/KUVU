@@ -160,8 +160,9 @@ Sitio multipágina con una sola navegación: `/`, `/servicios`, `/nosotros`,
   modal sobre `<dialog>`, `ConfirmService`, `ToastService`, íconos SVG, skeleton, conteo de
   cifras, entrada escalonada, badges semánticos, formatos y contraste de marca. Detalle en
   `docs/app-interna-ux.md`.
-- `services/auth.service.ts`, `data.service.ts`, `intro-state.service.ts` — sesión (y el color
-  de texto sobre la marca, `--color-primario-contraste`), datos de la API REST con estado de
+- `services/auth.service.ts`, `data.service.ts`, `intro-state.service.ts` — sesión (y
+  `temaDeEmpresa()`, que calcula los colores de marca de la empresa activa sin tocar el DOM),
+  datos de la API REST con estado de
   carga (`listo`, `errorCarga`, `esperandoDatos`) y estado de la intro (recordada por pestaña
   en `sessionStorage['kuvu.intro.seen']`).
 - `services/page-turn-sound.service.ts` — sonido de la intro sintetizado con Web Audio, sin
@@ -285,7 +286,14 @@ pasa por `cambioPasswordGuard`: entra quien tiene un cambio pendiente (en memori
   (respaldo angosto para acotarlo).
 - **"Ingresar" conserva el azul de la app** (`.btn-primary`, `--color-primario` →
   `--color-secundario`) como excepción explícita al acento verde único del sitio: es el puente
-  visual hacia la app. El resto de los CTAs usa `.btn-site`.
+  visual hacia la app. El resto de los CTAs usa `.btn-site`. Fuera de `<app-layout>` esos
+  tokens son siempre los azules de `:root`.
+- **Tema de empresa acotado a la app interna**: `<app-layout>` declara `--color-primario`,
+  `--color-secundario`, `--color-texto` y `--color-primario-contraste` de la empresa activa en
+  su host; nada los escribe en `<html>`. Tradeoff: toda superficie con la marca de la empresa
+  tiene que ser descendiente de `<app-layout>` (hoy lo son sidebar, pantallas, modales, toasts
+  y confirmaciones), a cambio de que el sitio público y el acceso nunca hereden el color de la
+  última empresa (ver `docs/ingresar-color-marca.md`).
 - **Movimiento: JS mide, CSS anima.** El JS solo publica variables CSS (`--p`,
   `--page-progress`, `--mx` / `--my`) y toda la presentación vive en CSS dentro de
   `prefers-reduced-motion: no-preference` (y de `width >= 1024px` o puntero fino según el
