@@ -9,6 +9,10 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com) y este proyecto 
 
 ### Added
 
+- El menú lateral de la app de cada empresa (administradores y arrendatarios) resalta la
+  opción bajo el cursor, con foco o al tocarla: color de la empresa, subrayado que crece y un
+  leve desplazamiento. En el celular, la opción elegida queda marcada un instante antes de que
+  se cierre el menú.
 - En la home, el menú (escritorio y móvil) marca la sección que se está leyendo: Servicios,
   Nosotros, Preguntas frecuentes o Contacto, en lugar de quedarse en Inicio. Al bajar, aparece
   bajo el menú un recorrido que crece con cada sección ("Inicio › Servicios › Nosotros…");
@@ -170,6 +174,10 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com) y este proyecto 
 
 ### Fixed
 
+- En celulares y tablets, al tocar una opción del menú del sitio se ve cuál se eligió: antes
+  el menú se cerraba sin mostrar ningún cambio.
+- El fondo de la app de gestión muestra una textura de grano visible y un brillo suave del
+  color de la empresa; antes se veía plano.
 - El botón "Ingresar" del sitio público es siempre azul KUVU. Antes, después de entrar a la
   app de una empresa (por ejemplo, una de color amarillo), al volver al sitio o recargar tomaba
   el color de esa empresa.
