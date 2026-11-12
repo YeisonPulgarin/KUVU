@@ -62,6 +62,22 @@ docs_existentes: docs/
   `.site-header::before`. Ningún ancestro del panel `.mobile-menu` (`position: fixed`) lleva
   `backdrop-filter`, `filter` ni `transform`, porque se volvería su bloque contenedor y el
   panel colapsaría con la página scrolleada.
+- Scroll-spy de la home: `SectionSpyService` (`components/public/site-header/`,
+  `providedIn: 'root'`) lo arranca la home tras el primer render con `homeSpySections`
+  (`content/site.ts`: primera sección de cada ítem del menú, en el orden de `siteNavLinks`) y
+  lo apaga en `ngOnDestroy`. El header resalta `spy.activeHref() ?? ruta` (clase `is-active`)
+  y deja `aria-current="page"` siempre en la página real. Una sección nueva de la home que
+  inicie la parte de otro ítem se agrega a `homeSpySections`.
+- Rastro de la home (`nav.scroll-trail`, estilos en `site-header/scroll-trail.scss`): cuelga
+  bajo la barra del header en `position: absolute` (no ocupa lugar), visible con el header
+  compacto y el menú cerrado; acumula los ítems hasta la sección activa y enlaza cada paso a
+  `/#{id}`. `headerScrollOffset` suma su alto. Las páginas internas conservan
+  `<app-breadcrumb>` estático.
+- Menú móvil: el texto de cada opción va en `.mobile-label`, cuyo subrayado (gradiente de
+  2 px) aparece en hover/foco aun con movimiento reducido; con movimiento crece y el ítem se
+  desplaza 12 px.
+- Equipo: `content/team.ts` es la fuente única del orden de nombres (Carlos Arciniegas,
+  Wilson Solano, Yeison Pulgarin); las fotos son grupales.
 - `<app-back-to-top>` (`components/back-to-top/`): un solo botón "Volver arriba" montado en
   `AppComponent` para todas las rutas. Sigue la ventana o `.main-content`
   (`APP_SCROLLER_SELECTOR`) con un listener `scroll` en captura sobre `document`, y usa
