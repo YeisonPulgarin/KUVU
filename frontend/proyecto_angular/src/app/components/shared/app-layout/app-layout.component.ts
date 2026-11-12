@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject, input, untracked } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { AuthService } from '../../../services/auth.service';
+import { AuthService, temaDeEmpresa } from '../../../services/auth.service';
 import { DataService } from '../../../services/data.service';
 import { SidebarService } from '../../../services/sidebar.service';
 import { SidebarComponent } from '../sidebar/sidebar.component';
@@ -19,12 +19,23 @@ export const MENSAJE_ERROR_CARGA =
  * Shell of every signed-in screen: sidebar, main column with the breadcrumb
  * "{Empresa} › {Página}", and the hosts of toasts and confirmations. A failed data load is
  * reported here once per attempt, so no screen has to.
+ *
+ * The company brand (`--color-primario`, `--color-secundario`, `--color-texto`,
+ * `--color-primario-contraste`) is declared on this host only: every signed-in surface
+ * (sidebar, screen, dialogs, toasts) descends from it, while the public site and the access
+ * flow keep the KUVU blue of `:root`.
  */
 @Component({
   selector: 'app-layout',
   standalone: true,
   imports: [RouterLink, SidebarComponent, ToastHostComponent, ConfirmHostComponent, IconComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    '[style.--color-primario]': 'tema()?.primario ?? null',
+    '[style.--color-secundario]': 'tema()?.secundario ?? null',
+    '[style.--color-texto]': 'tema()?.texto ?? null',
+    '[style.--color-primario-contraste]': 'tema()?.contraste ?? null'
+  },
   template: `
     <div class="app-layout">
       <app-sidebar />
@@ -62,6 +73,7 @@ export class AppLayoutComponent {
 
   protected readonly colapsado = inject(SidebarService).colapsado;
   protected readonly empresa = computed(() => this.auth.empresaActiva()?.nombre ?? 'Mi empresa');
+  protected readonly tema = computed(() => temaDeEmpresa(this.auth.empresaActiva()));
   protected readonly esInicio = computed(() => this.pagina() === PAGINA_INICIO);
 
   constructor() {

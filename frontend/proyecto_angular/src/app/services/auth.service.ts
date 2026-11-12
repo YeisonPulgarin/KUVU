@@ -32,6 +32,29 @@ export const MENSAJE_ACCESO =
   'Los datos de acceso no son válidos o la cuenta está bloqueada temporalmente. ' +
   'Revisa e intenta de nuevo en unos minutos.';
 
+/** CSS tokens of a company's brand, applied only inside the signed-in app (`<app-layout>`). */
+export interface TemaEmpresa {
+  readonly primario: string;
+  readonly secundario: string;
+  readonly texto: string;
+  /** Label color over brand-filled surfaces (primary button, avatars), by luminance. */
+  readonly contraste: string;
+}
+
+/**
+ * Brand tokens of a company, or null without one. Pure: the public site and the access flow
+ * never receive them, so they keep the KUVU blue of `:root` (see AppLayoutComponent).
+ */
+export function temaDeEmpresa(empresa: Empresa | null | undefined): TemaEmpresa | null {
+  if (!empresa?.color_primario) return null;
+  return {
+    primario: empresa.color_primario,
+    secundario: empresa.color_secundario || empresa.color_primario,
+    texto: empresa.color_texto || '#FFFFFF',
+    contraste: textoSobreMarca(empresa.color_primario),
+  };
+}
+
 export interface CambioPendiente {
   correo: string;
   documento: string;
@@ -119,7 +142,6 @@ export class AuthService {
     this._empresaActiva.set(empresa);
     this._usuarioActivo.set(resp.usuario);
     this._isAuthenticated.set(true);
-    this.aplicarTemaEmpresa(empresa);
 
     // Persistir sesión en localStorage
     localStorage.setItem('empresa_id', String(empresa_id));
@@ -134,7 +156,6 @@ export class AuthService {
     this._isAuthenticated.set(false);
     this._cambioPendiente.set(null);
     localStorage.clear();
-    this.resetearTema();
     this.router.navigate(['/login']);
   }
 
@@ -154,38 +175,17 @@ export class AuthService {
       if (empresaStr) {
         const empresa: Empresa = JSON.parse(empresaStr);
         this._empresaActiva.set(empresa);
-        this.aplicarTemaEmpresa(empresa);
       }
 
       // Refrescar desde backend en segundo plano (para colores actualizados)
       this.http.get<Empresa>(`${API}/empresas/${empId}`).subscribe({
         next: empresa => {
           this._empresaActiva.set(empresa);
-          this.aplicarTemaEmpresa(empresa);
           localStorage.setItem('empresa', JSON.stringify(empresa)); // mantener cache fresco
           this.cargarEmpresas().subscribe();
         },
         error: () => this.logout()
       });
     }
-  }
-
-  // ── Theming dinámico según empresa ───────────────────────────
-  private aplicarTemaEmpresa(empresa: Empresa | null): void {
-    if (!empresa) return;
-    const root = document.documentElement;
-    root.style.setProperty('--color-primario',    empresa.color_primario);
-    root.style.setProperty('--color-secundario',  empresa.color_secundario ?? empresa.color_primario);
-    root.style.setProperty('--color-texto',       empresa.color_texto ?? '#FFFFFF');
-    // Label color of the brand-filled surfaces (primary button, avatars), by luminance.
-    root.style.setProperty('--color-primario-contraste', textoSobreMarca(empresa.color_primario));
-  }
-
-  private resetearTema(): void {
-    const root = document.documentElement;
-    root.style.removeProperty('--color-primario');
-    root.style.removeProperty('--color-secundario');
-    root.style.removeProperty('--color-texto');
-    root.style.removeProperty('--color-primario-contraste');
   }
 }

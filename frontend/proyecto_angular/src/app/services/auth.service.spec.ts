@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter, Router } from '@angular/router';
-import { AuthService } from './auth.service';
+import { AuthService, temaDeEmpresa } from './auth.service';
 
 const API = 'http://localhost:3000/api';
 
@@ -15,22 +15,41 @@ const USUARIO = {
 };
 const OK = { ok: true, requiereCambioPassword: false, usuario: USUARIO, empresa: EMPRESA };
 
-describe('AuthService brand theming', () => {
+describe('temaDeEmpresa', () => {
+  it('picks a dark label for a light brand (Amarilo)', () => {
+    expect(temaDeEmpresa({ ...EMPRESA, color_primario: '#F5A623', color_secundario: '#F5A623' })).toEqual({
+      primario: '#F5A623', secundario: '#F5A623', texto: '#ffffff', contraste: '#1a202c',
+    });
+  });
+
+  it('picks a white label for a dark brand (Mi Inmueble)', () => {
+    expect(temaDeEmpresa({ ...EMPRESA, color_primario: '#2B4C8C' })?.contraste).toBe('#ffffff');
+  });
+
+  it('falls back to the primary color and white text when the company has no others', () => {
+    const tema = temaDeEmpresa({ ...EMPRESA, color_secundario: '', color_texto: '' });
+    expect(tema?.secundario).toBe(EMPRESA.color_primario);
+    expect(tema?.texto).toBe('#FFFFFF');
+  });
+
+  it('is null without a company', () => {
+    expect(temaDeEmpresa(null)).toBeNull();
+    expect(temaDeEmpresa(undefined)).toBeNull();
+  });
+});
+
+// Regression: the company theme used to be written on <html> and leaked into the public site,
+// turning its "Ingresar" button into the last company's color. It must never touch <html>.
+describe('AuthService keeps the company theme off the document', () => {
   let service: AuthService;
   let http: HttpTestingController;
-  const root = document.documentElement;
-  const contrasteVar = () => root.style.getPropertyValue('--color-primario-contraste');
-
-  function login(colorPrimario: string): void {
-    service.login('admin@empresa.co', '123', 'Clave#Segura1', 1).subscribe();
-    http.expectOne(req => req.url.endsWith('/auth/login')).flush({
-      ok: true,
-      usuario: { idUsuario: 1, empresa_id: 1, nombre: 'Ana Admin', documento: '123', idRol: 1 },
-      empresa: { id: 1, nombre: 'Empresa', color_primario: colorPrimario, color_secundario: colorPrimario }
-    });
-  }
+  const AMARILLA = { ...EMPRESA, id: 1, nombre: 'Amarilo', color_primario: '#F5A623', color_secundario: '#F5A623' };
+  const TOKENS = ['--color-primario', '--color-secundario', '--color-texto', '--color-primario-contraste'];
+  const inlineTokens = () =>
+    TOKENS.map((token) => document.documentElement.style.getPropertyValue(token)).filter(Boolean);
 
   beforeEach(() => {
+    localStorage.clear();
     TestBed.configureTestingModule({
       providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])]
     });
@@ -39,28 +58,28 @@ describe('AuthService brand theming', () => {
   });
 
   afterEach(() => {
-    root.style.removeProperty('--color-primario');
-    root.style.removeProperty('--color-secundario');
-    root.style.removeProperty('--color-texto');
-    root.style.removeProperty('--color-primario-contraste');
     localStorage.clear();
     http.verify();
   });
 
-  it('publishes a dark label for a light brand (Amarilo)', () => {
-    login('#F5A623');
-    expect(contrasteVar()).toBe('#1a202c');
+  it('does not write brand tokens on <html> when signing in', () => {
+    service.login('ana@kuvu.co', '1128074279', 'Tejado#Azul42', 1).subscribe();
+    http.expectOne(`${API}/auth/login`).flush({ ...OK, empresa: AMARILLA });
+    expect(service.empresaActiva()?.color_primario).toBe('#F5A623');
+    expect(inlineTokens()).toEqual([]);
   });
 
-  it('publishes a white label for a dark brand (Mi Inmueble)', () => {
-    login('#2B4C8C');
-    expect(contrasteVar()).toBe('#ffffff');
-  });
+  it('does not write brand tokens on <html> when restoring a saved session (reload)', () => {
+    localStorage.setItem('empresa_id', '1');
+    localStorage.setItem('usuario', JSON.stringify(USUARIO));
+    localStorage.setItem('empresa', JSON.stringify(AMARILLA));
+    service.restaurarSesion();
+    expect(inlineTokens()).toEqual([]);
 
-  it('removes the label color on logout', () => {
-    login('#F5A623');
-    service.logout();
-    expect(contrasteVar()).toBe('');
+    http.expectOne(`${API}/empresas/1`).flush(AMARILLA);
+    http.expectOne(`${API}/empresas`).flush([AMARILLA]);
+    expect(service.empresaActiva()?.nombre).toBe('Amarilo');
+    expect(inlineTokens()).toEqual([]);
   });
 });
 

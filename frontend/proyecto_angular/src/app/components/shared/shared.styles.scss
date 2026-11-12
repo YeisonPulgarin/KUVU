@@ -14,7 +14,7 @@
   --sem-info-fg: #175CD3;    --sem-info-bg: #EFF8FF;    --sem-info-border: #B2DDFF;    --sem-info-solid: #175CD3;
   --sem-neutral-fg: #475467; --sem-neutral-bg: #F2F4F7; --sem-neutral-border: #D0D5DD; --sem-neutral-solid: #344054;
 
-  // Label over brand-filled surfaces; AuthService overrides it per company (by luminance).
+  // Label over brand-filled surfaces; <app-layout> overrides it per company (by luminance).
   --color-primario-contraste: #ffffff;
 }
 

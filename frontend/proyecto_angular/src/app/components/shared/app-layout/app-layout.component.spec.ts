@@ -9,7 +9,11 @@ import { ToastService } from '../toast/toast.service';
 @Component({
   standalone: true,
   imports: [AppLayoutComponent],
-  template: `<app-layout [pagina]="pagina()"><div class="page"><h1>Contenido</h1></div></app-layout>`
+  template: `
+    <a class="btn-primary afuera" href="/acceder">Ingresar</a>
+    <app-layout [pagina]="pagina()">
+      <div class="page"><h1>Contenido</h1><button class="btn-primary adentro">Nuevo</button></div>
+    </app-layout>`
 })
 class HostComponent {
   pagina = signal('Contratos');
@@ -18,17 +22,20 @@ class HostComponent {
 describe('AppLayoutComponent', () => {
   let fixture: ComponentFixture<HostComponent>;
   const errorCarga = signal(false);
+  const AMARILLA = { id: 1, nombre: 'Amarilo', color_primario: '#F5A623', color_secundario: '#F5A623' };
+  const empresaActiva = signal<typeof AMARILLA | null>(AMARILLA);
   const el = () => fixture.nativeElement as HTMLElement;
 
   beforeEach(() => {
     errorCarga.set(false);
+    empresaActiva.set(AMARILLA);
     TestBed.configureTestingModule({
       providers: [
         provideRouter([]),
         {
           provide: AuthService,
           useValue: {
-            empresaActiva: signal({ id: 1, nombre: 'Amarilo', color_primario: '#F5A623' }),
+            empresaActiva,
             usuarioActivo: signal({ idUsuario: 1, nombre: 'Wilson Solano', idRol: 1 }),
             logout: jasmine.createSpy('logout')
           }
@@ -75,6 +82,42 @@ describe('AppLayoutComponent', () => {
     expect(nav.querySelector('a')).toBeNull();
     expect(nav.textContent).toContain('Amarilo');
     expect(nav.querySelector('[aria-current="page"]')!.textContent!.trim()).toBe('Inicio');
+  });
+
+  describe('company brand', () => {
+    const host = () => el().querySelector<HTMLElement>('app-layout')!;
+    const fondo = (selector: string) => getComputedStyle(el().querySelector(selector)!).backgroundImage;
+    // KUVU blue of :root (#2B4C8C → #3A6FD8) and the Amarilo yellow (#F5A623).
+    const AZUL_1 = 'rgb(43, 76, 140)';
+    const AZUL_2 = 'rgb(58, 111, 216)';
+    const AMARILLO = 'rgb(245, 166, 35)';
+
+    it('declares the company tokens on its host, with a dark label on a light brand', () => {
+      expect(host().style.getPropertyValue('--color-primario')).toBe('#F5A623');
+      expect(host().style.getPropertyValue('--color-secundario')).toBe('#F5A623');
+      expect(host().style.getPropertyValue('--color-texto')).toBe('#FFFFFF');
+      expect(host().style.getPropertyValue('--color-primario-contraste')).toBe('#1a202c');
+    });
+
+    it('paints the in-app primary button with the company color', () => {
+      expect(fondo('.btn-primary.adentro')).toContain(AMARILLO);
+    });
+
+    // Regression: a yellow company signed in must not turn the public "Ingresar" yellow.
+    it('keeps a primary button outside the app (public "Ingresar") on the KUVU blue', () => {
+      const afuera = fondo('.btn-primary.afuera');
+      expect(afuera).toContain(AZUL_1);
+      expect(afuera).toContain(AZUL_2);
+      expect(afuera).not.toContain(AMARILLO);
+      expect(document.documentElement.style.getPropertyValue('--color-primario')).toBe('');
+    });
+
+    it('declares no tokens without an active company', () => {
+      empresaActiva.set(null);
+      fixture.detectChanges();
+      expect(host().style.getPropertyValue('--color-primario')).toBe('');
+      expect(host().style.getPropertyValue('--color-primario-contraste')).toBe('');
+    });
   });
 
   it('raises an error toast when the data load fails', () => {
